@@ -9,13 +9,9 @@ import (
 )
 
 func main() {
-	client := database.NewClient(
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_PORT"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_DB"),
-		os.Getenv("POSTGRES_PASS"),
-	)
+	dsn := os.Getenv("DATABASE_URL")
+
+	client := database.NewClient(dsn)
 
 	ctx := context.Background()
 

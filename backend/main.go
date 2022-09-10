@@ -17,13 +17,9 @@ import (
 const timeout = 10
 
 func main() {
-	db := database.NewClient(
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_PORT"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_DB"),
-		os.Getenv("POSTGRES_PASS"),
-	)
+	dsn := os.Getenv("DATABASE_URL")
+
+	db := database.NewClient(dsn)
 
 	articleStore := model.NewArticleStore(db)
 
