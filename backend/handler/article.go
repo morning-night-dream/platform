@@ -12,16 +12,17 @@ import (
 	"github.com/bufbuild/connect-go"
 	"github.com/dyatlov/go-opengraph/opengraph"
 	articlev1 "github.com/morning-night-dream/article-share/api/article/v1"
+	"github.com/morning-night-dream/article-share/database/store"
 	"github.com/morning-night-dream/article-share/model"
 )
 
 type ArticleHandler struct {
 	key    string
 	client http.Client
-	store  model.ArticleStore
+	store  store.Article
 }
 
-func NewArticleHandler(store model.ArticleStore) *ArticleHandler {
+func NewArticleHandler(store store.Article) *ArticleHandler {
 	return &ArticleHandler{
 		key:    os.Getenv("API_KEY"),
 		client: *http.DefaultClient,

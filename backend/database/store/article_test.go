@@ -1,4 +1,4 @@
-package model_test
+package store_test
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/morning-night-dream/article-share/database"
+	"github.com/morning-night-dream/article-share/database/store"
 	"github.com/morning-night-dream/article-share/model"
 )
 
@@ -52,14 +53,14 @@ func TestArticleStoreSave(t *testing.T) {
 
 	db := database.NewClient(dsn)
 
-	store := model.NewArticleStore(db)
+	sa := store.NewArticle(db)
 
 	t.Run("", func(t *testing.T) {
 		t.Parallel()
 
 		ctx := context.Background()
 
-		if err := store.Save(ctx, model.Article{
+		if err := sa.Save(ctx, model.Article{
 			Title:       "title",
 			URL:         "url",
 			Description: "description",
@@ -68,7 +69,7 @@ func TestArticleStoreSave(t *testing.T) {
 			t.Error(err)
 		}
 
-		if err := store.Save(ctx, model.Article{
+		if err := sa.Save(ctx, model.Article{
 			Title:       "title",
 			URL:         "url",
 			Description: "description",

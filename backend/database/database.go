@@ -3,7 +3,7 @@ package database
 import (
 	// postgres driver.
 	_ "github.com/lib/pq"
-	"github.com/morning-night-dream/article-share/ent"
+	"github.com/morning-night-dream/article-share/database/ent"
 )
 
 func NewClient(dsn string) *ent.Client {
