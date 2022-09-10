@@ -27,7 +27,7 @@ dockers:
     goos: linux
     goarch: arm64
     image_templates:
-      - ghcr.io/{{ .Env.OWNER }}/play-golang-cicd:{{ .Env.VERSION }}-arm64
+      - ghcr.io/{{ .Env.OWNER }}/article-share:{{ .Env.VERSION }}-arm64
     build_flag_templates:
       - "--platform=linux/arm64/v8"
       - "--label=org.opencontainers.image.created={{.Date}}"
