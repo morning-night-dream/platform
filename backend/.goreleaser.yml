@@ -25,11 +25,11 @@ changelog:
 dockers:
   - use: buildx
     goos: linux
-    goarch: arm64
+    goarch: amd64
     image_templates:
-      - ghcr.io/{{ .Env.OWNER }}/article-share:{{ .Env.VERSION }}-arm64
+      - ghcr.io/{{ .Env.OWNER }}/play-golang-cicd:{{ .Env.VERSION }}-amd64
     build_flag_templates:
-      - "--platform=linux/arm64/v8"
+      - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"

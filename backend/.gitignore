@@ -1,4 +1,5 @@
 api
+main
 ent/*/*
 ent/*.go
 !ent/schema/*
