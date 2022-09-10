@@ -4,6 +4,8 @@ linters-settings:
 linters:
   enable-all: true
   disable:
+    # disable because unnecessary field declaration
+    - exhaustruct
     # disable because deprecated since golangci-lint since v1.38.0
     - maligned
     # disable because deprecated since golangci-lint since v1.39.0
