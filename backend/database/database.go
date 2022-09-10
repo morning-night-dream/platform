@@ -2,20 +2,19 @@ package database
 
 import (
 	"fmt"
-	"os"
 
 	// postgres driver.
 	_ "github.com/lib/pq"
 	"github.com/morning-night-dream/article-share/ent"
 )
 
-func NewClient() *ent.Client {
-	host := os.Getenv("POSTGRES_HOST")
-	port := os.Getenv("POSTGRES_PORT")
-	user := os.Getenv("POSTGRES_USER")
-	name := os.Getenv("POSTGRES_DB")
-	pass := os.Getenv("POSTGRES_PASS")
-
+func NewClient(
+	host string,
+	port string,
+	user string,
+	name string,
+	pass string,
+) *ent.Client {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		host,

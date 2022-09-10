@@ -1,6 +1,7 @@
 POSTGRES_VERSION = 14.5
 
 export
+POSTGRES_IMAGE := postgres:$(POSTGRES_VERSION)-alpine
 POSTGRES_HOST := localhost
 POSTGRES_DB := postgres
 POSTGRES_USER := postgres
@@ -41,7 +42,21 @@ db:
 		-e POSTGRES_PASSWORD=$(POSTGRES_PASS) \
 		-e POSTGRES_INITDB_ARGS=--encoding=UTF-8 \
 		--name article-share-db \
-		postgres:$(POSTGRES_VERSION)-alpine
+		$(POSTGRES_IMAGE)
+
+.PHONY: testdb
+testdb:
+	@docker run --rm -d \
+		-p 54321:5432 \
+		-e TZ=UTC \
+		-e LANG=ja_JP.UTF-8 \
+		-e POSTGRES_HOST_AUTH_METHOD=trust \
+		-e POSTGRES_DB=test \
+		-e POSTGRES_USER=test \
+		-e POSTGRES_PASSWORD=test \
+		-e POSTGRES_INITDB_ARGS=--encoding=UTF-8 \
+		--name article-share-testdb \
+		$(POSTGRES_IMAGE)
 
 .PHONY: psql
 psql:

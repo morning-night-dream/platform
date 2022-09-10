@@ -12,6 +12,7 @@ require (
 	entgo.io/ent v0.11.2
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.5
+	github.com/pkg/errors v0.9.1
 	google.golang.org/grpc v1.49.0
 )
 

@@ -12,20 +12,20 @@ import (
 	"github.com/bufbuild/connect-go"
 	"github.com/dyatlov/go-opengraph/opengraph"
 	articlev1 "github.com/morning-night-dream/article-share/api/article/v1"
-	"github.com/morning-night-dream/article-share/ent"
+	"github.com/morning-night-dream/article-share/model"
 )
 
 type ArticleHandler struct {
 	key    string
 	client http.Client
-	db     *ent.Client
+	store  model.ArticleStore
 }
 
-func NewArticleHandler(db *ent.Client) *ArticleHandler {
+func NewArticleHandler(store model.ArticleStore) *ArticleHandler {
 	return &ArticleHandler{
 		key:    os.Getenv("API_KEY"),
 		client: *http.DefaultClient,
-		db:     db,
+		store:  store,
 	}
 }
 
@@ -68,12 +68,14 @@ func (s *ArticleHandler) Share(
 		imageURL = og.Images[0].URL
 	}
 
-	err = s.db.Article.Create().
-		SetTitle(og.Title).
-		SetDescription(og.Description).
-		SetURL(og.URL).
-		SetImageURL(imageURL).
-		Exec(ctx)
+	article := model.Article{
+		URL:         og.URL,
+		Title:       og.Title,
+		ImageURL:    imageURL,
+		Description: og.Description,
+	}
+
+	err = s.store.Save(ctx, article)
 
 	if err != nil {
 		log.Print(err)

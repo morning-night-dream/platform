@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	articlev1connect "github.com/morning-night-dream/article-share/api/article/v1/articlev1connect"
 	"github.com/morning-night-dream/article-share/database"
 	"github.com/morning-night-dream/article-share/handler"
+	"github.com/morning-night-dream/article-share/model"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -15,9 +17,17 @@ import (
 const timeout = 10
 
 func main() {
-	db := database.NewClient()
+	db := database.NewClient(
+		os.Getenv("POSTGRES_HOST"),
+		os.Getenv("POSTGRES_PORT"),
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_DB"),
+		os.Getenv("POSTGRES_PASS"),
+	)
 
-	ah := handler.NewArticleHandler(db)
+	articleStore := model.NewArticleStore(db)
+
+	ah := handler.NewArticleHandler(*articleStore)
 
 	mux := http.NewServeMux()
 
