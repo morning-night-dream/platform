@@ -2,6 +2,7 @@ package model_test
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -11,13 +12,9 @@ import (
 )
 
 func setup(ctx context.Context) {
-	client := database.NewClient(
-		os.Getenv("POSTGRES_HOST"),
-		"54321",
-		"test",
-		"test",
-		"test",
-	)
+	dsn := fmt.Sprintf("postgres://test:test@%s:54321/test?sslmode=disable", os.Getenv("POSTGRES_HOST"))
+
+	client := database.NewClient(dsn)
 
 	if err := client.Schema.Create(ctx); err != nil {
 		log.Fatalf("Failed create schema: %v", err)
@@ -25,13 +22,9 @@ func setup(ctx context.Context) {
 }
 
 func teardown() {
-	client := database.NewClient(
-		os.Getenv("POSTGRES_HOST"),
-		"54321",
-		"test",
-		"test",
-		"test",
-	)
+	dsn := fmt.Sprintf("postgres://test:test@%s:54321/test?sslmode=disable", os.Getenv("POSTGRES_HOST"))
+
+	client := database.NewClient(dsn)
 
 	ctx := context.Background()
 
@@ -55,13 +48,9 @@ func TestMain(m *testing.M) {
 func TestArticleStoreSave(t *testing.T) {
 	t.Parallel()
 
-	db := database.NewClient(
-		os.Getenv("POSTGRES_HOST"),
-		"54321",
-		"test",
-		"test",
-		"test",
-	)
+	dsn := fmt.Sprintf("postgres://test:test@%s:54321/test?sslmode=disable", os.Getenv("POSTGRES_HOST"))
+
+	db := database.NewClient(dsn)
 
 	store := model.NewArticleStore(db)
 
