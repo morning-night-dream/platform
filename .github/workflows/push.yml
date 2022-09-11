@@ -28,6 +28,10 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_IDENTITY_POOL }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_FOR_GCR }}
           audience: https://github.com/morning-night-dream
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v0"
+      - name: Set up docker auth
+        run: gcloud auth configure-docker
       - uses: actions/download-artifact@master
         with:
           name: build-artifact
