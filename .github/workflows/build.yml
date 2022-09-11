@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Fetch all tags
+        run: git fetch --force --tags
+      - uses: ./.github/actions/backend
+      - name: Build
+        env:
+          GOOS: linux
+          GOARCH: amd64
+        run: go build -o main
+        working-directory: ./backend
+      - name: Upload Setup
+        run: |
+          mkdir -p article-share/build-artifact
+          cp backend/main article-share/build-artifact/main
+      - name: Upload build artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: build-artifact
+          path: article-share/build-artifact
