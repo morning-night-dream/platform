@@ -38,6 +38,6 @@ jobs:
         env:
           IMAGE: ${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         run: |
-          docker build -t ${{ env.IMAGE }}
+          docker build -t ${{ env.IMAGE }} .
           docker push ${{ env.IMAGE }}
         working-directory: ./backend
