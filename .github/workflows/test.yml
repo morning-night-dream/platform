@@ -3,8 +3,8 @@ name: test
 on:
   pull_request:
     paths:
-      - ./api/**/**.proto
-      - ./backend/**/**.go
+      - ./api/**/*.proto
+      - ./backend/**/*.go
 
 jobs:
   test:
