@@ -1,14 +1,7 @@
 api
-<<<<<<< HEAD
 database/ent/*/*
 database/ent/*.go
 !database/ent/schema/*
 !database/ent/generate.go
-=======
-main
-ent/*/*
-ent/*.go
-!ent/schema/*
-!ent/generate.go
->>>>>>> main
 .migrate.sh
+main
