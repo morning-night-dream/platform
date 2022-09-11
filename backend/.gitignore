@@ -1,7 +1,7 @@
 api
-main
-ent/*/*
-ent/*.go
-!ent/schema/*
-!ent/generate.go
+database/ent/*/*
+database/ent/*.go
+!database/ent/schema/*
+!database/ent/generate.go
 .migrate.sh
+main

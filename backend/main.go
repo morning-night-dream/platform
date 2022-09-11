@@ -8,8 +8,8 @@ import (
 
 	articlev1connect "github.com/morning-night-dream/article-share/api/article/v1/articlev1connect"
 	"github.com/morning-night-dream/article-share/database"
+	"github.com/morning-night-dream/article-share/database/store"
 	"github.com/morning-night-dream/article-share/handler"
-	"github.com/morning-night-dream/article-share/model"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -21,9 +21,9 @@ func main() {
 
 	db := database.NewClient(dsn)
 
-	articleStore := model.NewArticleStore(db)
+	sa := store.NewArticle(db)
 
-	ah := handler.NewArticleHandler(*articleStore)
+	ah := handler.NewArticleHandler(*sa)
 
 	mux := http.NewServeMux()
 
