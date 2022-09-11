@@ -16,7 +16,6 @@ jobs:
       REPO_NAME: asia.gcr.io/spartan-matter-356507
       IMAGE_NAME: article-share
       IMAGE_TAG: latest
-      IMAGE: ${{ env.REPO_NAME }}/${{} env.IMAGE_NAME }}/${{ env.IMAGE_TAG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -36,7 +35,9 @@ jobs:
       - name: Setup Artifact
         run: cp article-share/build-artifact/main backend/main
       - name: Build & Push
+        env:
+          IMAGE: ${{ env.REPO_NAME }}/${{} env.IMAGE_NAME }}/${{ env.IMAGE_TAG }}
         run: |
-          docker build -t ${IMAGE}
-          docker push ${IMAGE}
+          docker build -t ${{ env.IMAGE }}
+          docker push ${{ env.IMAGE }}
         working-directory: ./backend
