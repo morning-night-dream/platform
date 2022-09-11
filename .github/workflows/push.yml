@@ -28,7 +28,7 @@ jobs:
           name: build-artifact
           path: article-share/build-artifact
       - name: Setup Artifact
-        run: cp article-share/build-artifact backend/main
+        run: cp article-share/build-artifact/main backend/main
       - name: Build & Push
         run: |
           docker build -t ${IMAGE}
