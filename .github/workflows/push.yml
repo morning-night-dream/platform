@@ -16,7 +16,7 @@ jobs:
       REPO_NAME: asia.gcr.io/spartan-matter-356507
       IMAGE_NAME: article-share
       IMAGE_TAG: latest
-      IMAGE: ${REPO_NAME}/${IMAGE_NAME}/${IMAGE_TAG}
+      IMAGE: ${{ env.REPO_NAME }}/${{} env.IMAGE_NAME }}/${{ env.IMAGE_TAG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
