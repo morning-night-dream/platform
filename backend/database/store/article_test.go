@@ -25,7 +25,7 @@ func TestArticleStoreSave(t *testing.T) {
 
 	sa := store.NewArticle(db)
 
-	t.Run("", func(t *testing.T) {
+	t.Run("記事を保存できる", func(t *testing.T) {
 		t.Parallel()
 
 		ctx := context.Background()
