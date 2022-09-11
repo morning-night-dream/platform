@@ -2,56 +2,26 @@ package store_test
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"os"
 	"testing"
 
-	"github.com/morning-night-dream/article-share/database"
+	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/morning-night-dream/article-share/database/ent"
+	"github.com/morning-night-dream/article-share/database/ent/enttest"
+	"github.com/morning-night-dream/article-share/database/ent/migrate"
 	"github.com/morning-night-dream/article-share/database/store"
 	"github.com/morning-night-dream/article-share/model"
 )
 
-func setup(ctx context.Context) {
-	dsn := fmt.Sprintf("postgres://test:test@%s:54321/test?sslmode=disable", os.Getenv("POSTGRES_HOST"))
-
-	client := database.NewClient(dsn)
-
-	if err := client.Schema.Create(ctx); err != nil {
-		log.Fatalf("Failed create schema: %v", err)
-	}
-}
-
-func teardown() {
-	dsn := fmt.Sprintf("postgres://test:test@%s:54321/test?sslmode=disable", os.Getenv("POSTGRES_HOST"))
-
-	client := database.NewClient(dsn)
-
-	ctx := context.Background()
-
-	if _, err := client.Article.Delete().Exec(ctx); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func TestMain(m *testing.M) {
-	ctx := context.Background()
-
-	setup(ctx)
-
-	status := m.Run()
-
-	teardown()
-
-	os.Exit(status)
-}
-
 func TestArticleStoreSave(t *testing.T) {
 	t.Parallel()
 
-	dsn := fmt.Sprintf("postgres://test:test@%s:54321/test?sslmode=disable", os.Getenv("POSTGRES_HOST"))
+	opts := []enttest.Option{
+		enttest.WithOptions(ent.Log(t.Log)),
+		enttest.WithMigrateOptions(migrate.WithGlobalUniqueID(true)),
+	}
 
-	db := database.NewClient(dsn)
+	db := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1", opts...)
 
 	sa := store.NewArticle(db)
 
