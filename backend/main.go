@@ -19,17 +19,23 @@ const timeout = 10
 func main() {
 	dsn := os.Getenv("DATABASE_URL")
 
+	secret := os.Getenv("SLACK_SIGNING_SECRET")
+
 	db := database.NewClient(dsn)
 
 	sa := store.NewArticle(db)
 
 	ah := handler.NewArticleHandler(*sa)
 
+	sh := handler.NewSlackHandler(secret, sa)
+
 	mux := http.NewServeMux()
 
 	path, handler := articlev1connect.NewArticleServiceHandler(ah)
 
 	mux.Handle(path, handler)
+
+	mux.HandleFunc("/api/slack/events", sh.Events)
 
 	port := ":8080"
 
