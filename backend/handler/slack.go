@@ -32,6 +32,7 @@ func NewSlackHandler(secret string, store *store.Article) *SlackHandler {
 }
 
 func (s *SlackHandler) Events(w http.ResponseWriter, r *http.Request) {
+	// @see https://github.com/slack-go/slack/blob/master/examples/eventsapi/events.go
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -60,6 +61,7 @@ func (s *SlackHandler) Events(w http.ResponseWriter, r *http.Request) {
 		innerEvent := eventsAPIEvent.InnerEvent
 
 		switch ev := innerEvent.Data.(type) {
+		// @see https://api.slack.com/events/link_shared
 		case *slackevents.LinkSharedEvent:
 			for _, link := range ev.Links {
 				u, err := url.Parse(link.URL)
