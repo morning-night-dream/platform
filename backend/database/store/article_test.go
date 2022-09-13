@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
-
 	"github.com/morning-night-dream/article-share/database/ent"
 	"github.com/morning-night-dream/article-share/database/ent/enttest"
 	"github.com/morning-night-dream/article-share/database/ent/migrate"
