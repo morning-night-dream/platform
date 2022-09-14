@@ -32,10 +32,6 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v0"
       - name: Set up docker auth
         run: gcloud auth configure-docker
-      - uses: actions/download-artifact@master
-        with:
-          name: build-artifact
-          path: article-share/build-artifact
       - uses: ./.github/actions/backend
       - name: Go Build
         env:
