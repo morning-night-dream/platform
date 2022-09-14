@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - "main"
-      - "feature/issue#12-2"
+    paths:
+      - api/**/*.proto
+      - backend/**/*.go
 
 permissions:
   id-token: write
