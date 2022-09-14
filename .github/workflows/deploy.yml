@@ -1,0 +1,53 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - "main"
+      - "feature/issue#12-2"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      REPO_NAME: ${{ secrets.GCP_DOCKER_REPO }}
+      IMAGE_NAME: article-share
+      IMAGE_TAG: latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ secrets.GCP_IDENTITY_POOL }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_FOR_GCR }}
+          audience: https://github.com/morning-night-dream
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v0"
+      - name: Set up docker auth
+        run: gcloud auth configure-docker
+      - uses: actions/download-artifact@master
+        with:
+          name: build-artifact
+          path: article-share/build-artifact
+      - uses: ./.github/actions/backend
+      - name: Go Build
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          CGO: 0
+        run: go build -ldflags="-s -w" -o main
+        working-directory: ./backend
+      - name: Docker Build & Push
+        env:
+          IMAGE: ${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        run: |
+          docker build -t ${{ env.IMAGE }} .
+          docker push ${{ env.IMAGE }}
+        working-directory: ./backend
