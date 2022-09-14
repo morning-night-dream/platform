@@ -30,8 +30,6 @@ jobs:
           audience: https://github.com/morning-night-dream
       - name: Set up Cloud SDK
         uses: "google-github-actions/setup-gcloud@v0"
-      - name: Set up docker auth
-        run: gcloud auth configure-docker
       - uses: ./.github/actions/backend
       - name: Go Build
         env:
@@ -40,6 +38,8 @@ jobs:
           CGO: 0
         run: go build -ldflags="-s -w" -o main
         working-directory: ./backend
+      - name: Set up docker auth
+        run: gcloud auth configure-docker
       - name: Docker Build & Push
         env:
           IMAGE: ${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
