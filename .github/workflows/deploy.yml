@@ -15,10 +15,6 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      REPO_NAME: ${{ secrets.GCP_DOCKER_REPO }}
-      IMAGE_NAME: article-share
-      IMAGE_TAG: latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,7 +40,7 @@ jobs:
         run: gcloud auth configure-docker
       - name: Docker Build & Push
         env:
-          IMAGE: ${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/article-share:latest
         run: |
           docker build -t ${{ env.IMAGE }} .
           docker push ${{ env.IMAGE }}
