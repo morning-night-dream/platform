@@ -8,6 +8,7 @@ on:
     paths:
       - api/**/*.proto
       - backend/**/*.go
+      - .github/**/*.yml
 
 permissions:
   id-token: write
