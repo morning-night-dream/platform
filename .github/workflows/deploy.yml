@@ -27,7 +27,6 @@ jobs:
         env:
           GOOS: linux
           GOARCH: amd64
-          CGO: 0
         run: go build -ldflags="-s -w" -o main
         working-directory: ./backend
       - name: Authenticate to Google Cloud
@@ -45,6 +44,6 @@ jobs:
           IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/article-share
         run: |
           IMAGE_TAG=v`date +%Y%m%d%H%M`
-          docker build -t ${{ env.IMAGE }}:${IMAGE_TAG} . --platform linux/amd64
+          docker build -t ${{ env.IMAGE }}:${IMAGE_TAG} .
           docker push ${{ env.IMAGE }}:${IMAGE_TAG}
         working-directory: ./backend
