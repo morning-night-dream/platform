@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - "main"
-      - "feature/issue#12-2"
     paths:
       - api/**/*.proto
       - backend/**/*.go
-      - .github/**/*.yml
 
 permissions:
   id-token: write
