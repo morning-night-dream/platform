@@ -65,4 +65,4 @@ jobs:
           git config --global user.name "morning-night-dream"
           git add -A
           git commit -m "docs create from github actions"
-          git push --force --quiet "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+          git push
