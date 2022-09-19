@@ -55,13 +55,13 @@ jobs:
       - name: Generate database document
         run: tbls doc "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" document/database
       - name: Git push
-        working-directory: ./document
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           git checkout --orphan document
           git config --global user.email "morning.night.dream@gmail.com"
           git config --global user.name "morning-night-dream"
+          ls|egrep -v '^document$'|xargs rm -r
           git add -A
           git commit -m "docs create from github actions"
           git push origin document
