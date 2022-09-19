@@ -57,7 +57,8 @@ jobs:
       - name: Generate grpc document
         run: |
           go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
-          protoc --doc_out=./document/grpc --doc_opt=markdown,document.md api/**/*.proto
+          mkdir -p document/grpc
+          protoc --doc_out=./document/grpc --doc_opt=markdown,document.md ./api/**/*.proto
       - name: Git push
         working-directory: ./document
         env:
