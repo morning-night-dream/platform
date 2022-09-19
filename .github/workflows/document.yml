@@ -60,9 +60,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           git checkout --orphan document
-          git rm -rf
           git config --global user.email "morning.night.dream@gmail.com"
           git config --global user.name "morning-night-dream"
           git add -A
           git commit -m "docs create from github actions"
-          git push
+          git push origin document
