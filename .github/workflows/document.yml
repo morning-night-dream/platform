@@ -50,7 +50,7 @@ jobs:
       - name: Migrate
         working-directory: ./backend
         env:
-          DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
         run: go run cmd/migrate/main.go
       - name: Generate database document
         run: tbls doc "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" document/database
@@ -70,4 +70,3 @@ jobs:
           git add -A
           git commit -m "docs create from github actions"
           git push --force --quiet "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" document
-
