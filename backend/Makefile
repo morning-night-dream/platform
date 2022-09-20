@@ -14,6 +14,10 @@ API_KEY = local
 lint:
 	@golangci-lint run --fix
 
+.PHONY: package
+package:
+	@go get -u
+
 .PHONY: test
 test:
 	@go test ./...
