@@ -53,15 +53,9 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
         run: go run cmd/migrate/main.go
       - name: Generate database document
-        run: tbls doc "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" document/database
-      - name: Git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: |
-          git checkout --orphan document
-          git config --global user.email "morning.night.dream@gmail.com"
-          git config --global user.name "morning-night-dream"
-          ls|egrep -v '^document$'|xargs rm -r
-          git add -A
-          git commit -m "docs create from github actions"
-          git push origin document
+        run: tbls doc "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" public/database
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
