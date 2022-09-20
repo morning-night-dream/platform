@@ -59,7 +59,7 @@ jobs:
         run: |
           go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
           mkdir -p public/api
-          protoc --proto_path=./api --doc_out=./public/api --doc_opt=markdown,README.md **/*.proto
+          protoc --doc_out=./public/api --doc_opt=markdown,README.md **/*.proto
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
