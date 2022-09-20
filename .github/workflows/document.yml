@@ -60,7 +60,7 @@ jobs:
           ls
           go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
           mkdir -p public/api
-          protoc --doc_out=./public/api --doc_opt=markdown,README.md **/*.proto
+          protoc --proto_path=api --doc_out=./public/api --doc_opt=markdown,README.md **/*.proto
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
