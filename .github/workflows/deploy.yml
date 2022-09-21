@@ -1,0 +1,49 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - api/**/*.proto
+      - backend/**/*.go
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/backend
+      - name: Go Build
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          # https://christina04.hatenablog.com/entry/installsuffix-cgo-is-no-longer-required
+          CGO_ENABLED: 0
+        run: go build -ldflags="-s -w" -o main
+        working-directory: ./backend
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ secrets.GCP_IDENTITY_POOL }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_FOR_GCR }}
+          audience: https://github.com/morning-night-dream
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v0"
+      - name: Set up docker auth
+        run: gcloud auth configure-docker
+      - name: Docker Build & Push
+        env:
+          IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/article-share
+        run: |
+          IMAGE_TAG=v`date +%Y%m%d%H%M`
+          docker build -t ${{ env.IMAGE }}:${IMAGE_TAG} .
+          docker push ${{ env.IMAGE }}:${IMAGE_TAG}
+        working-directory: ./backend
