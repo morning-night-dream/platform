@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/morning-night-dream/article-share/container/core/database"
-	"github.com/morning-night-dream/article-share/container/core/database/store"
-	"github.com/morning-night-dream/article-share/container/core/handler"
+	"github.com/morning-night-dream/article-share/app/core/database"
+	"github.com/morning-night-dream/article-share/app/core/database/store"
+	"github.com/morning-night-dream/article-share/app/core/handler"
 	articlev1connect "github.com/morning-night-dream/article-share/pkg/api/article/v1/articlev1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"

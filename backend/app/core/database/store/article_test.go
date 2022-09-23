@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/morning-night-dream/article-share/container/core/database/store"
-	"github.com/morning-night-dream/article-share/container/core/model"
+	"github.com/morning-night-dream/article-share/app/core/database/store"
+	"github.com/morning-night-dream/article-share/app/core/model"
 	"github.com/morning-night-dream/article-share/pkg/ent"
 	"github.com/morning-night-dream/article-share/pkg/ent/enttest"
 	"github.com/morning-night-dream/article-share/pkg/ent/migrate"

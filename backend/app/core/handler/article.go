@@ -11,8 +11,8 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/dyatlov/go-opengraph/opengraph"
-	"github.com/morning-night-dream/article-share/container/core/database/store"
-	"github.com/morning-night-dream/article-share/container/core/model"
+	"github.com/morning-night-dream/article-share/app/core/database/store"
+	"github.com/morning-night-dream/article-share/app/core/model"
 	articlev1 "github.com/morning-night-dream/article-share/pkg/api/article/v1"
 )
 

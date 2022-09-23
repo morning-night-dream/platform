@@ -32,7 +32,7 @@ test:
 
 .PHONY: core
 core:
-	@go run container/core/main.go
+	@go run app/core/main.go
 
 .PHONY: gen
 gen:
