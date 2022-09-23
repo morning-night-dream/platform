@@ -14,17 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19
-      - name: Set up Aqua
-        uses: aquaproj/aqua-installer@v1.1.2
-        with:
-          aqua_version: v1.19.2
-      - name: Set up Go tool
-        run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
-        working-directory: ./api
+      - name: Set up
+        uses: ./.github/actions/goaqua
       - name: Generate connect code
         working-directory: ./api
         run: buf generate
