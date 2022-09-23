@@ -10,6 +10,6 @@ steps:
       - "deploy"
       - "platform"
       - "--image"
-      - $(ko build ./)
+      - $(KO_DOCKER_REPO=$KO_DOCKER_REPO SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH ko build ./)
       - "--region"
       - "asia-northeast1"
