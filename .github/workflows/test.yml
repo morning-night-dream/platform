@@ -29,4 +29,8 @@ jobs:
         working-directory: ./backend
         run: |
           go generate ./...
-          go test ./...
+          go test -coverprofile="coverage.txt" -covermode=atomic ./...
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
