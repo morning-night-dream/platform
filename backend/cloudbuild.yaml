@@ -1,0 +1,15 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+steps:
+  - name: "gcr.io/$PROJECT_ID/ko-builder"
+    env:
+      - "KO_DOCKER_REPO=gcr.io/$PROJECT_ID"
+      - "SOURCE_DATE_EPOCH=$(date +%s)"
+    args:
+      - "run"
+      - "deploy"
+      - "platform"
+      - "--image"
+      - "$(ko build ./)"
+      - "--region"
+      - "asia-northeast1"
