@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/morning-night-dream/article-share/database/ent"
-	"github.com/morning-night-dream/article-share/model"
+	"github.com/morning-night-dream/article-share/container/core/model"
+	"github.com/morning-night-dream/article-share/pkg/ent"
 	"github.com/pkg/errors"
 )
 
