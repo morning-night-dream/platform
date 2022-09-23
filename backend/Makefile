@@ -14,13 +14,9 @@ API_KEY = local
 aqua: # export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH"
 	@go run github.com/aquaproj/aqua-installer@latest
 
-.PHONY: init
-init:
+.PHONY: tool
+tool:
 	@aqua i
-
-.PHONY: cli-tool-search
-cli-tool-search:
-	@aqua g
 
 .PHONY: lint
 lint:
@@ -34,9 +30,9 @@ package:
 test:
 	@go test ./...
 
-.PHONY: run
-run:
-	@go run main.go
+.PHONY: core
+core:
+	@go run container/core/main.go
 
 .PHONY: gen
 gen:
