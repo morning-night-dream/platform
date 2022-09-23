@@ -3,13 +3,12 @@ options:
 steps:
   - name: "gcr.io/$PROJECT_ID/ko-builder"
     env:
-      - "KO_DOCKER_REPO=gcr.io/$PROJECT_ID"
-      - "SOURCE_DATE_EPOCH=$(date +%s)"
+      - "DEPLOY_IMAGE=$(KO_DOCKER_REPO=gcr.io/$PROJECT_ID SOURCE_DATE_EPOCH=$(date +%s) ko build ./)"
     args:
       - "run"
       - "deploy"
       - "platform"
       - "--image"
-      - $(KO_DOCKER_REPO=$KO_DOCKER_REPO SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH ko build ./)
+      - "$DEPLOY_IMAGE"
       - "--region"
       - "asia-northeast1"
