@@ -32,6 +32,10 @@ jobs:
         working-directory: ./backend
         run: |
           go generate ./...
+          go test ./...
+      - name: coverage
+        working-directory: ./backend
+        run: |
           go test ./...  -coverpkg=./... -coverprofile ./coverage.txt
       - name: Upload coverage
         uses: codecov/codecov-action@v1
