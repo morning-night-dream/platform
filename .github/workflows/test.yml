@@ -1,6 +1,9 @@
 name: test
 
 on:
+  push:
+    branches:
+      - "main"
   pull_request:
     paths:
       - api/**/*.proto
@@ -30,3 +33,11 @@ jobs:
         run: |
           go generate ./...
           go test ./...
+      - name: coverage
+        working-directory: ./backend
+        run: |
+          go test ./...  -coverpkg=./... -coverprofile ./coverage.txt
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
