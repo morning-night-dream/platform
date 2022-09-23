@@ -2,7 +2,7 @@ name: set up go and aqua
 description: use aqua install
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Set up go
       uses: actions/setup-go@v3
