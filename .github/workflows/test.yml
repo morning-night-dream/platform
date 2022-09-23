@@ -1,7 +1,13 @@
 name: test
 
 on:
+  push:
+    branches:
+      - "main"
   pull_request:
+    paths:
+      - api/**/*.proto
+      - backend/**/*.go
 
 jobs:
   test:
