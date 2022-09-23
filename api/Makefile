@@ -1,3 +1,7 @@
+.PHONY: init
+init:
+	@aqua i
+
 .PHONY: lint
 lint:
 	@buf lint
