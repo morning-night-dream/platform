@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-      - feature/issue#32
+    paths:
+      - image/*
 
 permissions:
   id-token: write
