@@ -9,3 +9,4 @@ steps:
       deploy platform \
       --image $(SOURCE_DATE_EPOCH=$(date +%s) ko build ./) \
       --region asia-northeast1
+    dir: "backend"
