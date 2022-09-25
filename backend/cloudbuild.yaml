@@ -19,5 +19,10 @@ steps:
       gcloud run \
       deploy platform \
       --image $(SOURCE_DATE_EPOCH=$(date +%s) ko build ./) \
-      --region asia-northeast1
+      --region asia-northeast1 \
+      --cpu 1 \
+      --memory 1024Mi \
+      --max-instances 1 \
+      --service-account $_REVISION_SERVICE_ACCOUNT \
+      --set-secrets API_KEY=$_API_KEY DATABASE_URL=$_DATABASE_URL_SECRET
     dir: "backend"
