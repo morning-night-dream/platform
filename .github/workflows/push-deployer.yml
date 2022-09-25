@@ -1,0 +1,23 @@
+name: push
+
+on:
+  push:
+    branches:
+      - main
+      - feature/issue#32
+    paths:
+      - "image/deployer/*"
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/gcp
+      - name: Deployer image Build & Push
+        env:
+          IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/deployer
+        run: |
+          IMAGE_TAG=v`date +%Y%m%d%H%M`
+          docker build -t ${{ env.IMAGE }}:${IMAGE_TAG} .
+          docker push ${{ env.IMAGE }}:${IMAGE_TAG}
+        working-directory: ./image/builder
