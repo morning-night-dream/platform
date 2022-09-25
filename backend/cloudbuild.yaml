@@ -24,8 +24,9 @@ steps:
       --image $(SOURCE_DATE_EPOCH=$(date +%s) ko build ./) \
       --region asia-northeast1 \
       --cpu 1 \
-      --memory 1024Mi \
+      --memory 128Mi \
       --max-instances 1 \
       --service-account $REVISION_SERVICE_ACCOUNT \
-      --set-secrets API_KEY=$API_KEY,DATABASE_URL=$DATABASE_URL
+      --set-secrets API_KEY=$API_KEY,DATABASE_URL=$DATABASE_URL \
+      --allow-unauthenticated
     dir: "backend"
