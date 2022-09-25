@@ -25,8 +25,9 @@ jobs:
       - name: Builder image Build & Push
         env:
           IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/builder
+          KO_VER: latest
         run: |
           IMAGE_TAG=v`date +%Y%m%d%H%M`
-          docker build -t ${{ env.IMAGE }}:${IMAGE_TAG} .
+          docker build --build-arg KO_VER=${{ env.KO_VER }} -t ${{ env.IMAGE }}:${IMAGE_TAG} .
           docker push ${{ env.IMAGE }}:${IMAGE_TAG}
         working-directory: ./image/builder
