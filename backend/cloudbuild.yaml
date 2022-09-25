@@ -4,9 +4,8 @@ steps:
   - name: "gcr.io/$PROJECT_ID/ko-builder"
     env:
       - "KO_DOCKER_REPO=gcr.io/$PROJECT_ID"
-      - "SOURCE_DATE_EPOCH=$(date +%s)"
     script: |
       gcloud run \
       deploy platform \
-      --image $(KO_DOCKER_REPO=$KO_DOCKER_REPO ko build ./) \
+      --image $(SOURCE_DATE_EPOCH=$(date +%s) ko build ./) \
       --region asia-northeast1
