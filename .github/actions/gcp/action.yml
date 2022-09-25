@@ -1,5 +1,5 @@
 name: "GCP Common Action"
-description: "Backend Common Action"
+description: "GCP Common Action"
 
 inputs:
   workload_identity_provider:
