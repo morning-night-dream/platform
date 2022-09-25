@@ -15,6 +15,9 @@ steps:
   - name: "gcr.io/$PROJECT_ID/ko-builder"
     env:
       - "KO_DOCKER_REPO=gcr.io/$PROJECT_ID"
+      - "REVISION_SERVICE_ACCOUNT=$_REVISION_SERVICE_ACCOUNT"
+      - "API_KEY=$_API_KEY"
+      - "DATABASE_URL=$_DATABASE_URL_SECRET"
     script: |
       gcloud run \
       deploy platform \
@@ -23,6 +26,6 @@ steps:
       --cpu 1 \
       --memory 1024Mi \
       --max-instances 1 \
-      --service-account ${_REVISION_SERVICE_ACCOUNT} \
-      --set-secrets API_KEY=${_API_KEY} DATABASE_URL=${_DATABASE_URL_SECRET}
+      --service-account $_REVISION_SERVICE_ACCOUNT \
+      --set-secrets API_KEY=$API_KEY DATABASE_URL=$DATABASE_URL_SECRET
     dir: "backend"
