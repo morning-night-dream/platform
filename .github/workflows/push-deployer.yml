@@ -6,6 +6,10 @@ on:
       - main
       - feature/issue#32
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deployer-push:
     runs-on: ubuntu-latest
