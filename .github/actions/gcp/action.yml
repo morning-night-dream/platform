@@ -2,7 +2,7 @@ name: "GCP Common Action"
 description: "Backend Common Action"
 
 inputs:
-  gcp_identity_provider:
+  workload_identity_provider:
     description: "gcp identity provider"
     required: true
   service_account:
