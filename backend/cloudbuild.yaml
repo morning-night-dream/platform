@@ -26,6 +26,6 @@ steps:
       --cpu 1 \
       --memory 1024Mi \
       --max-instances 1 \
-      --service-account $_REVISION_SERVICE_ACCOUNT \
+      --service-account $REVISION_SERVICE_ACCOUNT \
       --set-secrets API_KEY=$API_KEY DATABASE_URL=$DATABASE_URL_SECRET
     dir: "backend"
