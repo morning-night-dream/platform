@@ -1,18 +1,18 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 steps:
-  - name: "gcr.io/spartan-matter-356507/aqua-builder:latest"
+  - name: "gcr.io/$PROJECT_ID/builder"
     script: |
       aqua i
       buf generate
     dir: "api"
-  - name: "gcr.io/spartan-matter-356507/aqua-builder:latest"
+  - name: "gcr.io/$PROJECT_ID/builder"
     script: |
       aqua i
       go generate ./...
       wire
     dir: "backend"
-  - name: "gcr.io/$PROJECT_ID/ko-builder"
+  - name: "gcr.io/$PROJECT_ID/deployer"
     env:
       - "KO_DOCKER_REPO=gcr.io/$PROJECT_ID"
       - "REVISION_SERVICE_ACCOUNT=$_REVISION_SERVICE_ACCOUNT"
