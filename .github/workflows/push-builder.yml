@@ -9,9 +9,13 @@ on:
       - "image/builder/*"
 
 jobs:
-  goreleaser:
+  builder-push:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/gcp
       - name: Builder image Build & Push
         env:
