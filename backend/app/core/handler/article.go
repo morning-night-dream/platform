@@ -11,9 +11,9 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/dyatlov/go-opengraph/opengraph"
-	articlev1 "github.com/morning-night-dream/article-share/api/article/v1"
-	"github.com/morning-night-dream/article-share/database/store"
-	"github.com/morning-night-dream/article-share/model"
+	"github.com/morning-night-dream/article-share/app/core/database/store"
+	"github.com/morning-night-dream/article-share/app/core/model"
+	articlev1 "github.com/morning-night-dream/article-share/pkg/api/article/v1"
 )
 
 type ArticleHandler struct {

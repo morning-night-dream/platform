@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
-	articlev1connect "github.com/morning-night-dream/article-share/api/article/v1/articlev1connect"
-	"github.com/morning-night-dream/article-share/database"
-	"github.com/morning-night-dream/article-share/database/store"
-	"github.com/morning-night-dream/article-share/handler"
+	"github.com/morning-night-dream/article-share/app/core/database"
+	"github.com/morning-night-dream/article-share/app/core/database/store"
+	"github.com/morning-night-dream/article-share/app/core/handler"
+	articlev1connect "github.com/morning-night-dream/article-share/pkg/api/article/v1/articlev1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )

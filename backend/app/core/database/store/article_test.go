@@ -5,11 +5,11 @@ import (
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/morning-night-dream/article-share/database/ent"
-	"github.com/morning-night-dream/article-share/database/ent/enttest"
-	"github.com/morning-night-dream/article-share/database/ent/migrate"
-	"github.com/morning-night-dream/article-share/database/store"
-	"github.com/morning-night-dream/article-share/model"
+	"github.com/morning-night-dream/article-share/app/core/database/store"
+	"github.com/morning-night-dream/article-share/app/core/model"
+	"github.com/morning-night-dream/article-share/pkg/ent"
+	"github.com/morning-night-dream/article-share/pkg/ent/enttest"
+	"github.com/morning-night-dream/article-share/pkg/ent/migrate"
 )
 
 func TestArticleStoreSave(t *testing.T) {
