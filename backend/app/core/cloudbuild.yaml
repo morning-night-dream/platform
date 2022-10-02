@@ -11,7 +11,7 @@ steps:
       aqua i
       go generate ./...
       wire
-    dir: "backend"
+    dir: "backend/app/core"
   - name: "gcr.io/$PROJECT_ID/deployer"
     env:
       - "KO_DOCKER_REPO=gcr.io/$PROJECT_ID"
@@ -29,4 +29,4 @@ steps:
       --service-account $REVISION_SERVICE_ACCOUNT \
       --set-secrets API_KEY=$API_KEY,DATABASE_URL=$DATABASE_URL \
       --allow-unauthenticated
-    dir: "backend"
+    dir: "backend/app/core"
