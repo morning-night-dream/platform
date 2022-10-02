@@ -26,13 +26,13 @@ jobs:
       - name: Builder image Build & Push
         env:
           IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/builder
-          AQUA_VER: v1.19.2
-          PROTOC_VER: 3.20.2
+          AQUA_VERSION: v1.19.2
+          PROTOC_VERSION: 3.20.2
         run: |
           IMAGE_TAG=v`date +%Y%m%d%H%M`
           docker build \
-            --build-arg AQUA_VER=${{ env.AQUA_VER }} \
-            --build-arg PROTOC_VER=${{ env.PROTOC_VER }} \
+            --build-arg AQUA_VERSION=${{ env.AQUA_VERSION }} \
+            --build-arg PROTOC_VERSION=${{ env.PROTOC_VERSION }} \
             -t ${{ env.IMAGE }}:${IMAGE_TAG} \
             -t ${{ env.IMAGE }}:latest .
           docker push -a ${{ env.IMAGE }}
