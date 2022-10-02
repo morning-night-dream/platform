@@ -43,7 +43,7 @@ jobs:
             --tag ${{ env.IMAGE }}:latest \
             .
           docker push -a ${{ env.IMAGE }}
-        working-directory: ./image/builder
+        working-directory: ./container/builder
       - name: Deployer image Build & Push
         env:
           IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/deployer
@@ -58,4 +58,4 @@ jobs:
             --tag ${{ env.IMAGE }}:latest \
             .
           docker push -a ${{ env.IMAGE }}
-        working-directory: ./image/deployer
+        working-directory: ./container/deployer
