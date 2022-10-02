@@ -10,8 +10,8 @@ steps:
     script: |
       aqua i
       go generate ./...
-      wire
-    dir: "backend/app/core"
+      wire gen ./app/core
+    dir: "backend"
   - name: "gcr.io/$PROJECT_ID/deployer"
     env:
       - "KO_DOCKER_REPO=gcr.io/$PROJECT_ID"
