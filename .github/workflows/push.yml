@@ -40,11 +40,13 @@ jobs:
       - name: Deployer image Build & Push
         env:
           IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/deployer
-          KO_VER: latest
+          GO_VERSION: 1.19.1
+          KO_VERSION: latest
         run: |
           IMAGE_TAG=v`date +%Y%m%d%H%M`
           docker build \
-            --build-arg KO_VER=${{ env.KO_VER }} \
+            --build-arg GO_VERSION=${{ env.GO_VERSION }} \
+            --build-arg KO_VERSION=${{ env.KO_VERSION }} \
             -t ${{ env.IMAGE }}:${IMAGE_TAG} \
             -t ${{ env.IMAGE }}:latest .
           docker push -a ${{ env.IMAGE }}
