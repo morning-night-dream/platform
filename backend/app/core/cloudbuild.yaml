@@ -10,7 +10,7 @@ steps:
     script: |
       aqua i
       go generate ./...
-      wire
+      wire gen ./app/core
     dir: "backend"
   - name: "gcr.io/$PROJECT_ID/deployer"
     env:
@@ -29,4 +29,4 @@ steps:
       --service-account $REVISION_SERVICE_ACCOUNT \
       --set-secrets API_KEY=$API_KEY,DATABASE_URL=$DATABASE_URL \
       --allow-unauthenticated
-    dir: "backend"
+    dir: "backend/app/core"
