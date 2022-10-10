@@ -20,7 +20,7 @@ steps:
       - "DATABASE_URL=${_DATABASE_URL_SECRET}:latest"
     script: |
       gcloud run \
-      deploy platform \
+      deploy dream-platform \
       --image $(SOURCE_DATE_EPOCH=$(date +%s) ko build ./) \
       --region asia-northeast1 \
       --cpu 1 \
