@@ -13,7 +13,7 @@ export function ArticleCard(props: ArticleCardProps) {
                 <Box as="a" href={props.url} target="_blank">
                     <Image src={props.thumbnailURL ?? './noimage.png'} width="100%" fallbackSrc="./noimage.png" />
                 </Box>
-                <Heading color={useColorModeValue('gray.700', 'white')} fontSize="xl" fontFamily="body">
+                <Heading fontSize="xl" fontFamily="body">
                     {props.title}
                 </Heading>
             </Stack>
