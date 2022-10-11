@@ -1,6 +1,6 @@
 .PHONY: init
 init:
-	@aqua i
+	@aqua i && npm install
 
 .PHONY: lint
 lint:

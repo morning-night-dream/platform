@@ -4,13 +4,36 @@ package article.v1;
 
 option go_package = "github.com/morning-night-dream/article-share/pkg/api/article/v1;articlev1";
 
+// 記事サービス
+service ArticleService {
+  // Need X-API-KEY Header
+  rpc Share(ShareRequest) returns (ShareResponse) {}
+  rpc List(ListRequest) returns (ListResponse) {}
+}
+
+// 記事モデル
+message Article {
+  string id = 1;
+  string url = 2;
+  string title = 3;
+  string image_url = 4;
+  string description = 5;
+}
+
+// 記事共有リクエスト
 message ShareRequest {
   string url = 1;
 }
 
+// 記事共有レスポンス
 message ShareResponse {}
 
-service ArticleService {
-  // Need X-API-KEY Header
-  rpc Share(ShareRequest) returns (ShareResponse) {}
+// 記事一覧リクエスト
+message ListRequest {
+  uint32 page = 1;
+}
+
+// 記事一覧レスポンス
+message ListResponse {
+  repeated Article articles = 1;
 }

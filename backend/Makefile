@@ -6,7 +6,7 @@ POSTGRES_HOST := localhost
 POSTGRES_DB := postgres
 POSTGRES_USER := postgres
 POSTGRES_PASS := postgres
-POSTGRES_PORT := 5432
+POSTGRES_PORT := 54321
 DATABASE_URL := postgres://$(POSTGRES_USER):$(POSTGRES_PASS)@localhost:$(POSTGRES_PORT)/$(POSTGRES_DB)?sslmode=disable
 API_KEY = local
 
