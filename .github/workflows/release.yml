@@ -24,9 +24,11 @@ jobs:
       - name: Fetch all tags
         run: git fetch --force --tags
       - name: Set up
-        uses: ./.github/actions/goaqua
+        uses: ./.github/actions/setup
       - name: Generate connect code
-        run: buf generate
+        run: |
+          npm install
+          buf generate
         working-directory: ./api
       - name: Go generate
         run: go generate ./...
