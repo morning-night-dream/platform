@@ -23,3 +23,8 @@ runs:
       run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
       working-directory: ./backend
       shell: bash
+
+    - name: Set up node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
