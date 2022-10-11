@@ -32,11 +32,15 @@ jobs:
       - name: Builder image Build & Push
         env:
           IMAGE: ${{ secrets.GCP_DOCKER_REPO }}/builder
+          NODE_VERSION: 14.10.1
+          GO_VERSION: 1.19.2
           AQUA_VERSION: v1.19.2
           PROTOC_VERSION: v3.20.2
         run: |
           IMAGE_TAG=v`date +%Y%m%d%H%M`
           docker build \
+            --build-arg NODE_VERSION=${{ env.NODE_VERSION }} \
+            --build-arg GO_VERSION=${{ env.GO_VERSION }} \
             --build-arg AQUA_VERSION=${{ env.AQUA_VERSION }} \
             --build-arg PROTOC_VERSION=${{ env.PROTOC_VERSION }} \
             --tag ${{ env.IMAGE }}:${IMAGE_TAG} \
