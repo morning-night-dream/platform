@@ -29,7 +29,9 @@ jobs:
         uses: arduino/setup-protoc@v1
       - name: Generate connect code
         working-directory: ./api
-        run: buf generate
+        run: |
+          npm install
+          buf generate
       - name: Go Generate
         working-directory: ./backend
         run: go generate ./...
