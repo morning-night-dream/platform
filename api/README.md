@@ -4,6 +4,9 @@
 ## Table of Contents
 
 - [api/article/v1/article.proto](#api_article_v1_article-proto)
+    - [Article](#article-v1-Article)
+    - [ListRequest](#article-v1-ListRequest)
+    - [ListResponse](#article-v1-ListResponse)
     - [ShareRequest](#article-v1-ShareRequest)
     - [ShareResponse](#article-v1-ShareResponse)
   
@@ -20,10 +23,59 @@
 
 
 
+<a name="article-v1-Article"></a>
+
+### Article
+記事モデル
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+| url | [string](#string) |  |  |
+| title | [string](#string) |  |  |
+| image_url | [string](#string) |  |  |
+| description | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="article-v1-ListRequest"></a>
+
+### ListRequest
+記事一覧リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| page | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="article-v1-ListResponse"></a>
+
+### ListResponse
+記事一覧レスポンス
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| articles | [Article](#article-v1-Article) | repeated |  |
+
+
+
+
+
+
 <a name="article-v1-ShareRequest"></a>
 
 ### ShareRequest
-
+記事共有リクエスト
 
 
 | Field | Type | Label | Description |
@@ -38,7 +90,7 @@
 <a name="article-v1-ShareResponse"></a>
 
 ### ShareResponse
-
+記事共有レスポンス
 
 
 
@@ -54,11 +106,12 @@
 <a name="article-v1-ArticleService"></a>
 
 ### ArticleService
-
+記事サービス
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Share | [ShareRequest](#article-v1-ShareRequest) | [ShareResponse](#article-v1-ShareResponse) | Need X-API-KEY Header |
+| List | [ListRequest](#article-v1-ListRequest) | [ListResponse](#article-v1-ListResponse) |  |
 
  
 
