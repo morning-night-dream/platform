@@ -7,6 +7,7 @@ import (
 
 	"github.com/morning-night-dream/article-share/app/core/model"
 	"github.com/morning-night-dream/article-share/pkg/ent"
+	"github.com/morning-night-dream/article-share/pkg/ent/article"
 	"github.com/pkg/errors"
 )
 
@@ -42,4 +43,29 @@ func (a Article) Save(ctx context.Context, article model.Article) error {
 	}
 
 	return nil
+}
+
+func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Article, error) {
+	res, err := a.db.Article.Query().
+		Order(ent.Asc(article.FieldCreatedAt)).
+		Limit(limit).
+		Offset(offset).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	articles := make([]model.Article, 0, len(res))
+
+	for _, r := range res {
+		articles = append(articles, model.Article{
+			ID:          r.ID.String(),
+			URL:         r.URL,
+			Title:       r.Title,
+			ImageURL:    r.ImageURL,
+			Description: r.Description,
+		})
+	}
+
+	return articles, nil
 }

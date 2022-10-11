@@ -2,6 +2,7 @@ package store_test
 
 import (
 	"context"
+	"reflect"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -45,6 +46,39 @@ func TestArticleStoreSave(t *testing.T) {
 			ImageURL:    "image",
 		}); err != nil {
 			t.Error(err)
+		}
+	})
+
+	t.Run("記事を取得できる", func(t *testing.T) {
+		t.Parallel()
+
+		ctx := context.Background()
+
+		if err := sa.Save(ctx, model.Article{
+			Title:       "title1",
+			URL:         "url1",
+			Description: "description1",
+			ImageURL:    "image1",
+		}); err != nil {
+			t.Error(err)
+		}
+
+		if err := sa.Save(ctx, model.Article{
+			Title:       "title1",
+			URL:         "url1",
+			Description: "description1",
+			ImageURL:    "image1",
+		}); err != nil {
+			t.Error(err)
+		}
+
+		got, err := sa.FindAll(ctx, 1, 0)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if !reflect.DeepEqual(1, len(got)) {
+			t.Errorf("NewArticle() = %v, want %v", len(got), 1)
 		}
 	})
 }

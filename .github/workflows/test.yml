@@ -15,10 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up
-        uses: ./.github/actions/goaqua
+        uses: ./.github/actions/setup
       - name: Generate connect code
         working-directory: ./api
-        run: buf generate
+        run: |
+          npm install
+          buf generate
       - name: Go Test
         working-directory: ./backend
         run: |

@@ -86,3 +86,31 @@ func (s *ArticleHandler) Share(
 
 	return connect.NewResponse(&articlev1.ShareResponse{}), nil
 }
+
+func (s *ArticleHandler) List(
+	ctx context.Context,
+	req *connect.Request[articlev1.ListRequest],
+) (*connect.Response[articlev1.ListResponse], error) {
+	items, err := s.store.FindAll(ctx, 100, int(req.Msg.Page)*100)
+	if err != nil {
+		return nil, err
+	}
+
+	articles := make([]*articlev1.Article, 0, len(items))
+
+	for _, item := range items {
+		articles = append(articles, &articlev1.Article{
+			Id:          item.ID,
+			Title:       item.Title,
+			Url:         item.URL,
+			Description: item.Description,
+			ImageUrl:    item.ImageURL,
+		})
+	}
+
+	res := connect.NewResponse(&articlev1.ListResponse{
+		Articles: articles,
+	})
+
+	return res, nil
+}
