@@ -1,6 +1,7 @@
-POSTGRES_VERSION = 14.5
+APP_NAME = morning-night-dream-platform
 
 export
+POSTGRES_VERSION := 14.5
 POSTGRES_IMAGE := postgres:$(POSTGRES_VERSION)-alpine
 POSTGRES_HOST := localhost
 POSTGRES_DB := postgres
@@ -53,16 +54,16 @@ db:
 		-e POSTGRES_USER=$(POSTGRES_USER) \
 		-e POSTGRES_PASSWORD=$(POSTGRES_PASS) \
 		-e POSTGRES_INITDB_ARGS=--encoding=UTF-8 \
-		--name article-share-db \
+		--name ${APP_NAME}-db \
 		$(POSTGRES_IMAGE)
 
 .PHONY: psql
 psql:
-	@docker exec -it article-share-db psql -U postgres
+	@docker exec -it ${APP_NAME}-db psql -U postgres
 
 .PHONY: dbstop
 dbstop:
-	@docker stop article-share-db
+	@docker stop ${APP_NAME}-db
 
 .PHONY: build
 build:
