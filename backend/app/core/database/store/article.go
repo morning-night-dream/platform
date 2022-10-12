@@ -52,7 +52,7 @@ func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Ar
 		Offset(offset).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "")
 	}
 
 	articles := make([]model.Article, 0, len(res))

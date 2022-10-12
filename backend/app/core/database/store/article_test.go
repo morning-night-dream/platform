@@ -2,9 +2,11 @@ package store_test
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"testing"
 
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/morning-night-dream/article-share/app/core/database/store"
 	"github.com/morning-night-dream/article-share/app/core/model"
@@ -21,12 +23,14 @@ func TestArticleStoreSave(t *testing.T) {
 		enttest.WithMigrateOptions(migrate.WithGlobalUniqueID(true)),
 	}
 
-	db := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1", opts...)
-
-	sa := store.NewArticle(db)
-
 	t.Run("記事を保存できる", func(t *testing.T) {
 		t.Parallel()
+
+		dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.NewString())
+
+		db := enttest.Open(t, "sqlite3", dsn, opts...)
+
+		sa := store.NewArticle(db)
 
 		ctx := context.Background()
 
@@ -51,6 +55,12 @@ func TestArticleStoreSave(t *testing.T) {
 
 	t.Run("記事を取得できる", func(t *testing.T) {
 		t.Parallel()
+
+		dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.NewString())
+
+		db := enttest.Open(t, "sqlite3", dsn, opts...)
+
+		sa := store.NewArticle(db)
 
 		ctx := context.Background()
 

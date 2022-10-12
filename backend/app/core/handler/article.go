@@ -14,6 +14,7 @@ import (
 	"github.com/morning-night-dream/article-share/app/core/database/store"
 	"github.com/morning-night-dream/article-share/app/core/model"
 	articlev1 "github.com/morning-night-dream/article-share/pkg/api/article/v1"
+	"github.com/pkg/errors"
 )
 
 type ArticleHandler struct {
@@ -91,9 +92,11 @@ func (s *ArticleHandler) List(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListRequest],
 ) (*connect.Response[articlev1.ListResponse], error) {
-	items, err := s.store.FindAll(ctx, 100, int(req.Msg.Page)*100)
+	limit := 100
+
+	items, err := s.store.FindAll(ctx, limit, int(req.Msg.Page)*limit)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "")
 	}
 
 	articles := make([]*articlev1.Article, 0, len(items))
