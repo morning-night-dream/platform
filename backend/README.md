@@ -5,7 +5,7 @@ curl -H "Content-Type: application/json" -H "X-API-KEY: local" --data '{"url": "
 ```
 
 ```bash
-curl -H "Content-Type: application/json" --data '{"page": 0}' http://localhost:8080/article.v1.ArticleService/List
+curl -H "Content-Type: application/json" --data '{"max_page_size": 1, "page_token": ""}' http://localhost:8080/article.v1.ArticleService/List
 ```
 
 ```bash

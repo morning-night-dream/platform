@@ -2,11 +2,13 @@ package handler
 
 import (
 	"context"
+	"encoding/base64"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/bufbuild/connect-go"
@@ -90,9 +92,19 @@ func (a *ArticleHandler) List(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListRequest],
 ) (*connect.Response[articlev1.ListResponse], error) {
-	limit := 100
+	limit := req.Msg.MaxPageSize
 
-	items, err := a.store.FindAll(ctx, limit, int(req.Msg.Page)*limit)
+	dec, err := base64.StdEncoding.DecodeString(req.Msg.PageToken)
+	if err != nil {
+		dec = []byte("0")
+	}
+
+	offset, err := strconv.Atoi(string(dec))
+	if err != nil {
+		offset = 0
+	}
+
+	items, err := a.store.FindAll(ctx, int(limit), offset)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
@@ -109,8 +121,14 @@ func (a *ArticleHandler) List(
 		})
 	}
 
+	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset*int(limit) + 1)))
+	if len(articles) < int(limit) {
+		token = ""
+	}
+
 	res := connect.NewResponse(&articlev1.ListResponse{
-		Articles: articles,
+		Articles:      articles,
+		NextPageToken: token,
 	})
 
 	return res, nil
