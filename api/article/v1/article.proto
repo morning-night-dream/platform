@@ -9,6 +9,7 @@ service ArticleService {
   // Need X-API-KEY Header
   rpc Share(ShareRequest) returns (ShareResponse) {}
   rpc List(ListRequest) returns (ListResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
 }
 
 // 記事モデル
@@ -37,3 +38,11 @@ message ListRequest {
 message ListResponse {
   repeated Article articles = 1;
 }
+
+// 削除リクエスト
+message DeleteRequest {
+  string id = 1;
+}
+
+// 削除レスポンス
+message DeleteResponse {}

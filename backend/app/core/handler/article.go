@@ -31,11 +31,11 @@ func NewArticleHandler(store store.Article) *ArticleHandler {
 	}
 }
 
-func (s *ArticleHandler) Share(
+func (a *ArticleHandler) Share(
 	ctx context.Context,
 	req *connect.Request[articlev1.ShareRequest],
 ) (*connect.Response[articlev1.ShareResponse], error) {
-	if req.Header().Get("X-API-KEY") != s.key {
+	if req.Header().Get("X-API-KEY") != a.key {
 		return nil, ErrUnauthorized
 	}
 
@@ -49,7 +49,7 @@ func (s *ArticleHandler) Share(
 		return nil, ErrInvalidArgument
 	}
 
-	res, err := s.client.Do(gr.WithContext(ctx))
+	res, err := a.client.Do(gr.WithContext(ctx))
 	if err != nil {
 		return nil, ErrInternal
 	}
@@ -77,9 +77,7 @@ func (s *ArticleHandler) Share(
 		Description: og.Description,
 	}
 
-	err = s.store.Save(ctx, article)
-
-	if err != nil {
+	if err := a.store.Save(ctx, article); err != nil {
 		log.Print(err)
 
 		return nil, ErrInternal
@@ -88,13 +86,13 @@ func (s *ArticleHandler) Share(
 	return connect.NewResponse(&articlev1.ShareResponse{}), nil
 }
 
-func (s *ArticleHandler) List(
+func (a *ArticleHandler) List(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListRequest],
 ) (*connect.Response[articlev1.ListResponse], error) {
 	limit := 100
 
-	items, err := s.store.FindAll(ctx, limit, int(req.Msg.Page)*limit)
+	items, err := a.store.FindAll(ctx, limit, int(req.Msg.Page)*limit)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
@@ -116,4 +114,15 @@ func (s *ArticleHandler) List(
 	})
 
 	return res, nil
+}
+
+func (a *ArticleHandler) Delete(
+	ctx context.Context,
+	req *connect.Request[articlev1.DeleteRequest],
+) (*connect.Response[articlev1.DeleteResponse], error) {
+	if err := a.store.LogicalDelete(ctx, req.Msg.Id); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	return connect.NewResponse(&articlev1.DeleteResponse{}), nil
 }

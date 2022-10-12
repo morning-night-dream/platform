@@ -15,7 +15,7 @@ func main() {
 
 	ctx := context.Background()
 
-	if err := client.Schema.Create(ctx); err != nil {
+	if err := client.Debug().Schema.Create(ctx); err != nil {
 		log.Fatalf("Failed create schema: %v", err)
 	}
 }

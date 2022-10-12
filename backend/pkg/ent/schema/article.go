@@ -23,6 +23,7 @@ func (Article) Fields() []ent.Field {
 		field.String("image_url"),
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now),
+		field.Time("deleted_at").Optional().Nillable(),
 	}
 }
 

@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/morning-night-dream/article-share/app/core/model"
 	"github.com/morning-night-dream/article-share/pkg/ent"
 	"github.com/morning-night-dream/article-share/pkg/ent/article"
@@ -47,6 +49,9 @@ func (a Article) Save(ctx context.Context, article model.Article) error {
 
 func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Article, error) {
 	res, err := a.db.Article.Query().
+		Where(
+			article.DeletedAtIsNil(),
+		).
 		Order(ent.Asc(article.FieldCreatedAt)).
 		Limit(limit).
 		Offset(offset).
@@ -68,4 +73,20 @@ func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Ar
 	}
 
 	return articles, nil
+}
+
+func (a Article) LogicalDelete(ctx context.Context, id string) error {
+	tempID, err := uuid.Parse(id)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+
+	_, err = a.db.Article.UpdateOneID(tempID).
+		SetDeletedAt(time.Now()).
+		Save(ctx)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+
+	return nil
 }
