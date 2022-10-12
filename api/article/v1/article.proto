@@ -6,9 +6,12 @@ option go_package = "github.com/morning-night-dream/article-share/pkg/api/articl
 
 // 記事サービス
 service ArticleService {
+  // 共有
   // Need X-API-KEY Header
   rpc Share(ShareRequest) returns (ShareResponse) {}
+  // 一覧取得
   rpc List(ListRequest) returns (ListResponse) {}
+  // 削除
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
 }
 
