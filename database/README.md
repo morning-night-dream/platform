@@ -4,7 +4,7 @@
 
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
-| [public.articles](public.articles.md) | 7 |  | BASE TABLE |
+| [public.articles](public.articles.md) | 8 |  | BASE TABLE |
 
 ## Relations
 

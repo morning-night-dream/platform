@@ -13,6 +13,7 @@
 | image_url | varchar |  | false |  |  |  |
 | created_at | timestamp with time zone |  | false |  |  |  |
 | updated_at | timestamp with time zone |  | false |  |  |  |
+| deleted_at | timestamp with time zone |  | true |  |  |  |
 
 ## Constraints
 
