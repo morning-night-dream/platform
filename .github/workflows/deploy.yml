@@ -28,7 +28,7 @@ jobs:
           # https://christina04.hatenablog.com/entry/installsuffix-cgo-is-no-longer-required
           CGO_ENABLED: 0
         run: go build -ldflags="-s -w" -o main
-        working-directory: ./backend
+        working-directory: ./backend/app/core
       - name: Authenticate to Google Cloud
         uses: "google-github-actions/auth@v0"
         with:
