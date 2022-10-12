@@ -26,9 +26,7 @@ jobs:
       - name: Set up
         uses: ./.github/actions/setup
       - name: Generate connect code
-        run: |
-          npm install
-          buf generate
+        run: buf generate --template buf.backend.gen.yaml
         working-directory: ./api
       - name: Go generate
         run: go generate ./...
