@@ -92,7 +92,7 @@ func (a *ArticleHandler) List(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListRequest],
 ) (*connect.Response[articlev1.ListResponse], error) {
-	limit := req.Msg.MaxPageSize
+	limit := int(req.Msg.MaxPageSize)
 
 	dec, err := base64.StdEncoding.DecodeString(req.Msg.PageToken)
 	if err != nil {
@@ -104,7 +104,7 @@ func (a *ArticleHandler) List(
 		offset = 0
 	}
 
-	items, err := a.store.FindAll(ctx, int(limit), offset)
+	items, err := a.store.FindAll(ctx, limit, offset)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
