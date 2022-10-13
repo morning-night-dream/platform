@@ -77,7 +77,8 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| page | [uint32](#uint32) |  |  |
+| page_token | [string](#string) |  |  |
+| max_page_size | [uint32](#uint32) |  |  |
 
 
 
@@ -93,6 +94,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | articles | [Article](#article-v1-Article) | repeated |  |
+| next_page_token | [string](#string) |  |  |
 
 
 
