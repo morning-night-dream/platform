@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package article.v1;
 
-option go_package = "github.com/morning-night-dream/article-share/pkg/api/article/v1;articlev1";
+option go_package = "github.com/morning-night-dream/platform/pkg/api/article/v1;articlev1";
 
 // 記事サービス
 service ArticleService {

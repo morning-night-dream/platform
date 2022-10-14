@@ -8,11 +8,11 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/morning-night-dream/article-share/app/core/database/store"
-	"github.com/morning-night-dream/article-share/app/core/model"
-	"github.com/morning-night-dream/article-share/pkg/ent"
-	"github.com/morning-night-dream/article-share/pkg/ent/enttest"
-	"github.com/morning-night-dream/article-share/pkg/ent/migrate"
+	"github.com/morning-night-dream/platform/app/core/database/store"
+	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/pkg/ent"
+	"github.com/morning-night-dream/platform/pkg/ent/enttest"
+	"github.com/morning-night-dream/platform/pkg/ent/migrate"
 )
 
 func TestArticleStoreSave(t *testing.T) {
@@ -20,7 +20,8 @@ func TestArticleStoreSave(t *testing.T) {
 
 	opts := []enttest.Option{
 		enttest.WithOptions(ent.Log(t.Log)),
-		enttest.WithMigrateOptions(migrate.WithGlobalUniqueID(true)),
+		// trueにすると、no such table: sqlite_sequenceでこけるため、falseにしておく
+		enttest.WithMigrateOptions(migrate.WithGlobalUniqueID(false)),
 	}
 
 	t.Run("記事を保存できる", func(t *testing.T) {

@@ -13,9 +13,9 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/dyatlov/go-opengraph/opengraph"
-	"github.com/morning-night-dream/article-share/app/core/database/store"
-	"github.com/morning-night-dream/article-share/app/core/model"
-	articlev1 "github.com/morning-night-dream/article-share/pkg/api/article/v1"
+	"github.com/morning-night-dream/platform/app/core/database/store"
+	"github.com/morning-night-dream/platform/app/core/model"
+	articlev1 "github.com/morning-night-dream/platform/pkg/api/article/v1"
 	"github.com/pkg/errors"
 )
 
@@ -121,8 +121,8 @@ func (a *ArticleHandler) List(
 		})
 	}
 
-	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset*int(limit) + 1)))
-	if len(articles) < int(limit) {
+	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset*limit + 1)))
+	if len(articles) < limit {
 		token = ""
 	}
 

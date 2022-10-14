@@ -1,4 +1,4 @@
-# article-share
+# platform
 
 ```bash
 ├── README.md

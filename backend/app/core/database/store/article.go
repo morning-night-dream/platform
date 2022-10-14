@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/article-share/app/core/model"
-	"github.com/morning-night-dream/article-share/pkg/ent"
-	"github.com/morning-night-dream/article-share/pkg/ent/article"
+	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/pkg/ent"
+	"github.com/morning-night-dream/platform/pkg/ent/article"
 	"github.com/pkg/errors"
 )
 
