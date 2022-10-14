@@ -1,4 +1,4 @@
-module github.com/morning-night-dream/article-share
+module github.com/morning-night-dream/platform
 
 go 1.19
 
