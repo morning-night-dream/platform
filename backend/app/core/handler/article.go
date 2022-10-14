@@ -92,6 +92,15 @@ func (a *ArticleHandler) List(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListRequest],
 ) (*connect.Response[articlev1.ListResponse], error) {
+	idTokenString := req.Header().Get("Authorization")
+
+	ctx, err := model.Authorize(ctx, idTokenString)
+	if err != nil {
+		log.Printf("fail to list caused by %v", err)
+
+		return nil, ErrUnauthorized
+	}
+
 	limit := int(req.Msg.MaxPageSize)
 
 	dec, err := base64.StdEncoding.DecodeString(req.Msg.PageToken)
@@ -121,8 +130,8 @@ func (a *ArticleHandler) List(
 		})
 	}
 
-	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset*int(limit) + 1)))
-	if len(articles) < int(limit) {
+	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset*limit + 1)))
+	if len(articles) < limit {
 		token = ""
 	}
 

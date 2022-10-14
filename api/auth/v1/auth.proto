@@ -10,14 +10,15 @@ service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
   // サインイン
   rpc SignIn(SignInRequest) returns (SignInResponse) {}
-  // サインアウト
-  rpc SignOut(SignOutRequest) returns (SignOutResponse) {}
+  // リフレッシュ
+  rpc Refresh(RefreshRequest) returns (RefreshResponse) {}
 }
 
 // サインアップリクエスト
 message SignUpRequest {
   string email = 1;
-  string password = 2;
+  string login_id = 2;
+  string password = 3;
 }
 
 // サインアップレスポンス
@@ -30,13 +31,18 @@ message SignInRequest {
 }
 
 // サインインレスポンス
-message SignInResponse {}
-
-// サインアウトリクエスト
-message SignOutRequest {
-  string login_id = 1;
+message SignInResponse {
+  string id_token = 1;
+  string refresh_token = 2;
 }
 
-// サインアウトレスポンス
-message SignOutResponse {}
+// リフレッシュリクエスト
+message RefreshRequest {
+  string refresh_token = 1;
+}
 
+// リフレッシュレスポンス
+message RefreshResponse {
+  string id_token = 1;
+  string refresh_token = 2;
+}

@@ -10,6 +10,7 @@ import (
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/handler"
 	articlev1connect "github.com/morning-night-dream/platform/pkg/api/article/v1/articlev1connect"
+	"github.com/morning-night-dream/platform/pkg/api/auth/v1/authv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -29,11 +30,15 @@ func main() {
 
 	sh := handler.NewSlackHandler(secret, sa)
 
+	aua := store.NewAuth(db)
+
+	auh := handler.NewAuthHandler(*aua)
+
 	mux := http.NewServeMux()
 
-	path, handler := articlev1connect.NewArticleServiceHandler(ah)
+	mux.Handle(articlev1connect.NewArticleServiceHandler(ah))
 
-	mux.Handle(path, handler)
+	mux.Handle(authv1connect.NewAuthServiceHandler(auh))
 
 	mux.HandleFunc("/api/slack/events", sh.Events)
 
