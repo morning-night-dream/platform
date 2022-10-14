@@ -20,7 +20,8 @@ func TestArticleStoreSave(t *testing.T) {
 
 	opts := []enttest.Option{
 		enttest.WithOptions(ent.Log(t.Log)),
-		enttest.WithMigrateOptions(migrate.WithGlobalUniqueID(true)),
+		// trueにすると、no such table: sqlite_sequenceでこけるため、falseにしておく
+		enttest.WithMigrateOptions(migrate.WithGlobalUniqueID(false)),
 	}
 
 	t.Run("記事を保存できる", func(t *testing.T) {
