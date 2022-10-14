@@ -14,6 +14,16 @@
   
     - [ArticleService](#article-v1-ArticleService)
   
+- [api/auth/v1/auth.proto](#api_auth_v1_auth-proto)
+    - [RefreshRequest](#auth-v1-RefreshRequest)
+    - [RefreshResponse](#auth-v1-RefreshResponse)
+    - [SignInRequest](#auth-v1-SignInRequest)
+    - [SignInResponse](#auth-v1-SignInResponse)
+    - [SignUpRequest](#auth-v1-SignUpRequest)
+    - [SignUpResponse](#auth-v1-SignUpResponse)
+  
+    - [AuthService](#auth-v1-AuthService)
+  
 - [Scalar Value Types](#scalar-value-types)
 
 
@@ -142,6 +152,124 @@
 | Share | [ShareRequest](#article-v1-ShareRequest) | [ShareResponse](#article-v1-ShareResponse) | 共有 Need X-API-KEY Header |
 | List | [ListRequest](#article-v1-ListRequest) | [ListResponse](#article-v1-ListResponse) | 一覧取得 |
 | Delete | [DeleteRequest](#article-v1-DeleteRequest) | [DeleteResponse](#article-v1-DeleteResponse) | 削除 |
+
+ 
+
+
+
+<a name="api_auth_v1_auth-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## api/auth/v1/auth.proto
+
+
+
+<a name="auth-v1-RefreshRequest"></a>
+
+### RefreshRequest
+リフレッシュリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| refresh_token | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-RefreshResponse"></a>
+
+### RefreshResponse
+リフレッシュレスポンス
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id_token | [string](#string) |  |  |
+| refresh_token | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignInRequest"></a>
+
+### SignInRequest
+サインインリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| login_id | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignInResponse"></a>
+
+### SignInResponse
+サインインレスポンス
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id_token | [string](#string) |  |  |
+| refresh_token | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignUpRequest"></a>
+
+### SignUpRequest
+サインアップリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| login_id | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignUpResponse"></a>
+
+### SignUpResponse
+サインアップレスポンス
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="auth-v1-AuthService"></a>
+
+### AuthService
+認証サービス
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
+| SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
+| Refresh | [RefreshRequest](#auth-v1-RefreshRequest) | [RefreshResponse](#auth-v1-RefreshResponse) | リフレッシュ |
 
  
 

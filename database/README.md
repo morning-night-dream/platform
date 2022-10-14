@@ -5,6 +5,7 @@
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
 | [public.articles](public.articles.md) | 8 |  | BASE TABLE |
+| [public.auths](public.auths.md) | 4 |  | BASE TABLE |
 
 ## Relations
 
