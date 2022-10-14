@@ -61,8 +61,6 @@ func (a AuthHandler) SignUp(
 		return nil, ErrInternal
 	}
 
-	log.Printf("success to sign up")
-
 	return connect.NewResponse(&authv1.SignUpResponse{}), nil
 }
 
@@ -98,8 +96,6 @@ func (a AuthHandler) SignIn(
 		IdToken:      tokenPair.IDToken.String(),
 		RefreshToken: tokenPair.RefreshToken.String(),
 	}
-
-	log.Printf("success to sign in")
 
 	return connect.NewResponse(res), nil
 }
@@ -150,8 +146,6 @@ func (a AuthHandler) Refresh(
 		IdToken:      tokenPair.IDToken.String(),
 		RefreshToken: tokenPair.RefreshToken.String(),
 	}
-
-	log.Printf("success to refresh")
 
 	return connect.NewResponse(res), nil
 }
