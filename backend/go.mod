@@ -38,5 +38,5 @@ require (
 
 require (
 	golang.org/x/net v0.0.0-20220919232410-f2f64ebce3c1
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.3.8 // indirect
 )
