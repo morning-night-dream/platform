@@ -2,7 +2,10 @@ package handler
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"log"
+	"strings"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/golang-jwt/jwt"
@@ -106,14 +109,24 @@ func (a AuthHandler) Refresh(
 ) (*connect.Response[authv1.RefreshResponse], error) {
 	idTokenString := req.Header().Get("Authorization")
 
-	ctx, err := model.Authorize(ctx, idTokenString)
+	payload := strings.Split(idTokenString, ".")[1]
+
+	decode, err := base64.RawURLEncoding.DecodeString(payload)
 	if err != nil {
 		log.Printf("fail to refresh caused by %v", err)
 
 		return nil, ErrUnauthorized
 	}
 
-	uid := model.GetUIDCtx(ctx)
+	var p struct {
+		UID string `json:"uid"`
+	}
+
+	if err := json.Unmarshal(decode, &p); err != nil {
+		log.Printf("fail to refresh caused by %v", err)
+
+		return nil, ErrUnauthorized
+	}
 
 	refreshToken, err := model.CreateTokenFrom(req.Msg.RefreshToken)
 	if err != nil {
@@ -129,13 +142,13 @@ func (a AuthHandler) Refresh(
 		return nil, ErrUnauthorized
 	}
 
-	if sub, _ := claims["sub"].(string); sub != uid {
+	if sub, _ := claims["sub"].(string); sub != p.UID {
 		log.Printf("fail to refresh caused by invalid uid")
 
 		return nil, ErrUnauthorized
 	}
 
-	tokenPair, err := model.GenerateToken(uid)
+	tokenPair, err := model.GenerateToken(p.UID)
 	if err != nil {
 		log.Printf("fail to refresh caused by %v", err)
 
