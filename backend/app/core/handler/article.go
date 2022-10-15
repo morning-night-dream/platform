@@ -13,6 +13,7 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/dyatlov/go-opengraph/opengraph"
+	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/model"
 	articlev1 "github.com/morning-night-dream/platform/pkg/api/article/v1"
@@ -67,15 +68,16 @@ func (a *ArticleHandler) Share(
 		return nil, ErrInternal
 	}
 
-	imageURL := ""
+	thumbnail := ""
 	if len(og.Images) > 0 {
-		imageURL = og.Images[0].URL
+		thumbnail = og.Images[0].URL
 	}
 
 	article := model.Article{
+		ID:          uuid.NewString(),
 		URL:         og.URL,
 		Title:       og.Title,
-		ImageURL:    imageURL,
+		Thumbnail:   thumbnail,
 		Description: og.Description,
 	}
 
@@ -117,7 +119,7 @@ func (a *ArticleHandler) List(
 			Title:       item.Title,
 			Url:         item.URL,
 			Description: item.Description,
-			ImageUrl:    item.ImageURL,
+			Thumbnail:   item.Thumbnail,
 		})
 	}
 

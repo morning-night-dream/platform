@@ -24,11 +24,17 @@ func NewArticle(db *ent.Client) *Article {
 }
 
 func (a Article) Save(ctx context.Context, article model.Article) error {
-	err := a.db.Article.Create().
+	id, err := uuid.Parse(article.ID)
+	if err != nil {
+		id = uuid.New()
+	}
+
+	err = a.db.Article.Create().
+		SetID(id).
 		SetTitle(article.Title).
 		SetDescription(article.Description).
 		SetURL(article.URL).
-		SetImageURL(article.ImageURL).
+		SetThumbnail(article.Thumbnail).
 		OnConflict().
 		DoNothing().
 		Exec(ctx)
@@ -44,7 +50,33 @@ func (a Article) Save(ctx context.Context, article model.Article) error {
 		return errors.Wrap(err, "failed to save")
 	}
 
-	return nil
+	if len(article.Tags) == 0 {
+		return nil
+	}
+
+	bulk := make([]*ent.ArticleTagCreate, len(article.Tags))
+	for i, tag := range article.Tags {
+		bulk[i] = a.db.ArticleTag.Create().
+			SetTag(tag).
+			SetArticleID(id)
+	}
+
+	err = a.db.ArticleTag.CreateBulk(bulk...).
+		OnConflict().
+		DoNothing().
+		Exec(ctx)
+
+	if err == nil {
+		return nil
+	}
+
+	if errors.Is(err, sql.ErrNoRows) {
+		log.Print(err)
+
+		return nil
+	}
+
+	return errors.Wrap(err, "failed to save")
 }
 
 func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Article, error) {
@@ -67,10 +99,12 @@ func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Ar
 			ID:          r.ID.String(),
 			URL:         r.URL,
 			Title:       r.Title,
-			ImageURL:    r.ImageURL,
+			Thumbnail:   r.Thumbnail,
 			Description: r.Description,
 		})
 	}
+
+	// Tagを取得
 
 	return articles, nil
 }
