@@ -39,7 +39,8 @@ func TestArticleStoreSave(t *testing.T) {
 			Title:       "title",
 			URL:         "url",
 			Description: "description",
-			ImageURL:    "image",
+			Thumbnail:   "thumbnail",
+			Tags:        []string{"tag"},
 		}); err != nil {
 			t.Error(err)
 		}
@@ -48,7 +49,8 @@ func TestArticleStoreSave(t *testing.T) {
 			Title:       "title",
 			URL:         "url",
 			Description: "description",
-			ImageURL:    "image",
+			Thumbnail:   "thumbnail",
+			Tags:        []string{"tag"},
 		}); err != nil {
 			t.Error(err)
 		}
@@ -69,7 +71,7 @@ func TestArticleStoreSave(t *testing.T) {
 			Title:       "title1",
 			URL:         "url1",
 			Description: "description1",
-			ImageURL:    "image1",
+			Thumbnail:   "thumbnail1",
 		}); err != nil {
 			t.Error(err)
 		}
@@ -78,7 +80,7 @@ func TestArticleStoreSave(t *testing.T) {
 			Title:       "title1",
 			URL:         "url1",
 			Description: "description1",
-			ImageURL:    "image1",
+			Thumbnail:   "thumbnail1",
 		}); err != nil {
 			t.Error(err)
 		}
@@ -108,7 +110,7 @@ func TestArticleStoreSave(t *testing.T) {
 			Title:       "title1",
 			URL:         "url1",
 			Description: "description1",
-			ImageURL:    "image1",
+			Thumbnail:   "thumbnail1",
 		}); err != nil {
 			t.Error(err)
 		}
@@ -117,7 +119,7 @@ func TestArticleStoreSave(t *testing.T) {
 			Title:       "title2",
 			URL:         "url2",
 			Description: "description2",
-			ImageURL:    "image2",
+			Thumbnail:   "thumbnail2",
 		}); err != nil {
 			t.Error(err)
 		}

@@ -20,8 +20,9 @@ message Article {
   string id = 1;
   string url = 2;
   string title = 3;
-  string image_url = 4;
-  string description = 5;
+  string description = 4;
+  string thumbnail = 5;
+  repeated string tags = 6;
 }
 
 // 記事共有リクエスト

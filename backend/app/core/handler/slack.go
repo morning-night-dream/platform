@@ -130,15 +130,15 @@ func (s *SlackHandler) save(ctx context.Context, u url.URL) {
 		return
 	}
 
-	imageURL := ""
+	thumbnail := ""
 	if len(og.Images) > 0 {
-		imageURL = og.Images[0].URL
+		thumbnail = og.Images[0].URL
 	}
 
 	article := model.Article{
 		URL:         og.URL,
 		Title:       og.Title,
-		ImageURL:    imageURL,
+		Thumbnail:   thumbnail,
 		Description: og.Description,
 	}
 

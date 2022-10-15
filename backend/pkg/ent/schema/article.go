@@ -4,7 +4,9 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 )
 
@@ -18,16 +20,25 @@ func (Article) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 		field.String("title"),
-		field.String("description"),
 		field.String("url").Unique(),
-		field.String("image_url"),
-		field.Time("created_at").Default(time.Now),
-		field.Time("updated_at").Default(time.Now),
+		field.String("description"),
+		field.String("thumbnail"),
+		field.Time("created_at").Default(time.Now().UTC),
+		field.Time("updated_at").Default(time.Now().UTC).UpdateDefault(time.Now().UTC),
 		field.Time("deleted_at").Optional().Nillable(),
 	}
 }
 
 // Edges of the Article.
 func (Article) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("tags", ArticleTag.Type),
+	}
+}
+
+// Indexes of the Article.
+func (Article) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("title"),
+	}
 }
