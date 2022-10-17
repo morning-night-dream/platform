@@ -123,7 +123,7 @@ func (a *ArticleHandler) List(
 		})
 	}
 
-	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset + limit + 1)))
+	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset + limit)))
 	if len(articles) < limit {
 		token = ""
 	}
