@@ -2,6 +2,8 @@ package store
 
 import (
 	"context"
+	"log"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/app/core/model"
@@ -29,18 +31,42 @@ func (a *Auth) Save(ctx context.Context, auth model.Auth) error {
 		return errors.Wrap(err, "failed to uuid parse")
 	}
 
+	tx, err := a.db.Tx(ctx)
+	if err != nil {
+		return errors.Wrap(err, "starting a transaction")
+	}
+
+	now := time.Now().UTC()
+
+	err = tx.User.Create().
+		SetID(id).
+		SetCreatedAt(now).
+		SetUpdatedAt(now).
+		Exec(ctx)
+	if err != nil {
+		log.Printf("failed to save user %s", err)
+
+		return tx.Rollback()
+	}
+
 	hashed, _ := bcrypt.GenerateFromPassword([]byte(auth.Password), cost)
 
-	if err := a.db.Auth.Create().
+	err = tx.Auth.Create().
 		SetID(id).
 		SetLoginID(auth.LoginID).
 		SetEmail(auth.Email).
+		SetUserID(id).
 		SetPassword(string(hashed)).
-		Exec(ctx); err != nil {
-		return errors.Wrap(err, "failed to save")
+		SetCreatedAt(now).
+		SetUpdatedAt(now).
+		Exec(ctx)
+	if err != nil {
+		log.Printf("failed to save auth %s", err)
+
+		return tx.Rollback()
 	}
 
-	return nil
+	return tx.Commit()
 }
 
 func (a *Auth) FindFromIDPass(ctx context.Context, id, pass string) (model.Auth, error) {

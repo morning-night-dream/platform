@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -19,6 +21,8 @@ func (ArticleTag) Fields() []ent.Field {
 		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 		field.String("tag"),
 		field.UUID("article_id", uuid.UUID{}),
+		field.Time("created_at").Default(time.Now().UTC),
+		field.Time("updated_at").Default(time.Now().UTC).UpdateDefault(time.Now().UTC),
 	}
 }
 
@@ -37,8 +41,7 @@ func (ArticleTag) Edges() []ent.Edge {
 // Indexes of the ArticleTag.
 func (ArticleTag) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("tag", "article_id").
-			Unique(),
+		index.Fields("tag", "article_id").Unique(),
 		index.Fields("tag"),
 		index.Fields("article_id"),
 	}
