@@ -13,6 +13,8 @@ service ArticleService {
   rpc List(ListRequest) returns (ListResponse) {}
   // 削除
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+  // 既読
+  rpc Read(ReadRequest) returns (ReadResponse) {}
 }
 
 // 記事モデル
@@ -52,3 +54,11 @@ message DeleteRequest {
 
 // 削除レスポンス
 message DeleteResponse {}
+
+// 既読リクエスト
+message ReadRequest {
+  string id = 1;
+}
+
+// 既読レスポンス
+message ReadResponse {}

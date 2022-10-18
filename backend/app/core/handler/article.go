@@ -26,7 +26,9 @@ type ArticleHandler struct {
 	store  store.Article
 }
 
-func NewArticleHandler(store store.Article) *ArticleHandler {
+func NewArticleHandler(
+	store store.Article,
+) *ArticleHandler {
 	return &ArticleHandler{
 		key:    os.Getenv("API_KEY"),
 		client: *http.DefaultClient,
@@ -120,6 +122,7 @@ func (a *ArticleHandler) List(
 			Url:         item.URL,
 			Description: item.Description,
 			Thumbnail:   item.Thumbnail,
+			Tags:        item.Tags,
 		})
 	}
 
@@ -145,4 +148,22 @@ func (a *ArticleHandler) Delete(
 	}
 
 	return connect.NewResponse(&articlev1.DeleteResponse{}), nil
+}
+
+func (a *ArticleHandler) Read(
+	ctx context.Context,
+	req *connect.Request[articlev1.ReadRequest],
+) (*connect.Response[articlev1.ReadResponse], error) {
+	jwt := req.Header().Get("Authorization")
+
+	ctx, err := model.Authorize(ctx, jwt)
+	if err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	if err := a.store.SaveRead(ctx, req.Msg.Id, model.GetUIDCtx(ctx)); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	return connect.NewResponse(&articlev1.ReadResponse{}), nil
 }

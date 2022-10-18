@@ -5,3 +5,4 @@ pkg/ent/*.go
 !pkg/ent/generate.go
 .migrate.sh
 main
+doc

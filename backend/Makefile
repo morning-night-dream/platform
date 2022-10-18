@@ -19,6 +19,10 @@ aqua: # export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquap
 tool:
 	@aqua i
 
+.PHONY: doc
+doc:
+	@rm -rf doc && tbls doc "postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable" doc/databases
+
 .PHONY: lint
 lint:
 	@golangci-lint run --fix
