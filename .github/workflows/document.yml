@@ -83,8 +83,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    # needs: [api, database]
-    needs: api
+    needs: [api, database]
 
     steps:
       - name: Download document api
@@ -92,10 +91,10 @@ jobs:
         with:
           name: document-api
 
-      # - name: Download document database
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: document-database
+      - name: Download document database
+        uses: actions/download-artifact@v3
+        with:
+          name: document-database
 
       - name: Confirm
         working-directory: api
@@ -105,6 +104,7 @@ jobs:
         run: |
           mkdir public
           cp -r api/ public/
+          cp -r database/ public/
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
