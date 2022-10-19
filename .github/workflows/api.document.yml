@@ -1,13 +1,7 @@
 name: api document
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    paths:
-      - .github/*
-      - api/**/*.proto
 
 jobs:
   document:
