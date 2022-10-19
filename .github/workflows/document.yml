@@ -67,11 +67,11 @@ jobs:
       - name: Migrate
         working-directory: ./backend
         env:
-          DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
         run: go run cmd/migrate/main.go
 
       - name: Generate database document
-        run: tbls doc "postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable" public/database
+        run: tbls doc "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" public/database
 
       - name: Upload
         uses: actions/upload-artifact@v3
