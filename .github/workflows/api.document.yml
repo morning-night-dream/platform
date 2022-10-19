@@ -1,0 +1,34 @@
+name: api document
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - .github/*
+      - api/**/*.proto
+
+jobs:
+  document:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Generate grpc document
+        working-directory: .
+        run: |
+          go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
+          mkdir -p public/api
+          protoc --doc_out=./public/api --doc_opt=markdown,README.md $(find api -name '*.proto')
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
