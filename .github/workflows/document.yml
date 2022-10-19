@@ -96,4 +96,5 @@ jobs:
       #     name: document-database
 
       - name: Confirm
+        working-directory: api
         run: ls -la
