@@ -9,6 +9,8 @@
     - [DeleteResponse](#article-v1-DeleteResponse)
     - [ListRequest](#article-v1-ListRequest)
     - [ListResponse](#article-v1-ListResponse)
+    - [ReadRequest](#article-v1-ReadRequest)
+    - [ReadResponse](#article-v1-ReadResponse)
     - [ShareRequest](#article-v1-ShareRequest)
     - [ShareResponse](#article-v1-ShareResponse)
   
@@ -46,8 +48,9 @@
 | id | [string](#string) |  |  |
 | url | [string](#string) |  |  |
 | title | [string](#string) |  |  |
-| image_url | [string](#string) |  |  |
 | description | [string](#string) |  |  |
+| thumbnail | [string](#string) |  |  |
+| tags | [string](#string) | repeated |  |
 
 
 
@@ -111,6 +114,31 @@
 
 
 
+<a name="article-v1-ReadRequest"></a>
+
+### ReadRequest
+既読リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="article-v1-ReadResponse"></a>
+
+### ReadResponse
+既読レスポンス
+
+
+
+
+
+
 <a name="article-v1-ShareRequest"></a>
 
 ### ShareRequest
@@ -152,6 +180,7 @@
 | Share | [ShareRequest](#article-v1-ShareRequest) | [ShareResponse](#article-v1-ShareResponse) | 共有 Need X-API-KEY Header |
 | List | [ListRequest](#article-v1-ListRequest) | [ListResponse](#article-v1-ListResponse) | 一覧取得 |
 | Delete | [DeleteRequest](#article-v1-DeleteRequest) | [DeleteResponse](#article-v1-DeleteResponse) | 削除 |
+| Read | [ReadRequest](#article-v1-ReadRequest) | [ReadResponse](#article-v1-ReadResponse) | 既読 |
 
  
 
