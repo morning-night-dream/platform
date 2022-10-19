@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Article holds the schema definition for the Article entity.
+// Auth holds the schema definition for the Auth entity.
 type Auth struct {
 	ent.Schema
 }
