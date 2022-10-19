@@ -20,4 +20,4 @@ frontend:
 
 .PHONY: doc
 doc:
-	@protoc --doc_out=./doc/api --doc_opt=markdown,README.md article/**/*.proto auth/**/*.proto
+	@rm -rf doc && mkdir -p doc/api && protoc --doc_out=./doc/api --doc_opt=markdown,README.md article/**/*.proto auth/**/*.proto
