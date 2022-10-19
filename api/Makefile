@@ -17,3 +17,7 @@ backend:
 .PHONY: frontend
 frontend:
 	@buf generate --template buf.frontend.gen.yaml
+
+.PHONY: doc
+doc:
+	@rm -rf doc && mkdir -p doc/api && protoc --doc_out=./doc/api --doc_opt=markdown,README.md article/**/*.proto auth/**/*.proto

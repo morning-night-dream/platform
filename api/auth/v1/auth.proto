@@ -11,6 +11,7 @@ service AuthService {
   // サインイン
   rpc SignIn(SignInRequest) returns (SignInResponse) {}
   // リフレッシュ
+  // Need Authorization Header
   rpc Refresh(RefreshRequest) returns (RefreshResponse) {}
 }
 

@@ -24,7 +24,7 @@ jobs:
       - name: Fetch all tags
         run: git fetch --force --tags
       - name: Set up
-        uses: ./.github/actions/setup
+        uses: ./.github/actions/backend/setup
       - name: Generate connect code
         run: buf generate --template buf.backend.gen.yaml
         working-directory: ./api

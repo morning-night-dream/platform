@@ -10,10 +10,13 @@ service ArticleService {
   // Need X-API-KEY Header
   rpc Share(ShareRequest) returns (ShareResponse) {}
   // 一覧取得
+  // Need Authorization Header
   rpc List(ListRequest) returns (ListResponse) {}
   // 削除
+  // Need Authorization Header
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
   // 既読
+  // Need Authorization Header
   rpc Read(ReadRequest) returns (ReadResponse) {}
 }
 

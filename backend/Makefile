@@ -21,7 +21,7 @@ tool:
 
 .PHONY: doc
 doc:
-	@rm -rf doc && tbls doc "postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable" doc/databases
+	@rm -rf doc && tbls doc "postgres://$(POSTGRES_USER):$(POSTGRES_PASS)@localhost:$(POSTGRES_PORT)/$(POSTGRES_DB)?sslmode=disable" doc/databases
 
 .PHONY: lint
 lint:
