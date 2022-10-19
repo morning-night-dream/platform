@@ -98,3 +98,14 @@ jobs:
       - name: Confirm
         working-directory: api
         run: ls -la
+
+      - name: Copy
+        run: |
+          mkdir public
+          cp -r api/ public/
+
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
