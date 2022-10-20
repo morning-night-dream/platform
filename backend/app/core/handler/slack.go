@@ -17,21 +17,21 @@ import (
 	"github.com/slack-go/slack/slackevents"
 )
 
-type SlackHandler struct {
+type Slack struct {
 	secret string
 	client *http.Client
 	store  *store.Article
 }
 
-func NewSlackHandler(secret string, store *store.Article) *SlackHandler {
-	return &SlackHandler{
+func NewSlack(secret string, store *store.Article) *Slack {
+	return &Slack{
 		secret: secret,
 		client: http.DefaultClient,
 		store:  store,
 	}
 }
 
-func (s *SlackHandler) Events(w http.ResponseWriter, r *http.Request) {
+func (s *Slack) Events(w http.ResponseWriter, r *http.Request) {
 	// @see https://github.com/slack-go/slack/blob/master/examples/eventsapi/events.go
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -77,7 +77,7 @@ func (s *SlackHandler) Events(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *SlackHandler) verify(header http.Header, body []byte) error {
+func (s *Slack) verify(header http.Header, body []byte) error {
 	sv, err := slack.NewSecretsVerifier(header, s.secret)
 	if err != nil {
 		return errors.Wrap(err, "failed new secrets verify")
@@ -94,7 +94,7 @@ func (s *SlackHandler) verify(header http.Header, body []byte) error {
 	return nil
 }
 
-func (s *SlackHandler) challenge(w http.ResponseWriter, body []byte) {
+func (s *Slack) challenge(w http.ResponseWriter, body []byte) {
 	var r *slackevents.ChallengeResponse
 
 	if err := json.Unmarshal(body, &r); err != nil {
@@ -108,7 +108,7 @@ func (s *SlackHandler) challenge(w http.ResponseWriter, body []byte) {
 	_, _ = w.Write([]byte(r.Challenge))
 }
 
-func (s *SlackHandler) save(ctx context.Context, u url.URL) {
+func (s *Slack) save(ctx context.Context, u url.URL) {
 	gr, err := http.NewRequest(http.MethodGet, u.String(), nil)
 	if err != nil {
 		return
