@@ -20,23 +20,23 @@ import (
 	"github.com/pkg/errors"
 )
 
-type ArticleHandler struct {
+type Article struct {
 	key    string
 	client http.Client
 	store  store.Article
 }
 
-func NewArticleHandler(
+func NewArticle(
 	store store.Article,
-) *ArticleHandler {
-	return &ArticleHandler{
+) *Article {
+	return &Article{
 		key:    os.Getenv("API_KEY"),
 		client: *http.DefaultClient,
 		store:  store,
 	}
 }
 
-func (a *ArticleHandler) Share(
+func (a *Article) Share(
 	ctx context.Context,
 	req *connect.Request[articlev1.ShareRequest],
 ) (*connect.Response[articlev1.ShareResponse], error) {
@@ -92,7 +92,7 @@ func (a *ArticleHandler) Share(
 	return connect.NewResponse(&articlev1.ShareResponse{}), nil
 }
 
-func (a *ArticleHandler) List(
+func (a *Article) List(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListRequest],
 ) (*connect.Response[articlev1.ListResponse], error) {
@@ -139,7 +139,7 @@ func (a *ArticleHandler) List(
 	return res, nil
 }
 
-func (a *ArticleHandler) Delete(
+func (a *Article) Delete(
 	ctx context.Context,
 	req *connect.Request[articlev1.DeleteRequest],
 ) (*connect.Response[articlev1.DeleteResponse], error) {
@@ -150,7 +150,7 @@ func (a *ArticleHandler) Delete(
 	return connect.NewResponse(&articlev1.DeleteResponse{}), nil
 }
 
-func (a *ArticleHandler) Read(
+func (a *Article) Read(
 	ctx context.Context,
 	req *connect.Request[articlev1.ReadRequest],
 ) (*connect.Response[articlev1.ReadResponse], error) {

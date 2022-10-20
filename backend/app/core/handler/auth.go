@@ -15,17 +15,17 @@ import (
 	authv1 "github.com/morning-night-dream/platform/pkg/api/auth/v1"
 )
 
-type AuthHandler struct {
+type Auth struct {
 	store store.Auth
 }
 
-func NewAuthHandler(store store.Auth) *AuthHandler {
-	return &AuthHandler{
+func NewAuth(store store.Auth) *Auth {
+	return &Auth{
 		store: store,
 	}
 }
 
-func (a AuthHandler) SignUp(
+func (a Auth) SignUp(
 	ctx context.Context,
 	req *connect.Request[authv1.SignUpRequest],
 ) (*connect.Response[authv1.SignUpResponse], error) {
@@ -67,7 +67,7 @@ func (a AuthHandler) SignUp(
 	return connect.NewResponse(&authv1.SignUpResponse{}), nil
 }
 
-func (a AuthHandler) SignIn(
+func (a Auth) SignIn(
 	ctx context.Context,
 	req *connect.Request[authv1.SignInRequest],
 ) (*connect.Response[authv1.SignInResponse], error) {
@@ -103,7 +103,7 @@ func (a AuthHandler) SignIn(
 	return connect.NewResponse(res), nil
 }
 
-func (a AuthHandler) Refresh(
+func (a Auth) Refresh(
 	ctx context.Context,
 	req *connect.Request[authv1.RefreshRequest],
 ) (*connect.Response[authv1.RefreshResponse], error) {
