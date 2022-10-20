@@ -27,9 +27,9 @@ doc:
 lint:
 	@golangci-lint run --fix
 
-.PHONY: package
-package:
-	@go get -u
+.PHONY: lib
+lib:
+	@go list -u -m all && go get -u ./...
 
 .PHONY: test
 test:
