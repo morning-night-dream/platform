@@ -183,7 +183,7 @@ func (a *Article) AddTag(
 		tmp[tag] = struct{}{}
 	}
 
-	tags := make([]string, len(tmp))
+	tags := make([]string, 0, len(tmp))
 	for i := range tmp {
 		tags = append(tags, i)
 	}
@@ -201,5 +201,12 @@ func (a *Article) ListTag(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListTagRequest],
 ) (*connect.Response[articlev1.ListTagResponse], error) {
-	return nil, nil
+	tags, err := a.store.FindAllTag(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	return connect.NewResponse(&articlev1.ListTagResponse{
+		Tags: tags,
+	}), nil
 }

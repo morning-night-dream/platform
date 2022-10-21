@@ -9,6 +9,10 @@ curl -H "Content-Type: application/json" --data '{"id": "", "tag": "Go"}' http:/
 ```
 
 ```bash
+curl -H "Content-Type: application/json" --data '{}' http://localhost:8080/article.v1.ArticleService/ListTag
+```
+
+```bash
 curl -H "Content-Type: application/json" -H "Authorization: " --data '{"max_page_size": 1, "page_token": ""}' http://localhost:8080/article.v1.ArticleService/List
 ```
 

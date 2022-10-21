@@ -37,9 +37,7 @@ func (a Article) Save(ctx context.Context, item model.Article) error {
 
 	now := time.Now().UTC()
 
-	log.Printf("%+v", item)
-
-	err = tx.Client().Debug().Article.Create().
+	err = tx.Article.Create().
 		SetID(id).
 		SetTitle(item.Title).
 		SetDescription(item.Description).
@@ -54,25 +52,29 @@ func (a Article) Save(ctx context.Context, item model.Article) error {
 		UpdateUpdatedAt().
 		Exec(ctx)
 	if err != nil {
-		// https://github.com/ent/ent/issues/2176 により、
-		// on conflict do nothingとしてもerror no rowsが返るため、個別にハンドリングする
-		if errors.Is(err, sql.ErrNoRows) {
-			log.Print(err)
-
-			return tx.Commit()
-		}
-
 		log.Printf("failed to save article %s", err)
 
-		return tx.Rollback()
+		if re := tx.Rollback(); re != nil {
+			return errors.Wrap(re, "")
+		}
+
+		return errors.Wrap(err, "")
 	}
 
 	if len(item.Tags) == 0 {
-		return tx.Commit()
+		if ce := tx.Commit(); ce != nil {
+			return errors.Wrap(ce, "")
+		}
+
+		return nil
 	}
 
 	if _, err = tx.ArticleTag.Delete().Where(articletag.ArticleIDEQ(id)).Exec(ctx); err != nil {
-		return tx.Rollback()
+		if re := tx.Rollback(); re != nil {
+			return errors.Wrap(re, "")
+		}
+
+		return errors.Wrap(err, "")
 	}
 
 	bulk := make([]*ent.ArticleTagCreate, len(item.Tags))
@@ -90,18 +92,30 @@ func (a Article) Save(ctx context.Context, item model.Article) error {
 		Exec(ctx)
 
 	if err == nil {
-		return tx.Commit()
+		if ce := tx.Commit(); ce != nil {
+			return errors.Wrap(ce, "")
+		}
+
+		return nil
 	}
 
 	if errors.Is(err, sql.ErrNoRows) {
 		log.Print(err)
 
-		return tx.Rollback()
+		if re := tx.Rollback(); re != nil {
+			return errors.Wrap(re, "")
+		}
+
+		return errors.Wrap(err, "")
 	}
 
 	log.Printf("failed to save article tags %s", err)
 
-	return tx.Rollback()
+	if re := tx.Rollback(); re != nil {
+		return errors.Wrap(re, "")
+	}
+
+	return errors.Wrap(err, "")
 }
 
 func (a Article) Find(ctx context.Context, id string) (model.Article, error) {
@@ -167,6 +181,19 @@ func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Ar
 	}
 
 	return articles, nil
+}
+
+func (a Article) FindAllTag(ctx context.Context) ([]string, error) {
+	tags, err := a.db.ArticleTag.
+		Query().
+		Unique(true).
+		Select(articletag.FieldTag).
+		Strings(ctx)
+	if err != nil {
+		return []string{}, errors.Wrap(err, "")
+	}
+
+	return tags, nil
 }
 
 func (a Article) LogicalDelete(ctx context.Context, id string) error {

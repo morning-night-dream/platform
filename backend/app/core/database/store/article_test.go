@@ -172,4 +172,47 @@ func TestArticleStoreSave(t *testing.T) {
 			t.Errorf("NewArticle() = %v, want %v", len(got), 1)
 		}
 	})
+
+	t.Run("タグ一覧を取得できる", func(t *testing.T) {
+		t.Parallel()
+
+		dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.NewString())
+
+		db := enttest.Open(t, "sqlite3", dsn, opts...)
+
+		sa := store.NewArticle(db)
+
+		ctx := context.Background()
+
+		if err := sa.Save(ctx, model.Article{
+			ID:          uuid.NewString(),
+			Title:       "title1",
+			URL:         "url1",
+			Description: "description1",
+			Thumbnail:   "thumbnail1",
+			Tags:        []string{"tag1"},
+		}); err != nil {
+			t.Error(err)
+		}
+
+		if err := sa.Save(ctx, model.Article{
+			ID:          uuid.NewString(),
+			Title:       "title2",
+			URL:         "url2",
+			Description: "description2",
+			Thumbnail:   "thumbnail2",
+			Tags:        []string{"tag2", "tag3"},
+		}); err != nil {
+			t.Error(err)
+		}
+
+		got, err := sa.FindAllTag(ctx)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if !reflect.DeepEqual(got, []string{"tag1", "tag2", "tag3"}) {
+			t.Errorf("Find() = %v, want %v", got, []string{"tag1", "tag2", "tag3"})
+		}
+	})
 }

@@ -35,3 +35,5 @@ issues:
         - funlen
         - nosprintfhostport
         - cyclop
+        - goconst
+        - gocognit
