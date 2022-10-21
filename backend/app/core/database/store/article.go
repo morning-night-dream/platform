@@ -10,6 +10,7 @@ import (
 	"github.com/morning-night-dream/platform/app/core/model"
 	"github.com/morning-night-dream/platform/pkg/ent"
 	"github.com/morning-night-dream/platform/pkg/ent/article"
+	"github.com/morning-night-dream/platform/pkg/ent/articletag"
 	"github.com/pkg/errors"
 )
 
@@ -23,10 +24,10 @@ func NewArticle(db *ent.Client) *Article {
 	}
 }
 
-func (a Article) Save(ctx context.Context, article model.Article) error {
-	id, err := uuid.Parse(article.ID)
+func (a Article) Save(ctx context.Context, item model.Article) error {
+	id, err := uuid.Parse(item.ID)
 	if err != nil {
-		id = uuid.New()
+		return errors.Wrap(err, "failed to parse uuid")
 	}
 
 	tx, err := a.db.Tx(ctx)
@@ -36,16 +37,21 @@ func (a Article) Save(ctx context.Context, article model.Article) error {
 
 	now := time.Now().UTC()
 
-	err = tx.Article.Create().
+	log.Printf("%+v", item)
+
+	err = tx.Client().Debug().Article.Create().
 		SetID(id).
-		SetTitle(article.Title).
-		SetDescription(article.Description).
-		SetURL(article.URL).
-		SetThumbnail(article.Thumbnail).
+		SetTitle(item.Title).
+		SetDescription(item.Description).
+		SetURL(item.URL).
+		SetThumbnail(item.Thumbnail).
 		SetCreatedAt(now).
 		SetUpdatedAt(now).
-		OnConflict().
-		DoNothing().
+		OnConflictColumns(article.FieldURL).
+		UpdateTitle().
+		UpdateDescription().
+		UpdateThumbnail().
+		UpdateUpdatedAt().
 		Exec(ctx)
 	if err != nil {
 		// https://github.com/ent/ent/issues/2176 により、
@@ -61,14 +67,16 @@ func (a Article) Save(ctx context.Context, article model.Article) error {
 		return tx.Rollback()
 	}
 
-	article.Tags = []string{"Go"}
-
-	if len(article.Tags) == 0 {
+	if len(item.Tags) == 0 {
 		return tx.Commit()
 	}
 
-	bulk := make([]*ent.ArticleTagCreate, len(article.Tags))
-	for i, tag := range article.Tags {
+	if _, err = tx.ArticleTag.Delete().Where(articletag.ArticleIDEQ(id)).Exec(ctx); err != nil {
+		return tx.Rollback()
+	}
+
+	bulk := make([]*ent.ArticleTagCreate, len(item.Tags))
+	for i, tag := range item.Tags {
 		bulk[i] = tx.ArticleTag.Create().
 			SetTag(tag).
 			SetArticleID(id).
@@ -94,6 +102,36 @@ func (a Article) Save(ctx context.Context, article model.Article) error {
 	log.Printf("failed to save article tags %s", err)
 
 	return tx.Rollback()
+}
+
+func (a Article) Find(ctx context.Context, id string) (model.Article, error) {
+	tid, err := uuid.Parse(id)
+	if err != nil {
+		return model.Article{}, errors.Wrap(err, "failed to parse uuid")
+	}
+
+	item, err := a.db.Article.Query().
+		WithTags().
+		Where(article.IDEQ(tid)).
+		First(ctx)
+	if err != nil {
+		return model.Article{}, errors.Wrap(err, "failed to find article")
+	}
+
+	tags := make([]string, len(item.Edges.Tags))
+
+	for i, tag := range item.Edges.Tags {
+		tags[i] = tag.Tag
+	}
+
+	return model.Article{
+		ID:          item.ID.String(),
+		URL:         item.URL,
+		Title:       item.Title,
+		Thumbnail:   item.Thumbnail,
+		Description: item.Description,
+		Tags:        tags,
+	}, nil
 }
 
 func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Article, error) {
@@ -127,8 +165,6 @@ func (a Article) FindAll(ctx context.Context, limit int, offset int) ([]model.Ar
 			Tags:        tags,
 		})
 	}
-
-	// Tagを取得
 
 	return articles, nil
 }

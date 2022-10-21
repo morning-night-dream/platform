@@ -35,24 +35,48 @@ func TestArticleStoreSave(t *testing.T) {
 
 		ctx := context.Background()
 
-		if err := sa.Save(ctx, model.Article{
+		item := model.Article{
+			ID:          uuid.NewString(),
 			Title:       "title",
 			URL:         "url",
 			Description: "description",
 			Thumbnail:   "thumbnail",
 			Tags:        []string{"tag"},
-		}); err != nil {
+		}
+
+		if err := sa.Save(ctx, item); err != nil {
 			t.Error(err)
 		}
 
-		if err := sa.Save(ctx, model.Article{
-			Title:       "title",
-			URL:         "url",
-			Description: "description",
-			Thumbnail:   "thumbnail",
-			Tags:        []string{"tag"},
-		}); err != nil {
+		got, err := sa.Find(ctx, item.ID)
+		if err != nil {
 			t.Error(err)
+		}
+
+		if !reflect.DeepEqual(item, got) {
+			t.Errorf("Find() = %v, want %v", got, item)
+		}
+
+		if err := sa.Save(ctx, item); err != nil {
+			t.Error(err)
+		}
+
+		item.Title = "updated"
+		item.Description = "updated"
+		item.Thumbnail = "updated"
+		item.Tags = []string{"updated"}
+
+		if err := sa.Save(ctx, item); err != nil {
+			t.Error(err)
+		}
+
+		got, err = sa.Find(ctx, item.ID)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if !reflect.DeepEqual(item, got) {
+			t.Errorf("Find() = %v, want %v", got, item)
 		}
 	})
 
@@ -68,6 +92,7 @@ func TestArticleStoreSave(t *testing.T) {
 		ctx := context.Background()
 
 		if err := sa.Save(ctx, model.Article{
+			ID:          uuid.NewString(),
 			Title:       "title1",
 			URL:         "url1",
 			Description: "description1",
@@ -77,6 +102,7 @@ func TestArticleStoreSave(t *testing.T) {
 		}
 
 		if err := sa.Save(ctx, model.Article{
+			ID:          uuid.NewString(),
 			Title:       "title1",
 			URL:         "url1",
 			Description: "description1",
@@ -107,6 +133,7 @@ func TestArticleStoreSave(t *testing.T) {
 		ctx := context.Background()
 
 		if err := sa.Save(ctx, model.Article{
+			ID:          uuid.NewString(),
 			Title:       "title1",
 			URL:         "url1",
 			Description: "description1",
@@ -116,6 +143,7 @@ func TestArticleStoreSave(t *testing.T) {
 		}
 
 		if err := sa.Save(ctx, model.Article{
+			ID:          uuid.NewString(),
 			Title:       "title2",
 			URL:         "url2",
 			Description: "description2",

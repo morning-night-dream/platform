@@ -18,6 +18,11 @@ service ArticleService {
   // 既読
   // Need Authorization Header
   rpc Read(ReadRequest) returns (ReadResponse) {}
+
+  // タグ追加
+  rpc AddTag(AddTagRequest) returns (AddTagResponse) {}
+  // タグ一覧
+  rpc ListTag(ListTagRequest) returns (ListTagResponse) {}
 }
 
 // 記事モデル
@@ -65,3 +70,20 @@ message ReadRequest {
 
 // 既読レスポンス
 message ReadResponse {}
+
+// タグ追加リクエスト
+message AddTagRequest {
+  string id = 1;
+  string tag = 2;
+}
+
+// タグ追加レスポンス
+message AddTagResponse {}
+
+// タグ一覧リクエスト
+message ListTagRequest {}
+
+// タグ一覧レスポンス
+message ListTagResponse {
+  repeated string tags = 1;
+}
