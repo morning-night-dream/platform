@@ -3,19 +3,6 @@
 
 ## Table of Contents
 
-- [api/article/v1/article.proto](#api_article_v1_article-proto)
-    - [Article](#article-v1-Article)
-    - [DeleteRequest](#article-v1-DeleteRequest)
-    - [DeleteResponse](#article-v1-DeleteResponse)
-    - [ListRequest](#article-v1-ListRequest)
-    - [ListResponse](#article-v1-ListResponse)
-    - [ReadRequest](#article-v1-ReadRequest)
-    - [ReadResponse](#article-v1-ReadResponse)
-    - [ShareRequest](#article-v1-ShareRequest)
-    - [ShareResponse](#article-v1-ShareResponse)
-  
-    - [ArticleService](#article-v1-ArticleService)
-  
 - [api/auth/v1/auth.proto](#api_auth_v1_auth-proto)
     - [RefreshRequest](#auth-v1-RefreshRequest)
     - [RefreshResponse](#auth-v1-RefreshResponse)
@@ -26,163 +13,24 @@
   
     - [AuthService](#auth-v1-AuthService)
   
+- [api/article/v1/article.proto](#api_article_v1_article-proto)
+    - [AddTagRequest](#article-v1-AddTagRequest)
+    - [AddTagResponse](#article-v1-AddTagResponse)
+    - [Article](#article-v1-Article)
+    - [DeleteRequest](#article-v1-DeleteRequest)
+    - [DeleteResponse](#article-v1-DeleteResponse)
+    - [ListRequest](#article-v1-ListRequest)
+    - [ListResponse](#article-v1-ListResponse)
+    - [ListTagRequest](#article-v1-ListTagRequest)
+    - [ListTagResponse](#article-v1-ListTagResponse)
+    - [ReadRequest](#article-v1-ReadRequest)
+    - [ReadResponse](#article-v1-ReadResponse)
+    - [ShareRequest](#article-v1-ShareRequest)
+    - [ShareResponse](#article-v1-ShareResponse)
+  
+    - [ArticleService](#article-v1-ArticleService)
+  
 - [Scalar Value Types](#scalar-value-types)
-
-
-
-<a name="api_article_v1_article-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## api/article/v1/article.proto
-
-
-
-<a name="article-v1-Article"></a>
-
-### Article
-記事モデル
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id | [string](#string) |  |  |
-| url | [string](#string) |  |  |
-| title | [string](#string) |  |  |
-| description | [string](#string) |  |  |
-| thumbnail | [string](#string) |  |  |
-| tags | [string](#string) | repeated |  |
-
-
-
-
-
-
-<a name="article-v1-DeleteRequest"></a>
-
-### DeleteRequest
-削除リクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="article-v1-DeleteResponse"></a>
-
-### DeleteResponse
-削除レスポンス
-
-
-
-
-
-
-<a name="article-v1-ListRequest"></a>
-
-### ListRequest
-記事一覧リクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| page_token | [string](#string) |  |  |
-| max_page_size | [uint32](#uint32) |  |  |
-
-
-
-
-
-
-<a name="article-v1-ListResponse"></a>
-
-### ListResponse
-記事一覧レスポンス
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| articles | [Article](#article-v1-Article) | repeated |  |
-| next_page_token | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="article-v1-ReadRequest"></a>
-
-### ReadRequest
-既読リクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="article-v1-ReadResponse"></a>
-
-### ReadResponse
-既読レスポンス
-
-
-
-
-
-
-<a name="article-v1-ShareRequest"></a>
-
-### ShareRequest
-記事共有リクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| url | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="article-v1-ShareResponse"></a>
-
-### ShareResponse
-記事共有レスポンス
-
-
-
-
-
- 
-
- 
-
- 
-
-
-<a name="article-v1-ArticleService"></a>
-
-### ArticleService
-記事サービス
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| Share | [ShareRequest](#article-v1-ShareRequest) | [ShareResponse](#article-v1-ShareResponse) | 共有 Need X-API-KEY Header |
-| List | [ListRequest](#article-v1-ListRequest) | [ListResponse](#article-v1-ListResponse) | 一覧取得 Need Authorization Header |
-| Delete | [DeleteRequest](#article-v1-DeleteRequest) | [DeleteResponse](#article-v1-DeleteResponse) | 削除 Need Authorization Header |
-| Read | [ReadRequest](#article-v1-ReadRequest) | [ReadResponse](#article-v1-ReadResponse) | 既読 Need Authorization Header |
-
- 
 
 
 
@@ -299,6 +147,215 @@
 | SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
 | SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
 | Refresh | [RefreshRequest](#auth-v1-RefreshRequest) | [RefreshResponse](#auth-v1-RefreshResponse) | リフレッシュ Need Authorization Header |
+
+ 
+
+
+
+<a name="api_article_v1_article-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## api/article/v1/article.proto
+
+
+
+<a name="article-v1-AddTagRequest"></a>
+
+### AddTagRequest
+タグ追加リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+| tag | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="article-v1-AddTagResponse"></a>
+
+### AddTagResponse
+タグ追加レスポンス
+
+
+
+
+
+
+<a name="article-v1-Article"></a>
+
+### Article
+記事モデル
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+| url | [string](#string) |  |  |
+| title | [string](#string) |  |  |
+| description | [string](#string) |  |  |
+| thumbnail | [string](#string) |  |  |
+| tags | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="article-v1-DeleteRequest"></a>
+
+### DeleteRequest
+削除リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="article-v1-DeleteResponse"></a>
+
+### DeleteResponse
+削除レスポンス
+
+
+
+
+
+
+<a name="article-v1-ListRequest"></a>
+
+### ListRequest
+記事一覧リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| page_token | [string](#string) |  |  |
+| max_page_size | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="article-v1-ListResponse"></a>
+
+### ListResponse
+記事一覧レスポンス
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| articles | [Article](#article-v1-Article) | repeated |  |
+| next_page_token | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="article-v1-ListTagRequest"></a>
+
+### ListTagRequest
+タグ一覧リクエスト
+
+
+
+
+
+
+<a name="article-v1-ListTagResponse"></a>
+
+### ListTagResponse
+タグ一覧レスポンス
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| tags | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="article-v1-ReadRequest"></a>
+
+### ReadRequest
+既読リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="article-v1-ReadResponse"></a>
+
+### ReadResponse
+既読レスポンス
+
+
+
+
+
+
+<a name="article-v1-ShareRequest"></a>
+
+### ShareRequest
+記事共有リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| url | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="article-v1-ShareResponse"></a>
+
+### ShareResponse
+記事共有レスポンス
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="article-v1-ArticleService"></a>
+
+### ArticleService
+記事サービス
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| Share | [ShareRequest](#article-v1-ShareRequest) | [ShareResponse](#article-v1-ShareResponse) | 共有 Need X-API-KEY Header |
+| List | [ListRequest](#article-v1-ListRequest) | [ListResponse](#article-v1-ListResponse) | 一覧取得 Need Authorization Header |
+| Delete | [DeleteRequest](#article-v1-DeleteRequest) | [DeleteResponse](#article-v1-DeleteResponse) | 削除 Need Authorization Header |
+| Read | [ReadRequest](#article-v1-ReadRequest) | [ReadResponse](#article-v1-ReadResponse) | 既読 Need Authorization Header |
+| AddTag | [AddTagRequest](#article-v1-AddTagRequest) | [AddTagResponse](#article-v1-AddTagResponse) | タグ追加 |
+| ListTag | [ListTagRequest](#article-v1-ListTagRequest) | [ListTagResponse](#article-v1-ListTagResponse) | タグ一覧 |
 
  
 
