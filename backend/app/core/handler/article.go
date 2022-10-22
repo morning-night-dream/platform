@@ -75,15 +75,13 @@ func (a *Article) Share(
 		thumbnail = og.Images[0].URL
 	}
 
-	article := model.Article{
+	if err := a.store.Save(ctx, model.Article{
 		ID:          uuid.NewString(),
 		URL:         og.URL,
 		Title:       og.Title,
 		Thumbnail:   thumbnail,
 		Description: og.Description,
-	}
-
-	if err := a.store.Save(ctx, article); err != nil {
+	}); err != nil {
 		log.Print(err)
 
 		return nil, ErrInternal
@@ -166,4 +164,49 @@ func (a *Article) Read(
 	}
 
 	return connect.NewResponse(&articlev1.ReadResponse{}), nil
+}
+
+func (a *Article) AddTag(
+	ctx context.Context,
+	req *connect.Request[articlev1.AddTagRequest],
+) (*connect.Response[articlev1.AddTagResponse], error) {
+	item, err := a.store.Find(ctx, req.Msg.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	item.Tags = append(item.Tags, req.Msg.Tag)
+
+	tmp := make(map[string]struct{})
+
+	for _, tag := range item.Tags {
+		tmp[tag] = struct{}{}
+	}
+
+	tags := make([]string, 0, len(tmp))
+	for i := range tmp {
+		tags = append(tags, i)
+	}
+
+	if err := a.store.Save(ctx, item); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	item.Tags = tags
+
+	return connect.NewResponse(&articlev1.AddTagResponse{}), nil
+}
+
+func (a *Article) ListTag(
+	ctx context.Context,
+	req *connect.Request[articlev1.ListTagRequest],
+) (*connect.Response[articlev1.ListTagResponse], error) {
+	tags, err := a.store.FindAllTag(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	return connect.NewResponse(&articlev1.ListTagResponse{
+		Tags: tags,
+	}), nil
 }

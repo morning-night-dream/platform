@@ -46,7 +46,11 @@ func (a *Auth) Save(ctx context.Context, auth model.Auth) error {
 	if err != nil {
 		log.Printf("failed to save user %s", err)
 
-		return tx.Rollback()
+		if re := tx.Rollback(); re != nil {
+			return errors.Wrap(re, "")
+		}
+
+		return errors.Wrap(err, "")
 	}
 
 	hashed, _ := bcrypt.GenerateFromPassword([]byte(auth.Password), cost)
@@ -63,10 +67,18 @@ func (a *Auth) Save(ctx context.Context, auth model.Auth) error {
 	if err != nil {
 		log.Printf("failed to save auth %s", err)
 
-		return tx.Rollback()
+		if re := tx.Rollback(); re != nil {
+			return errors.Wrap(re, "")
+		}
+
+		return errors.Wrap(err, "")
 	}
 
-	return tx.Commit()
+	if ce := tx.Commit(); ce != nil {
+		return errors.Wrap(ce, "")
+	}
+
+	return nil
 }
 
 func (a *Auth) FindFromIDPass(ctx context.Context, id, pass string) (model.Auth, error) {
