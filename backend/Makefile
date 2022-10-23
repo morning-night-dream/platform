@@ -1,5 +1,7 @@
 APP_NAME = morning-night-dream-platform
 
+include .env
+
 export
 POSTGRES_VERSION := 14.5
 POSTGRES_IMAGE := postgres:$(POSTGRES_VERSION)-alpine
