@@ -17,7 +17,6 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/pkg/errors v0.9.1
 	github.com/slack-go/slack v0.11.3
-	golang.org/x/crypto v0.1.0
 	google.golang.org/api v0.96.0
 	google.golang.org/grpc v1.50.1
 )
