@@ -23,7 +23,7 @@ func main() {
 
 	sh := handler.NewSlack(secret, sa)
 
-	aua := store.NewAuth(db, *firebase)
+	aua := store.NewAuth(db, firebase)
 
 	auh := handler.NewAuth(*aua)
 
