@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -154,7 +155,12 @@ func (f *FirebaseClient) Login(ctx context.Context, email, password string) (mod
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return model.Tokens{}, fmt.Errorf("firebase error")
+		message, err := io.ReadAll(res.Body)
+		if err != nil {
+			message = []byte(fmt.Sprintf("could not laod message caused by %v", err))
+		}
+
+		return model.Tokens{}, fmt.Errorf("firebase error. status code is %d, message is %v", res.StatusCode, string(message))
 	}
 
 	var response SignInResponse
@@ -202,7 +208,12 @@ func (f *FirebaseClient) RefreshToken(ctx context.Context, token string) (model.
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return model.Tokens{}, fmt.Errorf("firebase error")
+		message, err := io.ReadAll(res.Body)
+		if err != nil {
+			message = []byte(fmt.Sprintf("could not laod message caused by %v", err))
+		}
+
+		return model.Tokens{}, fmt.Errorf("firebase error. status code is %d, message is %v", res.StatusCode, string(message))
 	}
 
 	var response RefreshResponse
