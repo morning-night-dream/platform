@@ -176,23 +176,26 @@ func (f *FirebaseClient) Login(ctx context.Context, email, password string) (mod
 }
 
 type RefreshRequest struct {
-	Token             string `json:"token"`
-	ReturnSecureToken bool   `json:"returnSecureToken"`
+	GrantType    string `json:"grant_type"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type RefreshResponse struct {
-	ExpiresIn    string `json:"expiresIn"`
-	IDToken      string `json:"idToken"`
-	RefreshToken string `json:"refreshToken"`
+	ExpiresIn    string `json:"expires_in"`
+	TokenType    string `json:"token_type"`
+	RefreshToken string `json:"refresh_token"`
+	IDToken      string `json:"id_token"`
+	UserID       string `json:"user_id"`
+	ProjectID    string `json:"project_id"`
 }
 
 func (f *FirebaseClient) RefreshToken(ctx context.Context, token string) (model.Tokens, error) {
 	// https://firebase.google.com/docs/reference/rest/auth#section-refresh-token
-	url := fmt.Sprintf("%s/v1/accounts:signInWithCustomToken?key=%s", f.api.Endpoint, f.api.APIKey)
+	url := fmt.Sprintf("%s/v1/token?key=%s", f.api.Endpoint, f.api.APIKey)
 
 	req := RefreshRequest{
-		Token:             token,
-		ReturnSecureToken: true,
+		GrantType:    "refresh_token",
+		RefreshToken: token,
 	}
 
 	var buf bytes.Buffer
