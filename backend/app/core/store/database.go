@@ -1,4 +1,4 @@
-package database
+package store
 
 import (
 	// postgres driver.
@@ -6,7 +6,7 @@ import (
 	"github.com/morning-night-dream/platform/pkg/ent"
 )
 
-func NewClient(dsn string) *ent.Client {
+func NewDatabaseClient(dsn string) *ent.Client {
 	client, err := ent.Open("postgres", dsn)
 	if err != nil {
 		panic(err)

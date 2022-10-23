@@ -5,4 +5,5 @@ type Auth struct {
 	LoginID  string `json:"loginId"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Tokens   Tokens `json:"tokens"`
 }

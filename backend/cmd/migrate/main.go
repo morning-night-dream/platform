@@ -5,13 +5,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/morning-night-dream/platform/app/core/database"
+	"github.com/morning-night-dream/platform/app/core/store"
 )
 
 func main() {
 	dsn := os.Getenv("DATABASE_URL")
 
-	client := database.NewClient(dsn)
+	client := store.NewDatabaseClient(dsn)
 
 	ctx := context.Background()
 

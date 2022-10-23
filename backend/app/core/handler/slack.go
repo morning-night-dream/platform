@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	"github.com/dyatlov/go-opengraph/opengraph"
-	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/app/core/store"
 	"github.com/pkg/errors"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"

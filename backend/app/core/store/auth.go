@@ -8,20 +8,18 @@ import (
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/app/core/model"
 	"github.com/morning-night-dream/platform/pkg/ent"
-	"github.com/morning-night-dream/platform/pkg/ent/auth"
 	"github.com/pkg/errors"
-	"golang.org/x/crypto/bcrypt"
 )
 
-const cost = 12
-
 type Auth struct {
-	db *ent.Client
+	db       *ent.Client
+	firebase *FirebaseClient
 }
 
-func NewAuth(db *ent.Client) *Auth {
+func NewAuth(db *ent.Client, firebase *FirebaseClient) *Auth {
 	return &Auth{
-		db: db,
+		db:       db,
+		firebase: firebase,
 	}
 }
 
@@ -53,17 +51,7 @@ func (a *Auth) Save(ctx context.Context, auth model.Auth) error {
 		return errors.Wrap(err, "")
 	}
 
-	hashed, _ := bcrypt.GenerateFromPassword([]byte(auth.Password), cost)
-
-	err = tx.Auth.Create().
-		SetID(id).
-		SetLoginID(auth.LoginID).
-		SetEmail(auth.Email).
-		SetUserID(id).
-		SetPassword(string(hashed)).
-		SetCreatedAt(now).
-		SetUpdatedAt(now).
-		Exec(ctx)
+	err = a.firebase.CreateUser(ctx, auth.UserID, auth.Email, auth.Password)
 	if err != nil {
 		log.Printf("failed to save auth %s", err)
 
@@ -81,24 +69,20 @@ func (a *Auth) Save(ctx context.Context, auth model.Auth) error {
 	return nil
 }
 
-func (a *Auth) FindFromIDPass(ctx context.Context, id, pass string) (model.Auth, error) {
-	res, err := a.db.Auth.Query().
-		Where(
-			auth.LoginIDEQ(id),
-		).
-		First(ctx)
+func (a *Auth) FindFromEmailPass(ctx context.Context, email, pass string) (model.Tokens, error) {
+	res, err := a.firebase.Login(ctx, email, pass)
 	if err != nil {
-		return model.Auth{}, errors.Wrap(err, "not found")
+		return model.Tokens{}, errors.Wrap(err, "not found")
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(pass)); err != nil {
-		return model.Auth{}, errors.Wrap(err, "not found")
+	return res, nil
+}
+
+func (a *Auth) FindFromIDToken(ctx context.Context, token string) (model.Tokens, error) {
+	res, err := a.firebase.RefreshToken(ctx, token)
+	if err != nil {
+		return model.Tokens{}, errors.Wrap(err, "not found")
 	}
 
-	return model.Auth{
-		UserID:   res.ID.String(),
-		LoginID:  res.LoginID,
-		Email:    "", // 機密情報なのであえて隠しておく
-		Password: "", // 機密情報なのであえて隠しておく
-	}, nil
+	return res, nil
 }

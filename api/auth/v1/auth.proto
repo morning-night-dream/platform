@@ -7,19 +7,21 @@ option go_package = "github.com/morning-night-dream/platform/pkg/api/auth/v1;aut
 // 認証サービス
 service AuthService {
   // サインアップ
+  // Need API Key
   rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
   // サインイン
   rpc SignIn(SignInRequest) returns (SignInResponse) {}
   // リフレッシュ
   // Need Authorization Header
   rpc Refresh(RefreshRequest) returns (RefreshResponse) {}
+  // パスワード変更
+  // Need Authorization Header
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {}
 }
 
 // サインアップリクエスト
 message SignUpRequest {
   string email = 1;
-  string login_id = 2;
-  string password = 3;
 }
 
 // サインアップレスポンス
@@ -27,7 +29,7 @@ message SignUpResponse {}
 
 // サインインリクエスト
 message SignInRequest {
-  string login_id = 1;
+  string email = 1;
   string password = 2;
 }
 
@@ -47,3 +49,13 @@ message RefreshResponse {
   string id_token = 1;
   string refresh_token = 2;
 }
+
+// パスワード変更リクエスト
+message ChangePasswordRequest {
+  string email = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+// パスワード変更レスポンス
+message ChangePasswordResponse {}

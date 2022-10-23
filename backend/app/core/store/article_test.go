@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/app/core/store"
 	"github.com/morning-night-dream/platform/pkg/ent"
 	"github.com/morning-night-dream/platform/pkg/ent/enttest"
 	"github.com/morning-night-dream/platform/pkg/ent/migrate"
