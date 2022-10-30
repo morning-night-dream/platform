@@ -3,6 +3,10 @@ name: image-clean
 on:
   push:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   gcr-cleaner:
     runs-on: 'ubuntu-latest'
