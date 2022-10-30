@@ -31,4 +31,5 @@ jobs:
       - uses: docker://us-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli
         with:
           args: >-
-            -repo=${{ secrets.GCP_DOCKER_REPO }}/core-2159837f3770b18fd56bf06e84ca713d
+            -repo=${{ secrets.GCP_DOCKER_REPO }}/core
+            -repo=${{ secrets.GCP_DOCKER_REPO }}/slack
