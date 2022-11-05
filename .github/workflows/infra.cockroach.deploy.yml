@@ -2,6 +2,7 @@ name: infra cockroach deploy
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   deploy:
