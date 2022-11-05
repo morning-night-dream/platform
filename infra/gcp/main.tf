@@ -2,7 +2,7 @@ provider "google" {
   # Project ID
   project     = var.project_id
   credentials = var.gcp_credentials
-  zone        = asia-northeast1
+  zone        = "asia-northeast1"
 }
 
 # GCP credentials 
