@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   push:
 
+defaults:
+  run:
+    working-directory: ./infra/gcp
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -11,11 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Set up
+        uses: ./.github/actions/infra/setup
 
       - name: Terraform apply
-        working-directory: ./infra/gcp
         run: |
           terraform init
           terraform apply \
@@ -24,3 +27,8 @@ jobs:
             -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
             -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
             -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}'
+
+      - name: Upload .tfstate file to GCS
+        run: |
+          gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/gcp/terraform.tfstate
+          gcloud storage cp terraform.tfstate.backup gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/gcp/terraform.tfstate.backup

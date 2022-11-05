@@ -3,6 +3,10 @@ name: infra cockroach deploy
 on:
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: ./infra/cockroach
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,11 +14,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Set up
+        uses: ./.github/actions/infra/setup
 
       - name: Terraform apply
-        working-directory: ./infra/cockroach
         env: 
           COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
         run: |
@@ -24,3 +27,8 @@ jobs:
             -var='cluster_name=${{ secrets.COCKROACH_CLUSTER_NAME }}' \
             -var='sql_user_name=${{ secrets.COCKROACH_SQL_USER_NAME }}' \
             -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
+
+      - name: Upload .tfstate file to GCS
+        run: |
+          gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/cockroach/terraform.tfstate
+          gcloud storage cp terraform.tfstate.backup gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/cockroach/terraform.tfstate.backup
