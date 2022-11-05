@@ -2,10 +2,15 @@ name: infra cockroach deploy
 
 on:
   workflow_dispatch:
+  push:
 
 defaults:
   run:
     working-directory: ./infra/cockroach
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:

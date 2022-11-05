@@ -8,6 +8,10 @@ defaults:
   run:
     working-directory: ./infra/gcp
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
