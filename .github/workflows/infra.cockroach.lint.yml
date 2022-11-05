@@ -22,7 +22,7 @@ jobs:
 
       - name: Terraform format
         run: terraform fmt -recursive -check
-      
+
       - name: Terraform check
         env: 
           COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 

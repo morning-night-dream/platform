@@ -1,0 +1,25 @@
+name: infra gcp deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform apply
+        working-directory: ./infra/gcp
+        run: |
+          terraform init
+          terraform apply \
+            -auto-approve \
+            -var='gcp_credentials=${{ secrets.GCP_CREDENTIALS }}' \
+            -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
+            -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
+            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}'
