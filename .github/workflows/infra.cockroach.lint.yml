@@ -1,0 +1,33 @@
+name: infra cockroach lint
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/infra.cockroach.lint.yml
+      - infra/cockroach/*
+
+defaults:
+  run:
+    working-directory: ./infra/cockroach
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform format
+        run: terraform fmt -recursive -check
+      
+      - name: Terraform check
+        run: |
+          terraform init
+          terraform validate
+          terraform plan \
+            -var='cluster_name=${{ secrets.COCKROACH_CLUSTER_NAME }}' \
+            -var='sql_user_name=${{ secrets.COCKROACH_SQL_USER_NAME }}' \
+            -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
