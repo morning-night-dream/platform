@@ -36,6 +36,7 @@ jobs:
           terraform init
           terraform apply \
             -auto-approve \
+            -var='project_prefix=mndp' \
             -var='gcp_credentials=${{ secrets.GCP_CREDENTIALS }}' \
             -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
             -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
