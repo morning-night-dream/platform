@@ -2,7 +2,6 @@ name: infra gcp deploy
 
 on:
   workflow_dispatch:
-  push:
 
 defaults:
   run:
