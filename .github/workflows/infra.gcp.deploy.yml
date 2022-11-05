@@ -1,4 +1,4 @@
-name: infra cockroach deploy
+name: infra gcp deploy
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./infra/cockroach
+    working-directory: ./infra/gcp
 
 permissions:
   id-token: write
@@ -29,18 +29,17 @@ jobs:
 
       # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
       - name: Download .tfstate file from GCS
-        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/cockroach/terraform.tfstate terraform.tfstate
+        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/gcp/terraform.tfstate terraform.tfstate
 
       - name: Terraform apply
-        env: 
-          COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
         run: |
           terraform init
           terraform apply \
             -auto-approve \
-            -var='cluster_name=${{ secrets.COCKROACH_CLUSTER_NAME }}' \
-            -var='sql_user_name=${{ secrets.COCKROACH_SQL_USER_NAME }}' \
-            -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
+            -var='gcp_credentials=${{ secrets.GCP_CREDENTIALS }}' \
+            -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
+            -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
+            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}'
 
       - name: Upload .tfstate file to GCS
-        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/cockroach/terraform.tfstate
+        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/gcp/terraform.tfstate

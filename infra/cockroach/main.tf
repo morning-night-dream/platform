@@ -46,7 +46,7 @@ provider "cockroach" {
   # export COCKROACH_API_KEY with the cockroach cloud API Key
 }
 
-resource "cockroach_cluster" "cockroach" {
+resource "cockroach_cluster" "mndp_core_db" {
   name           = var.cluster_name
   cloud_provider = var.cloud_provider
   serverless = {
@@ -55,8 +55,8 @@ resource "cockroach_cluster" "cockroach" {
   regions = [for r in var.cloud_provider_regions : { name = r }]
 }
 
-resource "cockroach_sql_user" "cockroach" {
-  id       = cockroach_cluster.cockroach.id
+resource "cockroach_sql_user" "mndp_core_db" {
+  id       = cockroach_cluster.mndp_core_db.id
   name     = var.sql_user_name
   password = var.sql_user_password
 }
