@@ -17,6 +17,9 @@ jobs:
 
       - name: Set up
         uses: ./.github/actions/infra/setup
+        with:
+          workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: Terraform apply
         run: |
