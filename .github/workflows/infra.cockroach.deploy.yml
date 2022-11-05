@@ -2,7 +2,6 @@ name: infra cockroach deploy
 
 on:
   workflow_dispatch:
-  push:
 
 jobs:
   deploy:
@@ -14,7 +13,7 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Deploy
+      - name: Terraform apply
         working-directory: ./infra/cockroach
         env: 
           COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
