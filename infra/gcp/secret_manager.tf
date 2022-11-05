@@ -1,4 +1,4 @@
-resource "google_secret_manager_secret" "secret-mndp-core-api-key" {
+resource "google_secret_manager_secret" "secret_mndp_core_api_key" {
   secret_id = "mndp-core-api-key"
 
   labels = {
@@ -10,13 +10,13 @@ resource "google_secret_manager_secret" "secret-mndp-core-api-key" {
   }
 }
 
-resource "google_secret_manager_secret_version" "secret-mndp-core-api-key-version" {
+resource "google_secret_manager_secret_version" "secret_mndp_core_api_key_version" {
   secret = google_secret_manager_secret.secret-mndp-core-api-key.id
 
   secret_data = var.secret_core_api_key
 }
 
-resource "google_secret_manager_secret" "secret-mndp-core-database-url" {
+resource "google_secret_manager_secret" "secret_mndp_core_database_url" {
   secret_id = "mndp-core-database-url"
 
   labels = {
@@ -28,7 +28,7 @@ resource "google_secret_manager_secret" "secret-mndp-core-database-url" {
   }
 }
 
-resource "google_secret_manager_secret_version" "secret-mndp-core-database-url-version" {
+resource "google_secret_manager_secret_version" "secret_mndp_core_database_url_version" {
   secret = google_secret_manager_secret.secret-mndp-core-database-url.id
 
   secret_data = var.secret_core_database_url
