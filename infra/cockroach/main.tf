@@ -40,7 +40,7 @@ provider "cockroach" {
   # export COCKROACH_API_KEY with the cockroach cloud API Key
 }
 
-resource "cockroach_cluster" "core_db_cluster" {
+resource "cockroach_cluster" "core_db" {
   name           = "${var.project_prefix}-core-db"
   cloud_provider = var.cloud_provider
   serverless = {
