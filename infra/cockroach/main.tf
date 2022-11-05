@@ -7,15 +7,9 @@ terraform {
   }
 }
 
-variable "cluster_name" {
-  type     = string
-  nullable = false
-}
-
-variable "sql_user_name" {
-  type     = string
-  nullable = false
-  default  = "maxroach"
+variable "project_prefix" {
+  description = "profect prefix"
+  type        = string
 }
 
 variable "sql_user_password" {
@@ -46,8 +40,8 @@ provider "cockroach" {
   # export COCKROACH_API_KEY with the cockroach cloud API Key
 }
 
-resource "cockroach_cluster" "mndp_core_db" {
-  name           = var.cluster_name
+resource "cockroach_cluster" "core_db" {
+  name           = "${var.project_prefix}-core-db"
   cloud_provider = var.cloud_provider
   serverless = {
     spend_limit = var.serverless_spend_limit
@@ -55,8 +49,8 @@ resource "cockroach_cluster" "mndp_core_db" {
   regions = [for r in var.cloud_provider_regions : { name = r }]
 }
 
-resource "cockroach_sql_user" "mndp_core_db" {
-  id       = cockroach_cluster.mndp_core_db.id
-  name     = var.sql_user_name
+resource "cockroach_sql_user" "core_db_user" {
+  id       = cockroach_cluster.core_db.id
+  name     = "${var.project_prefix}-core-db"
   password = var.sql_user_password
 }

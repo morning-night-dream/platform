@@ -41,6 +41,5 @@ jobs:
           terraform init
           terraform validate
           terraform plan \
-            -var='cluster_name=${{ secrets.COCKROACH_CLUSTER_NAME }}' \
-            -var='sql_user_name=${{ secrets.COCKROACH_SQL_USER_NAME }}' \
+            -var='project_prefix=mndp' \
             -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'

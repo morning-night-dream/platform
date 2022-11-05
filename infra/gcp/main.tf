@@ -5,6 +5,12 @@ provider "google" {
   zone        = "asia-northeast1"
 }
 
+# Profect prefix
+variable "project_prefix" {
+  description = "GCP profect prefix"
+  type        = string
+}
+
 # GCP credentials 
 variable "gcp_credentials" {
   description = "GCP Credentials"
