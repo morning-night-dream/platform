@@ -25,6 +25,10 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
+      - name: Download .tfstate file from GCS
+        run: |
+          gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/cockroach/terraform.tfstate terraform.tfstate
+
       - name: Terraform apply
         env: 
           COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
