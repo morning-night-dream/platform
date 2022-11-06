@@ -43,4 +43,7 @@ jobs:
             -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
             -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
             -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
-            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}'
+            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}' \
+            -var='git_repository_owner=${{ github.repository_owner }}' \
+            -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
+            -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
