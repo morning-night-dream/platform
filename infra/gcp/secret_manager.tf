@@ -1,5 +1,5 @@
 resource "google_secret_manager_secret" "secret_core_api_key" {
-  secret_id = "${var.project_prefix}-core-api-key"
+  secret_id = "${var.project_prefix}-${var.project_env}-core-api-key"
 
   labels = {
     label = var.project_prefix
@@ -17,7 +17,7 @@ resource "google_secret_manager_secret_version" "secret_core_api_key_version" {
 }
 
 resource "google_secret_manager_secret" "secret_core_database_url" {
-  secret_id = "${var.project_prefix}-core-database-url"
+  secret_id = "${var.project_prefix}-${var.project_env}-core-database-url"
 
   labels = {
     label = var.project_prefix

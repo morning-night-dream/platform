@@ -27,16 +27,14 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
+      - name: Terraform format
+        run: terraform fmt -recursive -check
+
       # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
       - name: Download .tfstate file from GCS
         run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prev/cockroach/terraform.tfstate terraform.tfstate
 
-      - name: Terraform format
-        run: terraform fmt -recursive -check
-
       - name: Terraform init
-        env: 
-          COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
         run: terraform init
 
       - name: Terraform validate

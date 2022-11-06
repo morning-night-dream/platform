@@ -1,10 +1,13 @@
 name: infra gcp deploy
 
 on:
-  workflow_dispatch:
-  # workflow_dispatchはmainブランチでしか実行できない
-  # 初回実行時にはコメントアウトを解除しpush時に実行されるようにする
-  # push:
+  push:
+    # 動作確認をしたい場合は以下の条件をコメントアウトする
+    branches:
+      - "main"
+    paths:
+      - .github/workflows/infra.gcp.deploy.yml
+      - infra/gcp/*
 
 defaults:
   run:
@@ -31,12 +34,15 @@ jobs:
       - name: Download .tfstate file from GCS
         run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/gcp/terraform.tfstate terraform.tfstate
 
+      - name: Terraform init
+        run: terraform init
+
       - name: Terraform apply
         run: |
-          terraform init
           terraform apply \
             -auto-approve \
             -var='project_prefix=mndp' \
+            -var='project_env=prod' \
             -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
             -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
             -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
