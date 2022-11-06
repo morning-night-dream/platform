@@ -29,7 +29,7 @@ jobs:
 
       # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
       - name: Download .tfstate file from GCS
-        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/cockroach/terraform.tfstate terraform.tfstate
+        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/cockroach/terraform.tfstate terraform.tfstate
 
       - name: Terraform apply
         env: 
