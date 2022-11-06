@@ -1,5 +1,5 @@
 resource "google_service_account" "cloud_build_invoker" {
-  account_id   = "${var.project_prefix}-cloud-build-invoker"
+  account_id   = "${var.project_prefix}-${var.project_env}-cloud-build-invoker"
   display_name = "A service account for cloud build invoke"
 }
 
@@ -30,7 +30,7 @@ resource "google_project_iam_member" "cloud_build_invoker_service_run_admin" {
 }
 
 resource "google_service_account" "cloud_run_invoker" {
-  account_id   = "${var.project_prefix}-cloud-run-invoker"
+  account_id   = "${var.project_prefix}-${var.project_env}-cloud-run-invoker"
   display_name = "A service account for cloud run invoke"
 }
 

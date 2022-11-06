@@ -1,13 +1,10 @@
-name: infra gcp deploy
+name: infra gcp preview
 
 on:
-  push:
-    # 動作確認をしたい場合は以下の条件をコメントアウトする
-    # branches:
-    #   - "main"
-    # paths:
-    #   - .github/workflows/infra.gcp.deploy.yml
-    #   - infra/gcp/*
+  pull_request:
+    paths:
+      - .github/workflows/infra.gcp.preview.yml
+      - infra/gcp/*
 
 defaults:
   run:
@@ -18,7 +15,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  preview:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,19 +27,38 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
+      - name: Terraform format
+        run: terraform fmt -recursive -check
+
       # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
-      - name: Download .tfstate file from GCS
-        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/gcp/terraform.tfstate terraform.tfstate
+      # - name: Download .tfstate file from GCS
+      #   run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prev/gcp/terraform.tfstate terraform.tfstate
 
       - name: Terraform init
         run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        run: |
+          terraform plan \
+            -var='project_prefix=mndp' \
+            -var='project_env=prev' \
+            -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
+            -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
+            -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
+            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}' \
+            -var='git_repository_owner=${{ github.repository_owner }}' \
+            -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
+            -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
 
       - name: Terraform apply
         run: |
           terraform apply \
             -auto-approve \
             -var='project_prefix=mndp' \
-            -var='project_env=prod' \
+            -var='project_env=prev' \
             -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
             -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
             -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
@@ -52,4 +68,4 @@ jobs:
             -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
 
       - name: Upload .tfstate file to GCS
-        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/gcp/terraform.tfstate
+        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prev/gcp/terraform.tfstate

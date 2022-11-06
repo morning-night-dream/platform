@@ -11,6 +11,12 @@ variable "project_prefix" {
   type        = string
 }
 
+# Profect env
+variable "project_env" {
+  description = "GCP profect env"
+  type        = string
+}
+
 # GCP credentials File Path
 variable "gcp_credentials_file_path" {
   description = "File Path to GCP Credentials"
