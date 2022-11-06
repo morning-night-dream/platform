@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   # workflow_dispatchはmainブランチでしか実行できない
   # 初回実行時にはコメントアウトを解除しpush時に実行されるようにする
-  # push:
+  push:
 
 defaults:
   run:
@@ -42,4 +42,4 @@ jobs:
             -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
 
       - name: Upload .tfstate file to GCS
-        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/cockroach/terraform.tfstate
+        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/cockroach/terraform.tfstate
