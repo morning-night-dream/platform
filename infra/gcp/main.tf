@@ -1,7 +1,7 @@
 provider "google" {
   # Project ID
   project     = var.project_id
-  credentials = var.gcp_credentials
+  credentials = file(var.gcp_credentials_file_path)
   zone        = "asia-northeast1"
 }
 
@@ -11,9 +11,9 @@ variable "project_prefix" {
   type        = string
 }
 
-# GCP credentials 
-variable "gcp_credentials" {
-  description = "GCP Credentials"
+# GCP credentials File Path
+variable "gcp_credentials_file_path" {
+  description = "File Path to GCP Credentials"
   type        = string
 }
 
@@ -32,5 +32,23 @@ variable "secret_core_api_key" {
 # データベースURLのシークレット
 variable "secret_core_database_url" {
   description = "Secret: Database URL"
+  type        = string
+}
+
+# Git Repository
+variable "git_repository_name" {
+  description = "Git Repository"
+  type        = string
+}
+
+# Git Repository Owner
+variable "git_repository_owner" {
+  description = "Git Repository Owner"
+  type        = string
+}
+
+# File path to core cloudbuild.yml 
+variable "core_cloud_build_file_path" {
+  description = "File path to core cloudbuild.yml"
   type        = string
 }
