@@ -40,7 +40,7 @@ jobs:
           terraform validate
           terraform plan \
             -var='project_prefix=mndp' \
-            -var='gcp_credentials=${{ secrets.GCP_CREDENTIALS }}' \
+            -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
             -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
             -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
             -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}'
