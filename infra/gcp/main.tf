@@ -1,7 +1,7 @@
 provider "google" {
   # Project ID
   project     = var.project_id
-  credentials = var.gcp_credentials
+  credentials = file(var.gcp_credentials_file_path)
   zone        = "asia-northeast1"
 }
 
@@ -11,9 +11,9 @@ variable "project_prefix" {
   type        = string
 }
 
-# GCP credentials 
-variable "gcp_credentials" {
-  description = "GCP Credentials"
+# GCP credentials File Path
+variable "gcp_credentials_file_path" {
+  description = "File Path to GCP Credentials"
   type        = string
 }
 
