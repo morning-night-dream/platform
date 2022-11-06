@@ -12,6 +12,11 @@ variable "project_prefix" {
   type        = string
 }
 
+variable "project_env" {
+  description = "profect env"
+  type        = string
+}
+
 variable "sql_user_password" {
   type      = string
   nullable  = false
@@ -41,7 +46,7 @@ provider "cockroach" {
 }
 
 resource "cockroach_cluster" "core_db" {
-  name           = "${var.project_prefix}-core-db"
+  name           = "${var.project_prefix}-${var.project_env}-core-db"
   cloud_provider = var.cloud_provider
   serverless = {
     spend_limit = var.serverless_spend_limit
@@ -51,6 +56,6 @@ resource "cockroach_cluster" "core_db" {
 
 resource "cockroach_sql_user" "core_db_user" {
   id       = cockroach_cluster.core_db.id
-  name     = "${var.project_prefix}-core-db"
+  name     = "${var.project_prefix}-${var.project_env}-core-db"
   password = var.sql_user_password
 }

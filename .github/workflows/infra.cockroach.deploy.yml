@@ -1,10 +1,9 @@
 name: infra cockroach deploy
 
 on:
-  workflow_dispatch:
-  # workflow_dispatchはmainブランチでしか実行できない
-  # 初回実行時にはコメントアウトを解除しpush時に実行されるようにする
-  # push:
+  push:
+    # branches:
+    #   - "main"
 
 defaults:
   run:
@@ -31,15 +30,17 @@ jobs:
       - name: Download .tfstate file from GCS
         run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/cockroach/terraform.tfstate terraform.tfstate
 
+      - name: Terraform init
+        run: terraform init
+
       - name: Terraform apply
         env: 
           COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
-        run: |
-          terraform init
-          terraform apply \
-            -auto-approve \
-            -var='project_prefix=mndp' \
-            -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
+        run: terraform apply \
+              -auto-approve \
+              -var='project_prefix=mndp' \
+              -var='project_env=prod' \
+              -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
 
       - name: Upload .tfstate file to GCS
         run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/cockroach/terraform.tfstate
