@@ -34,12 +34,17 @@ jobs:
       - name: Download .tfstate file from GCS
         run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/cockroach/terraform.tfstate terraform.tfstate
 
-      - name: Terraform check
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
         env: 
           COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
         run: |
-          terraform init
-          terraform validate
           terraform plan \
             -var='project_prefix=mndp' \
-            -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
+            -var='project_env=prod' \
+            -var='sql_user_password=${{ secrets.COCKROACH_PROD_SQL_USER_PASSWORD }}'

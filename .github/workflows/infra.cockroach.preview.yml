@@ -1,0 +1,65 @@
+name: infra cockroach preview
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/infra.cockroach.preview.yml
+      - infra/cockroach/*
+
+defaults:
+  run:
+    working-directory: ./infra/cockroach
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up
+        uses: ./.github/actions/infra/setup
+        with:
+          workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
+      - name: Download .tfstate file from GCS
+        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prev/cockroach/terraform.tfstate terraform.tfstate
+
+      - name: Terraform format
+        run: terraform fmt -recursive -check
+
+      - name: Terraform init
+        env: 
+          COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        env: 
+          COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
+        run: |
+          terraform plan \
+            -var='project_prefix=mndp' \
+            -var='project_env=prev' \
+            -var='sql_user_password=${{ secrets.COCKROACH_PREV_SQL_USER_PASSWORD }}'
+
+      - name: Terraform apply
+        env: 
+          COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
+        run: |
+          terraform apply \
+            -auto-approve \
+            -var='project_prefix=mndp' \
+            -var='project_env=prev' \
+            -var='sql_user_password=${{ secrets.COCKROACH_PREV_SQL_USER_PASSWORD }}'
+
+      - name: Upload .tfstate file to GCS
+        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prev/cockroach/terraform.tfstate
