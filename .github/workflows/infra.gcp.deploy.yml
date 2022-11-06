@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   # workflow_dispatchはmainブランチでしか実行できない
   # 初回実行時にはコメントアウトを解除しpush時に実行されるようにする
-  push:
+  # push:
 
 defaults:
   run:
