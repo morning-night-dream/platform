@@ -47,4 +47,4 @@ jobs:
           terraform plan \
             -var='project_prefix=mndp' \
             -var='project_env=prod' \
-            -var='sql_user_password=${{ secrets.COCKROACH_SQL_USER_PASSWORD }}'
+            -var='sql_user_password=${{ secrets.COCKROACH_PROD_SQL_USER_PASSWORD }}'
