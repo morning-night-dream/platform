@@ -29,7 +29,7 @@ jobs:
 
       # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
       - name: Download .tfstate file from GCS
-        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/gcp/terraform.tfstate terraform.tfstate
+        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/gcp/terraform.tfstate terraform.tfstate
 
       - name: Terraform apply
         run: |
@@ -46,4 +46,4 @@ jobs:
             -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
 
       - name: Upload .tfstate file to GCS
-        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/gcp/terraform.tfstate
+        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/gcp/terraform.tfstate
