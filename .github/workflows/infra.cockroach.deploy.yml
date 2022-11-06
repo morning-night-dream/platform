@@ -2,8 +2,8 @@ name: infra cockroach deploy
 
 on:
   push:
-    # branches:
-    #   - "main"
+    branches:
+      - "main"
 
 defaults:
   run:
