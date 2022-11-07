@@ -7,7 +7,7 @@ on:
       - "main"
     paths:
       - .github/workflows/infra.gcp.deploy.yml
-      - .github/actions/infra/deploy/action.yml
+      - .github/actions/infra/deploy/gcp/action.yml
       - infra/gcp/*
 
 defaults:
@@ -32,7 +32,7 @@ jobs:
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       
       - name: Deploy
-        uses: ./.github/actions/infra/deploy
+        uses: ./.github/actions/infra/deploy/gcp
         with:
           project_env: prod
           # この環境へのデプロイが初回の時のみコメントアウトを外す
