@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/infra.gcp.lint.yml
+      - ./.github/actions/infra/deploy/action.yml
       - infra/gcp/*
 
 defaults:
