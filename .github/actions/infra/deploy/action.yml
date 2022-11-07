@@ -45,6 +45,12 @@ runs:
       run: terraform init
       working-directory: ${{ inputs.working-directory }}
     
+    - name: Terraform format
+      if: ${{ inputs.lint == 'true' }}
+      shell: sh
+      run: terraform fmt -recursive -check
+      working-directory: ${{ inputs.working-directory }}
+    
     - name: Terraform validate
       if: ${{ inputs.lint == 'true' }}
       shell: sh
