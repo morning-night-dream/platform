@@ -11,8 +11,8 @@ inputs:
   lint:
     description: "whether to lint. true/false. default true."
     default: 'true'
-  first_deploy:
-    description: "whether deploy to this env is first time. true/false. default false."
+  download_tfstate:
+    description: "whether download tfstate. true/false. default false."
     default: 'false'
   gcp_cloud_storage_terraform_bucket:
     description: "name of google cloud storage bucket for tfstate"
@@ -31,8 +31,7 @@ runs:
   using: composite
   steps:
     - name: Download .tfstate file from GCS
-      # 初回の場合は.tfstateファイルが存在せずエラーとなるので、初回でない時のみ実行する
-      if: ${{ inputs.first_deploy == 'false' }}
+      if: ${{ inputs.download_tfstate == 'true' }}
       shell: sh
       run: gcloud storage cp gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/cockroach/terraform.tfstate terraform.tfstate
       working-directory: ${{ inputs.working-directory }}
