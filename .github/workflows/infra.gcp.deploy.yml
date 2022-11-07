@@ -7,7 +7,7 @@ on:
       - "main"
     paths:
       - .github/workflows/infra.gcp.deploy.yml
-      - ./.github/actions/infra/deploy/action.yml
+      - .github/actions/infra/deploy/action.yml
       - infra/gcp/*
 
 defaults:
