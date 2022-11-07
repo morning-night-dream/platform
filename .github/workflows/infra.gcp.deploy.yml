@@ -29,27 +29,11 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-      # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
-      - name: Download .tfstate file from GCS
-        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/gcp/terraform.tfstate terraform.tfstate
-
-      - name: Terraform init
-        run: terraform init
-
-      - name: Terraform apply
-        run: |
-          terraform apply \
-            -auto-approve \
-            -var='project_prefix=mndp' \
-            -var='project_env=prod' \
-            -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
-            -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
-            -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
-            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}' \
-            -var='git_repository_owner=${{ github.repository_owner }}' \
-            -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
-            -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
-
-      - name: Upload .tfstate file to GCS
-        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/gcp/terraform.tfstate
+      
+      - name: Deploy
+        uses: ./.github/actions/infra/deploy
+        with:
+          project_env: prod
+          gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          secret_core_api_key: ${{ secrets.GCP_CORE_API_KEY }}
+          secret_core_database_url: ${{ secrets.GCP_CORE_DATABASE_URL }}

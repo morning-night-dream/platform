@@ -1,0 +1,52 @@
+name: deproy terraform infra
+description: deploy terraform infra. you should execute infra/setup action before.
+
+inputs:
+  project_env:
+    description: "project env. ex. prod"
+    required: true
+  first_deploy:
+    description: "whether deploy to this env is first time. true/false. default false."
+    default: 'false'
+  gcp_project_id:
+    description: "gcp project id"
+    required: true
+  secret_core_api_key:
+    description: "secret of core api key"
+    required: true
+  secret_core_database_url:
+    description: "secret of database url"
+    required: true
+
+
+runs:
+  using: composite
+  steps:
+    - name: Download .tfstate file from GCS
+      # 初回の場合は.tfstateファイルが存在せずエラーとなるのでスキップする
+      if: ${{ !inputs.first_deploy }}
+      shell: sh
+      run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/${{ inputs.project_env }}/gcp/terraform.tfstate terraform.tfstate
+
+    - name: Terraform init
+      shell: sh
+      run: terraform init
+
+    - name: Terraform apply
+      shell: sh
+      run: |
+        terraform apply \
+          -auto-approve \
+          -var='project_prefix=mndp' \
+          -var='project_env=${{ inputs.project_env }}' \
+          -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
+          -var='project_id=${{ inputs.gcp_project_id }}' \
+          -var='secret_core_api_key=${{ inputs.secret_core_api_key }}' \
+          -var='secret_core_database_url=${{ inputs.secret_core_database_url }}' \
+          -var='git_repository_owner=${{ github.repository_owner }}' \
+          -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
+          -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
+
+    - name: Upload .tfstate file to GCS
+      shell: sh
+      run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/${{ inputs.project_env }}/gcp/terraform.tfstate
