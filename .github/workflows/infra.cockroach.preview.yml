@@ -31,7 +31,7 @@ jobs:
       - name: Preview Deploy
         uses: ./.github/actions/infra/deploy/cockroach
         with:
-          project_env: prod
+          project_env: prev
           # この環境へのデプロイが初回の場合は.tfstateファイルが存在せずエラーとなるので、falseにセットする
           download_tfstate: true
           lint: true
