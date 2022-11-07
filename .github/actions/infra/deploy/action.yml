@@ -11,6 +11,9 @@ inputs:
   gcp_project_id:
     description: "gcp project id"
     required: true
+  gcp_cloud_storage_terraform_bucket:
+    description: "name of google cloud storage bucket for tfstate"
+    required: true
   secret_core_api_key:
     description: "secret of core api key"
     required: true
@@ -26,7 +29,7 @@ runs:
       # 初回の場合は.tfstateファイルが存在せずエラーとなるのでスキップする
       if: ${{ !inputs.first_deploy }}
       shell: sh
-      run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/${{ inputs.project_env }}/gcp/terraform.tfstate terraform.tfstate
+      run: gcloud storage cp gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/gcp/terraform.tfstate terraform.tfstate
 
     - name: Terraform init
       shell: sh
@@ -49,4 +52,4 @@ runs:
 
     - name: Upload .tfstate file to GCS
       shell: sh
-      run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/${{ inputs.project_env }}/gcp/terraform.tfstate
+      run: gcloud storage cp terraform.tfstate gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/gcp/terraform.tfstate
