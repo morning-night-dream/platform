@@ -28,8 +28,8 @@ runs:
   using: composite
   steps:
     - name: Download .tfstate file from GCS
-      # 初回の場合は.tfstateファイルが存在せずエラーとなるのでスキップする
-      if: ${{ !inputs.first_deploy }}
+      # 初回の場合は.tfstateファイルが存在せずエラーとなるので、初回でない時のみ実行する
+      if: ${{ inputs.first_deploy == 'false' }}
       shell: sh
       run: gcloud storage cp gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/gcp/terraform.tfstate terraform.tfstate
       working-directory: ${{ inputs.working-directory }}
