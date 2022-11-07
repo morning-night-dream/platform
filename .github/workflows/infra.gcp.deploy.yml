@@ -39,6 +39,7 @@ jobs:
           # first_deploy: true
           # 運用環境へのデプロイ時はlintは実施しない
           lint: false
+          deploy: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_cloud_storage_terraform_bucket: ${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}
           secret_core_api_key: ${{ secrets.GCP_CORE_API_KEY }}

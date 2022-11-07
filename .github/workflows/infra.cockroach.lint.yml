@@ -35,6 +35,7 @@ jobs:
           # この環境へのデプロイが初回の時のみコメントアウトを外す
           # first_deploy: true
           # lint のみ実施する
+          lint: true
           deploy: false
           gcp_cloud_storage_terraform_bucket: ${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}
           secret_cockroach_api_key: ${{ secrets.COCKROACH_API_KEY }} 

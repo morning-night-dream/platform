@@ -39,6 +39,7 @@ jobs:
           # first_deploy: true
           # 運用環境へのデプロイ時はlintは実施しない
           lint: false
+          deploy: true
           gcp_cloud_storage_terraform_bucket: ${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}
           secret_cockroach_api_key: ${{ secrets.COCKROACH_API_KEY }} 
           secret_cockroach_sql_user_password: ${{ secrets.COCKROACH_PROD_SQL_USER_PASSWORD }}
