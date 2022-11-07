@@ -56,7 +56,6 @@ runs:
       working-directory: ${{ inputs.working-directory }}          
 
     - name: Upload .tfstate file to GCS
-      if: ${{ false }}
       shell: sh
       run: gcloud storage cp terraform.tfstate gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/gcp/terraform.tfstate
       working-directory: ${{ inputs.working-directory }}
