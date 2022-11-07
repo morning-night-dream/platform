@@ -20,7 +20,9 @@ inputs:
   secret_core_database_url:
     description: "secret of database url"
     required: true
-
+  working-directory:
+    description: "working directory"
+    default: ""
 
 runs:
   using: composite
@@ -30,10 +32,12 @@ runs:
       if: ${{ !inputs.first_deploy }}
       shell: sh
       run: gcloud storage cp gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/gcp/terraform.tfstate terraform.tfstate
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Terraform init
       shell: sh
       run: terraform init
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Terraform apply
       shell: sh
@@ -49,7 +53,9 @@ runs:
           -var='git_repository_owner=${{ github.repository_owner }}' \
           -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
           -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
+      working-directory: ${{ inputs.working-directory }}          
 
     - name: Upload .tfstate file to GCS
       shell: sh
       run: gcloud storage cp terraform.tfstate gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/gcp/terraform.tfstate
+      working-directory: ${{ inputs.working-directory }}
