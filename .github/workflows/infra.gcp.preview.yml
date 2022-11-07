@@ -30,7 +30,7 @@ jobs:
       - name: Terraform format
         run: terraform fmt -recursive -check
 
-      - name: Lint
+      - name: Preview Deploy
         uses: ./.github/actions/infra/deploy
         with:
           project_env: prev
