@@ -5,6 +5,12 @@ inputs:
   project_env:
     description: "project env. ex. prod"
     required: true
+  deploy:
+    description: "whether to deploy. true/false. default true."
+    default: 'true'
+  lint:
+    description: "whether to lint. true/false. default true."
+    default: 'true'
   first_deploy:
     description: "whether deploy to this env is first time. true/false. default false."
     default: 'false'
@@ -38,8 +44,31 @@ runs:
       shell: sh
       run: terraform init
       working-directory: ${{ inputs.working-directory }}
+    
+    - name: Terraform validate
+      if: ${{ inputs.lint == 'true' }}
+      shell: sh
+      run: terraform validate
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Terraform plan
+      if: ${{ inputs.lint == 'true' }}
+      shell: sh
+      run: |
+        terraform plan \
+          -var='project_prefix=mndp' \
+          -var='project_env=${{ inputs.project_env }}' \
+          -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
+          -var='project_id=${{ inputs.gcp_project_id }}' \
+          -var='secret_core_api_key=${{ inputs.secret_core_api_key }}' \
+          -var='secret_core_database_url=${{ inputs.secret_core_database_url }}' \
+          -var='git_repository_owner=${{ github.repository_owner }}' \
+          -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
+          -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Terraform apply
+      if: ${{ inputs.deploy == 'true' }}
       shell: sh
       run: |
         terraform apply \
@@ -56,6 +85,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}          
 
     - name: Upload .tfstate file to GCS
+      if: ${{ inputs.deploy == 'true' }}
       shell: sh
       run: gcloud storage cp terraform.tfstate gs://${{ inputs.gcp_cloud_storage_terraform_bucket }}/${{ inputs.project_env }}/gcp/terraform.tfstate
       working-directory: ${{ inputs.working-directory }}
