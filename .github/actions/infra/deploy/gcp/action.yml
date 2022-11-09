@@ -26,6 +26,8 @@ inputs:
   secret_core_database_url:
     description: "secret of database url"
     required: true
+  cloudbuild_file_path:
+    description: "path to cloudbuild.yaml"
   working-directory:
     description: "working directory"
     default: ""
@@ -69,7 +71,7 @@ runs:
           -var='secret_core_database_url=${{ inputs.secret_core_database_url }}' \
           -var='git_repository_owner=${{ github.repository_owner }}' \
           -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
-          -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
+          -var='core_cloud_build_file_path=${{ inputs.cloudbuild_file_path }}'
       working-directory: ${{ inputs.working-directory }}
 
     - name: Terraform apply
@@ -86,7 +88,7 @@ runs:
           -var='secret_core_database_url=${{ inputs.secret_core_database_url }}' \
           -var='git_repository_owner=${{ github.repository_owner }}' \
           -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
-          -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
+          -var='core_cloud_build_file_path=${{ inputs.cloudbuild_file_path }}'
       working-directory: ${{ inputs.working-directory }}          
 
     - name: Upload .tfstate file to GCS
