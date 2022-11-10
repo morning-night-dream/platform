@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/infra.gcp.preview.yml
+      - .github/actions/infra/deploy/gcp/action.yml
       - infra/gcp/*
 
 defaults:
@@ -27,45 +28,18 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Terraform format
-        run: terraform fmt -recursive -check
+      - name: Preview Deploy
+        uses: ./.github/actions/infra/deploy/gcp
+        with:
+          project_env: prev
+          # この環境へのデプロイが初回の場合は.tfstateファイルが存在せずエラーとなるので、falseにセットする
+          download_tfstate: true
+          lint: true
+          deploy: true
+          gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          gcp_cloud_storage_terraform_bucket: ${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}
+          secret_core_api_key: ${{ secrets.GCP_CORE_API_KEY }}
+          secret_core_database_url: ${{ secrets.GCP_CORE_DATABASE_URL }}
+          cloudbuild_file_path: backend/app/core/cloudbuild.yaml
+          working-directory: ./infra/gcp
 
-      # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
-      - name: Download .tfstate file from GCS
-        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prev/gcp/terraform.tfstate terraform.tfstate
-
-      - name: Terraform init
-        run: terraform init
-
-      - name: Terraform validate
-        run: terraform validate
-
-      - name: Terraform plan
-        run: |
-          terraform plan \
-            -var='project_prefix=mndp' \
-            -var='project_env=prev' \
-            -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
-            -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
-            -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
-            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}' \
-            -var='git_repository_owner=${{ github.repository_owner }}' \
-            -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
-            -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
-
-      - name: Terraform apply
-        run: |
-          terraform apply \
-            -auto-approve \
-            -var='project_prefix=mndp' \
-            -var='project_env=prev' \
-            -var='gcp_credentials_file_path=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}' \
-            -var='project_id=${{ secrets.GCP_PROJECT_ID }}' \
-            -var='secret_core_api_key=${{ secrets.GCP_CORE_API_KEY }}' \
-            -var='secret_core_database_url=${{ secrets.GCP_CORE_DATABASE_URL }}' \
-            -var='git_repository_owner=${{ github.repository_owner }}' \
-            -var="git_repository_name=$(echo ${{ github.repository }} | awk -F'[/]' '{print $2}')" \
-            -var='core_cloud_build_file_path=backend/app/core/cloudbuild.yaml'
-
-      - name: Upload .tfstate file to GCS
-        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prev/gcp/terraform.tfstate

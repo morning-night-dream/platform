@@ -7,6 +7,7 @@ on:
       - "main"
     paths:
       - .github/workflows/infra.cockroach.deploy.yml
+      - .github/actions/infra/deploy/cockroach/action.yml
       - infra/cockroach/*
 
 defaults:
@@ -30,22 +31,16 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      # 初回実行時はコメントアウトする -> .tfstateファイルが存在しないためエラーとなる
-      - name: Download .tfstate file from GCS
-        run: gcloud storage cp gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/cockroach/terraform.tfstate terraform.tfstate
-
-      - name: Terraform init
-        run: terraform init
-
-      - name: Terraform apply
-        env: 
-          COCKROACH_API_KEY: ${{ secrets.COCKROACH_API_KEY }} 
-        run: |
-          terraform apply \
-            -auto-approve \
-            -var='project_prefix=mndp' \
-            -var='project_env=prod' \
-            -var='sql_user_password=${{ secrets.COCKROACH_PROD_SQL_USER_PASSWORD }}'
-
-      - name: Upload .tfstate file to GCS
-        run: gcloud storage cp terraform.tfstate gs://${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}/prod/cockroach/terraform.tfstate
+      - name: Deploy
+        uses: ./.github/actions/infra/deploy/cockroach
+        with:
+          project_env: prod
+          # この環境へのデプロイが初回の場合は.tfstateファイルが存在せずエラーとなるので、falseにセットする
+          download_tfstate: true
+          # 運用環境へのデプロイ時はlintは実施しない
+          lint: false
+          deploy: true
+          gcp_cloud_storage_terraform_bucket: ${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}
+          secret_cockroach_api_key: ${{ secrets.COCKROACH_API_KEY }} 
+          secret_cockroach_sql_user_password: ${{ secrets.COCKROACH_PROD_SQL_USER_PASSWORD }}
+          working-directory: ./infra/cockroach
