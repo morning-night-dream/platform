@@ -1,0 +1,24 @@
+name: renovate
+
+on:
+  push:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get token
+        id: token
+        uses: machine-learning-apps/actions-app-token@master
+        with:
+          APP_PEM: ${{ secrets.RENOVATOR_APP_PEM }}
+          APP_ID: ${{ secrets.RENOVATOR_APP_ID }}
+
+      - name: Self hosted Renovate
+        uses: renovatebot/github-action@v34.22.2
+        with:
+          configurationFile: .github/renovate.json5
+          token: 'x-access-token:${{ steps.token.outputs.app_token }}'
