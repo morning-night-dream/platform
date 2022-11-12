@@ -76,6 +76,7 @@ jobs:
           git checkout $BRANCH_NAME
 
       - name: Update cloudbuild.yaml
+        working-directory: ./backend/app/core
         run: |
           export IMAGE_TAG=${{needs.container.outputs.image_tag}}
           yq '.steps.[2].env.[1]="IMAGE_TAG=" + env(IMAGE_TAG)' cloudbuild.yaml > tmp.yaml && mv tmp.yaml cloudbuild.yaml
