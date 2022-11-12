@@ -50,9 +50,8 @@ jobs:
         run: |
           go install github.com/google/ko@latest
           IMAGE_TAG=v`date +%Y%m%d%H%M%S`
-          IMAGE_NAME=mndp-core
-          echo "::set-output name=image_name_with_tag::${IMAGE_NAME}:${IMAGE_TAG}"
-          KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${IMAGE_NAME} \
+          echo "::set-output name=image_tag::${IMAGE_TAG}"
+          KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/mndp-core \
           SOURCE_DATE_EPOCH=$(date +%s) \
           ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./
 
@@ -75,8 +74,8 @@ jobs:
 
       - name: update manifest
         run: |
-          export IMAGE_NAME_WITH_TAG=${{needs.build.outputs.image_name_with_tag}}
-          yq '.spec.template.spec.containers.[0].image=env(IMAGE_NAME)' deployment.info.yml > tmp.yml && mv tmp.yml deployment.info.yml
+          export IMAGE_TAG=${{needs.build.outputs.image_tag}}
+          yq '.steps.[2].env.[1]="IMAGE_TAG=" + env(IMAGE_TAG)' cloudbuild.yaml > tmp.yaml && mv tmp.yaml cloudbuild.yaml
 
       - name: push
         run: |
@@ -87,6 +86,9 @@ jobs:
           git push --set-upstream origin $BRANCH_NAME
 
       - name: Create release pr
+        env:
+            # ghコマンドが参照している環境変数GH_TOKENに、Githubのトークンをセット
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: | 
           gh pr create \
             --base main \
