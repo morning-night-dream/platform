@@ -15,7 +15,7 @@ require (
 	github.com/lib/pq v1.10.7
 	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/pkg/errors v0.9.1
-	github.com/slack-go/slack v0.11.3
+	github.com/slack-go/slack v0.11.4
 	golang.org/x/crypto v0.1.0
 	google.golang.org/grpc v1.50.1
 )
