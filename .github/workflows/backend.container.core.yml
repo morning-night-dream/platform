@@ -2,8 +2,12 @@ name: backend container core
 
 on:
   push:
-    # tags:
-    #   - v*
+    branches:
+      - main
+    paths:
+      - .github/workflows/backend.container.core.yml
+      - api/**/*.proto
+      - backend/**/*.go
 
 permissions:
   id-token: write
@@ -41,13 +45,11 @@ jobs:
           go generate ./...
           wire gen ./app/core
 
-      - name: Tag
-        run: echo ${GITHUB_REF}
-
       - name: Container build and push
         working-directory: ./backend/app/core
         run: |
           go install github.com/google/ko@latest
           KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/mndp-core \
           SOURCE_DATE_EPOCH=$(date +%s) \
-          ko build --sbom=none --bare --tags=hoge,latest ./
+          IMAGE_TAG=v`date +%Y%m%d%H%M%S` \
+          ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./
