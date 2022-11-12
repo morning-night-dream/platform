@@ -19,7 +19,7 @@ steps:
       - "IMAGE_NAME=mndp-core"
       # Github Actionsにてyqコマンドでこの環境変数の順番を決め打ちで書き換えている。
       # この環境の順番が変わった場合はbackend.container.core.ymlのyqの引数も同時に修正すること
-      - "IMAGE_TAG=latest"
+      - "IMAGE_TAG=v20221112180458"
       - "DOCKER_REPO=gcr.io/$PROJECT_ID"
       - "REVISION_SERVICE_ACCOUNT=$_REVISION_SERVICE_ACCOUNT"
       - "API_KEY=${_API_KEY}:latest"
