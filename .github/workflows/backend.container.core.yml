@@ -16,6 +16,8 @@ permissions:
 jobs:
   container:
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.build-and-push.outputs.image_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -46,6 +48,7 @@ jobs:
           wire gen ./app/core
 
       - name: Container build and push
+        id: build-and-push
         working-directory: ./backend/app/core
         run: |
           go install github.com/google/ko@latest
