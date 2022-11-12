@@ -46,6 +46,7 @@ jobs:
 
       - name: Container build and push
         run: |
+          go install github.com/google/ko@latest
           KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/mndp-core \
           SOURCE_DATE_EPOCH=$(date +%s) \
-          ko build --sbom=none --bare --tags=hoge,latest ./backend/app/core
+          ko build --sbom=none --bare --tags=[hoge,latest] ./backend/app/core
