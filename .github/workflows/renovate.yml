@@ -15,19 +15,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install token
-        id: app
-        uses: getsentry/action-github-app-token@v1
+      - name: Get token
+        id: get_token
+        uses: machine-learning-apps/actions-app-token@master
         with:
-          app_id: ${{ secrets.RENOVATOR_APP_ID }}
-          private_key: ${{ secrets.RENOVATOR_APP_PEM }}
-
-      # - name: Get token
-      #   id: get_token
-      #   uses: machine-learning-apps/actions-app-token@master
-      #   with:
-      #     APP_PEM: ${{ secrets.RENOVATOR_APP_PEM }}
-      #     APP_ID: ${{ secrets.RENOVATOR_APP_ID }}
+          APP_PEM: ${{ secrets.RENOVATOR_APP_PEM }}
+          APP_ID: ${{ secrets.RENOVATOR_APP_ID }}
 
       - name: Self hosted Renovate
         uses: renovatebot/github-action@v34.22.2
