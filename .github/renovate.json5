@@ -3,5 +3,8 @@
   "extends": [
     "config:base",
     "github>aquaproj/aqua-renovate-config#1.2.6"
-  ]
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ] 
 }
