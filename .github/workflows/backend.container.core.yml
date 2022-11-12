@@ -1,0 +1,55 @@
+name: backend container core
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/backend.container.core.yml
+      - api/**/*.proto
+      - backend/**/*.go
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+   
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up gcloud
+        uses: "google-github-actions/setup-gcloud@v0"
+        
+      - name: Docker Authentication
+        run: gcloud auth configure-docker
+
+      - name: Backend setup
+        uses: ./.github/actions/backend/setup
+
+      - name: Generate connect code
+        working-directory: ./api
+        run: buf generate --template buf.backend.gen.yaml
+
+      - name: Generate go code
+        working-directory: ./backend
+        run: |
+          go generate ./...
+          wire gen ./app/core
+
+      - name: Container build and push
+        working-directory: ./backend/app/core
+        run: |
+          go install github.com/google/ko@latest
+          KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/mndp-core \
+          SOURCE_DATE_EPOCH=$(date +%s) \
+          IMAGE_TAG=v`date +%Y%m%d%H%M%S` \
+          ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./
