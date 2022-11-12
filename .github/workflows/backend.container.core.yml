@@ -50,7 +50,7 @@ jobs:
         run: |
           go install github.com/google/ko@latest
           IMAGE_TAG=v`date +%Y%m%d%H%M%S`
-          echo "::set-output name=image_tag::${IMAGE_TAG}"
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
           KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/mndp-core \
           SOURCE_DATE_EPOCH=$(date +%s) \
           ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./
@@ -74,7 +74,7 @@ jobs:
 
       - name: update manifest
         run: |
-          export IMAGE_TAG=${{needs.build.outputs.image_tag}}
+          export IMAGE_TAG=${{needs.container.outputs.image_tag}}
           yq '.steps.[2].env.[1]="IMAGE_TAG=" + env(IMAGE_TAG)' cloudbuild.yaml > tmp.yaml && mv tmp.yaml cloudbuild.yaml
 
       - name: push
