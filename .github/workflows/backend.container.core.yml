@@ -1,0 +1,47 @@
+name: backend container core
+
+on:
+  push:
+    # tags:
+    #   - v*
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+   
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ inputs.workload_identity_provider }}
+          service_account: ${{ inputs.service_account }}
+
+      - name: Set up gcloud
+        uses: "google-github-actions/setup-gcloud@v0"
+        
+      - name: Docker Authentication
+        run: gcloud auth configure-docker
+
+      - name: Backend setup
+        uses: ./.github/actions/backend/setup
+
+      - name: Generate connect code
+        working-directory: ./api
+        run: buf generate --template buf.backend.gen.yaml
+
+      - name: Generate go code
+        working-directory: ./backend
+        run: |
+          go generate ./...
+          wire gen ./app/core
+
+      - name: Tag
+        run: echo ${GITHUB_REF}
+
+      - name: Container build and push
+        run: |
+          KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/mndp-core \
+          SOURCE_DATE_EPOCH=$(date +%s) \
+          ko build --sbom=none --bare --tags=hoge,latest ./backend/app/core
