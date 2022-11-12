@@ -64,7 +64,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: install yq
+      - name: Install yq
         run: sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/bin/yq
 
       - name: checkout branch
@@ -72,12 +72,12 @@ jobs:
           git branch $BRANCH_NAME
           git checkout $BRANCH_NAME
 
-      - name: update manifest
+      - name: Update cloudbuild.yaml
         run: |
           export IMAGE_TAG=${{needs.container.outputs.image_tag}}
           yq '.steps.[2].env.[1]="IMAGE_TAG=" + env(IMAGE_TAG)' cloudbuild.yaml > tmp.yaml && mv tmp.yaml cloudbuild.yaml
 
-      - name: push
+      - name: Git push
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
