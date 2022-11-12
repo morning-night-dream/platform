@@ -49,7 +49,47 @@ jobs:
         working-directory: ./backend/app/core
         run: |
           go install github.com/google/ko@latest
-          KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/mndp-core \
+          IMAGE_TAG=v`date +%Y%m%d%H%M%S`
+          IMAGE_NAME=mndp-core
+          echo "::set-output name=image_name_with_tag::${IMAGE_NAME}:${IMAGE_TAG}"
+          KO_DOCKER_REPO=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${IMAGE_NAME} \
           SOURCE_DATE_EPOCH=$(date +%s) \
-          IMAGE_TAG=v`date +%Y%m%d%H%M%S` \
           ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./
+
+  pr:
+    needs: container
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: release/${{needs.container.outputs.image_tag}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: install yq
+        run: sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/bin/yq
+
+      - name: checkout branch
+        run: |
+          git branch $BRANCH_NAME
+          git checkout $BRANCH_NAME
+
+      - name: update manifest
+        run: |
+          export IMAGE_NAME_WITH_TAG=${{needs.build.outputs.image_name_with_tag}}
+          yq '.spec.template.spec.containers.[0].image=env(IMAGE_NAME)' deployment.info.yml > tmp.yml && mv tmp.yml deployment.info.yml
+
+      - name: push
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "update core container"
+          git push --set-upstream origin $BRANCH_NAME
+
+      - name: Create release pr
+        run: | 
+          gh pr create \
+            --base main \
+            --title "Release core service version ${{needs.build.outputs.image_tag}}" \
+            --body "" \
+            --label "release"
