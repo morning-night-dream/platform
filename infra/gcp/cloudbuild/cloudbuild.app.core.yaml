@@ -8,7 +8,7 @@ steps:
       # IMAGE_NAME、IMAGE_TAGはGithub Actionsにてyqコマンドで順番を決め打ちで書き換えている。
       # 順番が変わった場合はbackend.container.core.ymlで実行しているyqコマンドの引数も同時に修正すること
       - IMAGE_NAME=mndp-core
-      - IMAGE_TAG=latest
+      - IMAGE_TAG=v20221113090143
       - SERVICE_NAME=$_SERVICE_NAME
       - GCP_REPO=gcr.io/$PROJECT_ID
       - REVISION_SERVICE_ACCOUNT=$_REVISION_SERVICE_ACCOUNT
