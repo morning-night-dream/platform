@@ -73,7 +73,7 @@ else
 
   # trigger_build_config_pathのファイルに差分がないときはデプロイしない
   if [ -z $(echo $diff | grep $trigger_build_config_path) ]; then
-    exit 1
+    exit 0
   fi
 
   deploy $service_name $gcr_repo $image_name $image_tag $revision_service_account $api_key $database_url
