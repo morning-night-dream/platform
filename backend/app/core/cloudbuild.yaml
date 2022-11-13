@@ -27,7 +27,7 @@ steps:
     script: |
       gcloud run \
       deploy dream-platform \
-        --image $DOCKER_REPO/$IMAGE_NAME_WITH_TAG \
+        --image $DOCKER_REPO/$IMAGE_NAME:$IMAGE_TAG \
         --region asia-northeast1 \
         --cpu 1 \
         --memory 128Mi \
