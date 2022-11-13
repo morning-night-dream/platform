@@ -91,8 +91,8 @@ jobs:
         run: |
           export IMAGE_NAME=${{needs.container.outputs.image_name}}
           export IMAGE_TAG=${{needs.container.outputs.image_tag}}
-          yq '.steps.[0].env.[0]="IMAGE_NAME=" + env(IMAGE_NAME)' cloudbuild.app.core.yaml > tmp.yaml && mv tmp.yaml cloudbuild.app.core.yaml
-          yq '.steps.[0].env.[1]="IMAGE_TAG=" + env(IMAGE_TAG)' cloudbuild.app.core.yaml > tmp.yaml && mv tmp.yaml cloudbuild.app.core.yaml
+          yq '.steps.[1].env.[2]="IMAGE_NAME=" + env(IMAGE_NAME)' cloudbuild.app.core.yaml > tmp.yaml && mv tmp.yaml cloudbuild.app.core.yaml
+          yq '.steps.[1].env.[3]="IMAGE_TAG=" + env(IMAGE_TAG)' cloudbuild.app.core.yaml > tmp.yaml && mv tmp.yaml cloudbuild.app.core.yaml
 
       - name: Git push
         run: |
