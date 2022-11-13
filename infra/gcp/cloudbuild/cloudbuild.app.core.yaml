@@ -1,6 +1,8 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 steps:
+  - name: gcr.io/cloud-builders/git
+    args: ['fetch', '--unshallow']
   # Github Actionsにてyqコマンドでこのステップの順番を決め打ちで書き換えている。
   # このステップの順番が変わった場合はbackend.container.core.ymlで実行しているyqコマンドの引数も同時に修正すること
   - name: gcr.io/cloud-builders/gcloud
