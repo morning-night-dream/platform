@@ -62,16 +62,8 @@ jobs:
     needs: container
     runs-on: ubuntu-latest
     permissions:
-      actions: write
-      checks: write
       contents: write
-      deployments: write
-      issues: write
-      packages: write
       pull-requests: write
-      repository-projects: write
-      security-events: write
-      statuses: write
     env:
       BRANCH_NAME: release/${{needs.container.outputs.image_tag}}
     steps:
