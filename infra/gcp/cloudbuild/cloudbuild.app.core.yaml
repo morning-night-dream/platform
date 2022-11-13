@@ -12,8 +12,8 @@ steps:
       - SERVICE_NAME=$_SERVICE_NAME
       - GCP_REPO=gcr.io/$PROJECT_ID
       - REVISION_SERVICE_ACCOUNT=$_REVISION_SERVICE_ACCOUNT
-      - API_KEY=${_API_KEY}:latest
-      - DATABASE_URL=${_DATABASE_URL}:latest
+      - API_KEY=${_API_KEY}
+      - DATABASE_URL=${_DATABASE_URL}
     script: |
       gcloud run deploy $SERVICE_NAME \
         --image $GCP_REPO/$IMAGE_NAME:$IMAGE_TAG \
