@@ -69,6 +69,7 @@ if [ -z "$last_successed_commit_hash" ]; then
   # 最後にビルドが成功したcommitが見つけられなかった場合は無条件でデプロイを実行する
   deploy $service_name $gcr_repo $image_name $image_tag $revision_service_account $api_key $database_url
 else
+  git fetch --unshallow
   diff=$(git diff --name-only $last_successed_commit_hash HEAD -- $trigger_build_config_path)
 
   # trigger_build_config_pathのファイルに差分がないときはデプロイしない
