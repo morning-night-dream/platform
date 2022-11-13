@@ -5,22 +5,27 @@ steps:
   # このステップの順番が変わった場合はbackend.container.core.ymlで実行しているyqコマンドの引数も同時に修正すること
   - name: gcr.io/cloud-builders/gcloud
     env:
+      - SERVICE_NAME=$_SERVICE_NAME
+      - GCP_REPO=gcr.io/$PROJECT_ID
       # IMAGE_NAME、IMAGE_TAGはGithub Actionsにてyqコマンドで順番を決め打ちで書き換えている。
       # 順番が変わった場合はbackend.container.core.ymlで実行しているyqコマンドの引数も同時に修正すること
       - IMAGE_NAME=mndp-core
       - IMAGE_TAG=v20221113090143
-      - SERVICE_NAME=$_SERVICE_NAME
-      - GCP_REPO=gcr.io/$PROJECT_ID
       - REVISION_SERVICE_ACCOUNT=$_REVISION_SERVICE_ACCOUNT
       - API_KEY=${_API_KEY}
       - DATABASE_URL=${_DATABASE_URL}
+      - PROJECT_ID=$PROJECT_ID
+      - TRIGGER_NAME=$TRIGGER_NAME
+      - TRIGGER_BUILD_CONFIG_PATH=$TRIGGER_BUILD_CONFIG_PATH
     script: |
-      gcloud run deploy $SERVICE_NAME \
-        --image $GCP_REPO/$IMAGE_NAME:$IMAGE_TAG \
-        --region asia-northeast1 \
-        --cpu 1 \
-        --memory 128Mi \
-        --max-instances 1 \
-        --service-account $REVISION_SERVICE_ACCOUNT \
-        --set-secrets API_KEY=$API_KEY,DATABASE_URL=$DATABASE_URL \
-        --allow-unauthenticated
+      bash infra/gcp/cloudbuild/script/deploy.sh \
+        $SERVICE_NAME \
+        $GCP_REPO \
+        $IMAGE_NAME \
+        $IMAGE_TAG \
+        $REVISION_SERVICE_ACCOUNT \
+        $API_KEY \
+        $DATABASE_URL \
+        $PROJECT_ID \
+        $TRIGGER_NAME \
+        $TRIGGER_BUILD_CONFIG_PATH
