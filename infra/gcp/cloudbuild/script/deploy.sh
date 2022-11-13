@@ -71,11 +71,9 @@ if [ -z "$last_successed_commit_hash" ]; then
 else
   diff=$(git diff --name-only $last_successed_commit_hash HEAD -- $trigger_build_config_path)
 
-  echo "diff of $last_successed_commit_hash and HEAD is $diff. check $trigger_build_config_path"
-  echo `git rev-parse $last_successed_commit_hash`
-
   # trigger_build_config_pathのファイルに差分がないときはデプロイしない
   if [ -z $(echo $diff | grep $trigger_build_config_path) ]; then
+    echo "there is no diff at $trigger_build_config_path. deploy skipped"
     exit 0
   fi
 
