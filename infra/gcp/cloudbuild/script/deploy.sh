@@ -31,6 +31,7 @@ nth_successful_commit() {
   echo "${nth_successful_commit}"
 }
 
+# デプロイを実行する
 deploy() {
   local service_name=$1
   local gcr_repo=$2
