@@ -60,7 +60,7 @@ api_key=$6
 database_url=$7
 project_id=$8
 build_trigger_name=$9
-trigger_build_config_path=$10
+trigger_build_config_path=${10}
 
 # 直近50回のビルドから、実行中のビルドトリガーの最後に成功したcommitを見つける
 last_successed_commit_hash=$(nth_successful_commit 50 "$build_trigger_name" "$project_id")
