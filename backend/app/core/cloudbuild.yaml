@@ -13,12 +13,12 @@ steps:
       wire gen ./app/core
     dir: "backend"
   # Github Actionsにてyqコマンドでこのステップの順番を決め打ちで書き換えている。
-  # このステップの順番が変わった場合はbackend.container.core.ymlのyqの引数も同時に修正すること
+  # このステップの順番が変わった場合はbackend.container.core.ymlで実行しているyqコマンドの引数も同時に修正すること
   - name: "gcr.io/$PROJECT_ID/deployer"
     env:
       - "IMAGE_NAME=mndp-core"
       # Github Actionsにてyqコマンドでこの環境変数の順番を決め打ちで書き換えている。
-      # この環境の順番が変わった場合はbackend.container.core.ymlのyqの引数も同時に修正すること
+      # この環境の順番が変わった場合はbackend.container.core.ymlで実行しているyqコマンドの引数も同時に修正すること
       - "IMAGE_TAG=latest"
       - "DOCKER_REPO=gcr.io/$PROJECT_ID"
       - "REVISION_SERVICE_ACCOUNT=$_REVISION_SERVICE_ACCOUNT"
