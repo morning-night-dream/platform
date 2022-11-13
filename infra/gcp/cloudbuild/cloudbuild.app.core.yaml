@@ -1,6 +1,9 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 steps:
+  # 前回成功した際のcommit hashを取得するために必要
+  # gcloudジョブ内でgit fetch --unshallowしてもなぜか取得できなかったのでジョブを分けた
+  # @see https://github.com/GoogleCloudPlatform/professional-services/blob/main/examples/cloudbuild-selective-deployment/cloudbuild.yaml
   - name: gcr.io/cloud-builders/git
     args: ['fetch', '--unshallow']
   # Github Actionsにてyqコマンドでこのステップの順番を決め打ちで書き換えている。
