@@ -6,3 +6,4 @@ pkg/ent/*.go
 .migrate.sh
 main
 doc
+.env

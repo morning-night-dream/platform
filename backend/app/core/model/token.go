@@ -2,8 +2,11 @@ package model
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -134,4 +137,38 @@ func GenerateToken(userID string) (Token, error) {
 		IDToken:      IDToken{*token},
 		RefreshToken: RefreshToken{*refreshToken},
 	}, nil
+}
+
+type Tokens struct {
+	IDToken      string `json:"idToken"`
+	RefreshToken string `json:"refreshToken"`
+}
+
+type identities struct {
+	UserID string `json:"uid"`
+}
+
+type fb struct {
+	Identities identities `json:"identities"`
+}
+
+type token struct {
+	Firebase fb `json:"firebase"`
+}
+
+func (t Tokens) GetUserID() (string, error) {
+	payload := strings.Split(t.IDToken, ".")[1]
+	decode, err := base64.RawURLEncoding.DecodeString(payload)
+
+	if err != nil {
+		return "", err
+	}
+
+	var p token
+
+	if err := json.Unmarshal(decode, &p); err != nil {
+		return "", err
+	}
+
+	return p.Firebase.Identities.UserID, nil
 }

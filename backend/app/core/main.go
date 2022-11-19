@@ -3,10 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/morning-night-dream/platform/app/core/database"
-	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/handler"
 	"github.com/morning-night-dream/platform/app/core/server"
+	"github.com/morning-night-dream/platform/app/core/store"
 )
 
 func main() {
@@ -14,7 +13,9 @@ func main() {
 
 	secret := os.Getenv("SLACK_SIGNING_SECRET")
 
-	db := database.NewClient(dsn)
+	db := store.NewDatabaseClient(dsn)
+
+	firebase := store.NewFirebaseClient()
 
 	sa := store.NewArticle(db)
 
@@ -22,7 +23,7 @@ func main() {
 
 	sh := handler.NewSlack(secret, sa)
 
-	aua := store.NewAuth(db)
+	aua := store.NewAuth(db, firebase)
 
 	auh := handler.NewAuth(*aua)
 
