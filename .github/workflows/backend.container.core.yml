@@ -64,51 +64,30 @@ jobs:
           SOURCE_DATE_EPOCH=$(date +%s) \
           ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./
 
-  pr:
+  deploy:
     needs: container
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    env:
-      BRANCH_NAME: release/${{needs.container.outputs.image_tag}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v0"
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Install yq
-        run: sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/bin/yq
-
-      - name: checkout branch
-        run: |
-          git branch $BRANCH_NAME
-          git checkout $BRANCH_NAME
-
-      - name: Update cloudbuild.yaml
-        working-directory: ./infra/gcp/cloudbuild
+      - name: Deploy
         run: |
           export IMAGE_NAME=${{needs.container.outputs.image_name}}
           export IMAGE_TAG=${{needs.container.outputs.image_tag}}
-          yq '.steps.[1].env.[2]="IMAGE_NAME=" + env(IMAGE_NAME)' cloudbuild.app.core.yaml > tmp.yaml && mv tmp.yaml cloudbuild.app.core.yaml
-          yq '.steps.[1].env.[3]="IMAGE_TAG=" + env(IMAGE_TAG)' cloudbuild.app.core.yaml > tmp.yaml && mv tmp.yaml cloudbuild.app.core.yaml
-
-      - name: Git push
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m "update core container"
-          git push --set-upstream origin $BRANCH_NAME
-
-      - name: Create release pr
-        env:
-            # ghコマンドが参照している環境変数GH_TOKENに、Githubのトークンをセット
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: | 
-          gh pr create \
-            --base main \
-            --title "Release core service version ${{needs.build.outputs.image_tag}}" \
-            --body "" \
-            --label "release"
+          gcloud run deploy mndp-core \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/$IMAGE_NAME:$IMAGE_TAG \
+            --region asia-northeast1 \
+            --cpu 1 \
+            --memory 128Mi \
+            --max-instances 1 \
+            --service-account ${{ secrets.GCP_CLOUDRUN_SERVICE_ACCOUNT }} \
+            --set-secrets API_KEY=projects/${{ secrets.GCP_PROJECT_NUMBER }}/secrets/mndp-prod-core-api-key:latest \
+            --set-secrets DATABASE_URL=projects/${{ secrets.GCP_PROJECT_NUMBER }}/secrets/mndp-prod-core-database-url:latest \
+            --allow-unauthenticated
