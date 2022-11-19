@@ -52,9 +52,3 @@ variable "git_repository_owner" {
   description = "Git Repository Owner"
   type        = string
 }
-
-# File path to core cloudbuild.yml 
-variable "core_cloud_build_file_path" {
-  description = "File path to core cloudbuild.yml"
-  type        = string
-}
