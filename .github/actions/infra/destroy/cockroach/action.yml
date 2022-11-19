@@ -3,7 +3,7 @@ description: destroy terraform infra. you should execute infra/setup action befo
 
 inputs:
   project_env:
-    description: "project env. ex. prod"
+    description: "project env."
     required: true
   gcp_cloud_storage_terraform_bucket:
     description: "name of google cloud storage bucket for tfstate"
