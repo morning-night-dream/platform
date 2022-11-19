@@ -753,7 +753,6 @@ func (u *AuthUpsertBulk) UpdateNewValues() *AuthUpsertBulk {
 		for _, b := range u.create.builders {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(auth.FieldID)
-				return
 			}
 		}
 	}))

@@ -394,10 +394,10 @@ func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Arti
 			aq.withReadArticles != nil,
 		}
 	)
-	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
+	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Article).scanValues(nil, columns)
 	}
-	_spec.Assign = func(columns []string, values []interface{}) error {
+	_spec.Assign = func(columns []string, values []any) error {
 		node := &Article{config: aq.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
@@ -494,11 +494,14 @@ func (aq *ArticleQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (aq *ArticleQuery) sqlExist(ctx context.Context) (bool, error) {
-	n, err := aq.sqlCount(ctx)
-	if err != nil {
+	switch _, err := aq.FirstID(ctx); {
+	case IsNotFound(err):
+		return false, nil
+	case err != nil:
 		return false, fmt.Errorf("ent: check existence: %w", err)
+	default:
+		return true, nil
 	}
-	return n > 0, nil
 }
 
 func (aq *ArticleQuery) querySpec() *sqlgraph.QuerySpec {
@@ -599,7 +602,7 @@ func (agb *ArticleGroupBy) Aggregate(fns ...AggregateFunc) *ArticleGroupBy {
 }
 
 // Scan applies the group-by query and scans the result into the given value.
-func (agb *ArticleGroupBy) Scan(ctx context.Context, v interface{}) error {
+func (agb *ArticleGroupBy) Scan(ctx context.Context, v any) error {
 	query, err := agb.path(ctx)
 	if err != nil {
 		return err
@@ -608,7 +611,7 @@ func (agb *ArticleGroupBy) Scan(ctx context.Context, v interface{}) error {
 	return agb.sqlScan(ctx, v)
 }
 
-func (agb *ArticleGroupBy) sqlScan(ctx context.Context, v interface{}) error {
+func (agb *ArticleGroupBy) sqlScan(ctx context.Context, v any) error {
 	for _, f := range agb.fields {
 		if !article.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for group-by", f)}
@@ -655,7 +658,7 @@ type ArticleSelect struct {
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (as *ArticleSelect) Scan(ctx context.Context, v interface{}) error {
+func (as *ArticleSelect) Scan(ctx context.Context, v any) error {
 	if err := as.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -663,7 +666,7 @@ func (as *ArticleSelect) Scan(ctx context.Context, v interface{}) error {
 	return as.sqlScan(ctx, v)
 }
 
-func (as *ArticleSelect) sqlScan(ctx context.Context, v interface{}) error {
+func (as *ArticleSelect) sqlScan(ctx context.Context, v any) error {
 	rows := &sql.Rows{}
 	query, args := as.sql.Query()
 	if err := as.driver.Query(ctx, query, args, rows); err != nil {

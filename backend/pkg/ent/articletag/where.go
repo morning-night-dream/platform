@@ -35,7 +35,7 @@ func IDNEQ(id uuid.UUID) predicate.ArticleTag {
 // IDIn applies the In predicate on the ID field.
 func IDIn(ids ...uuid.UUID) predicate.ArticleTag {
 	return predicate.ArticleTag(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -46,7 +46,7 @@ func IDIn(ids ...uuid.UUID) predicate.ArticleTag {
 // IDNotIn applies the NotIn predicate on the ID field.
 func IDNotIn(ids ...uuid.UUID) predicate.ArticleTag {
 	return predicate.ArticleTag(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -126,7 +126,7 @@ func TagNEQ(v string) predicate.ArticleTag {
 
 // TagIn applies the In predicate on the "tag" field.
 func TagIn(vs ...string) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -137,7 +137,7 @@ func TagIn(vs ...string) predicate.ArticleTag {
 
 // TagNotIn applies the NotIn predicate on the "tag" field.
 func TagNotIn(vs ...string) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -225,7 +225,7 @@ func ArticleIDNEQ(v uuid.UUID) predicate.ArticleTag {
 
 // ArticleIDIn applies the In predicate on the "article_id" field.
 func ArticleIDIn(vs ...uuid.UUID) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -236,7 +236,7 @@ func ArticleIDIn(vs ...uuid.UUID) predicate.ArticleTag {
 
 // ArticleIDNotIn applies the NotIn predicate on the "article_id" field.
 func ArticleIDNotIn(vs ...uuid.UUID) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -261,7 +261,7 @@ func CreatedAtNEQ(v time.Time) predicate.ArticleTag {
 
 // CreatedAtIn applies the In predicate on the "created_at" field.
 func CreatedAtIn(vs ...time.Time) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -272,7 +272,7 @@ func CreatedAtIn(vs ...time.Time) predicate.ArticleTag {
 
 // CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
 func CreatedAtNotIn(vs ...time.Time) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -325,7 +325,7 @@ func UpdatedAtNEQ(v time.Time) predicate.ArticleTag {
 
 // UpdatedAtIn applies the In predicate on the "updated_at" field.
 func UpdatedAtIn(vs ...time.Time) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -336,7 +336,7 @@ func UpdatedAtIn(vs ...time.Time) predicate.ArticleTag {
 
 // UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
 func UpdatedAtNotIn(vs ...time.Time) predicate.ArticleTag {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
