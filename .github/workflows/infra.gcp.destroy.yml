@@ -1,7 +1,6 @@
 name: infra gcp destroy
 
 on:
-  push:
   workflow_dispatch:
 
 permissions:
