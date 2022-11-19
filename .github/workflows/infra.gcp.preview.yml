@@ -1,11 +1,7 @@
 name: infra gcp preview
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/infra.gcp.preview.yml
-      - .github/actions/infra/deploy/gcp/action.yml
-      - infra/gcp/*
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -37,4 +33,3 @@ jobs:
           secret_core_api_key: ${{ secrets.GCP_CORE_API_KEY }}
           secret_core_database_url: ${{ secrets.GCP_CORE_DATABASE_URL }}
           working-directory: ./infra/gcp
-
