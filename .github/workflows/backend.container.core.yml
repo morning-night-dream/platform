@@ -1,5 +1,10 @@
 name: backend container core
 
+env:
+  PROJECT_PREFIX: mngp
+  PROJECT_ENV: prod
+  SERVICE_NAME: core
+
 on:
   push:
 
