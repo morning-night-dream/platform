@@ -1,4 +1,4 @@
-name: destroy terraform infra
+name: destroy cockroach terraform infra
 description: destroy terraform infra. you should execute infra/setup action before.
 
 inputs:
@@ -44,7 +44,6 @@ runs:
       shell: sh
 
     - name: Terraform destroy
-      if: ${{ inputs.deploy == 'true' }}
       working-directory: ${{ inputs.working-directory }}         
       env: 
         COCKROACH_API_KEY: ${{ inputs.secret_cockroach_api_key }} 
