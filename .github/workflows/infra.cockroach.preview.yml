@@ -1,11 +1,7 @@
 name: infra cockroach preview
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/infra.cockroach.preview.yml
-      - .github/actions/infra/deploy/cockroach/action.yml
-      - infra/cockroach/*
+  workflow_dispatch:
 
 defaults:
   run:

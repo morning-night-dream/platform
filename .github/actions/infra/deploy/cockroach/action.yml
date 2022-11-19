@@ -53,7 +53,6 @@ runs:
       run: terraform validate
       working-directory: ${{ inputs.working-directory }}
 
-
     - name: Terraform plan
       if: ${{ inputs.lint == 'true' }}
       shell: sh
@@ -72,7 +71,7 @@ runs:
       env: 
         COCKROACH_API_KEY: ${{ inputs.secret_cockroach_api_key }} 
       run: |
-        terraform plan \
+        terraform apply \
           -var='project_prefix=mndp' \
           -var='project_env=${{ inputs.project_env }}' \
           -var='sql_user_password=${{ inputs.secret_cockroach_sql_user_password }}'
