@@ -7,10 +7,6 @@ on:
       - .github/actions/infra/deploy/gcp/action.yml
       - infra/gcp/*
 
-defaults:
-  run:
-    working-directory: ./infra/gcp
-
 permissions:
   id-token: write
   contents: read
@@ -41,5 +37,4 @@ jobs:
           gcp_cloud_storage_terraform_bucket: ${{ secrets.GCP_CLOUD_STORAGE_TERRAFORM_BUCKET }}
           secret_core_api_key: ${{ secrets.GCP_CORE_API_KEY }}
           secret_core_database_url: ${{ secrets.GCP_CORE_DATABASE_URL }}
-          cloudbuild_file_path: infra/gcp/cloudbuild/cloudbuild.app.core.yaml
           working-directory: ./infra/gcp
