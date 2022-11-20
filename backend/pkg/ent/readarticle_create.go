@@ -209,19 +209,11 @@ func (rac *ReadArticleCreate) createSpec() (*ReadArticle, *sqlgraph.CreateSpec) 
 		_spec.ID.Value = &id
 	}
 	if value, ok := rac.mutation.UserID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: readarticle.FieldUserID,
-		})
+		_spec.SetField(readarticle.FieldUserID, field.TypeUUID, value)
 		_node.UserID = value
 	}
 	if value, ok := rac.mutation.ReadAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: readarticle.FieldReadAt,
-		})
+		_spec.SetField(readarticle.FieldReadAt, field.TypeTime, value)
 		_node.ReadAt = value
 	}
 	if nodes := rac.mutation.ArticleIDs(); len(nodes) > 0 {

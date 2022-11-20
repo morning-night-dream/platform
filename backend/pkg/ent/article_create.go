@@ -285,59 +285,31 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = &id
 	}
 	if value, ok := ac.mutation.Title(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldTitle,
-		})
+		_spec.SetField(article.FieldTitle, field.TypeString, value)
 		_node.Title = value
 	}
 	if value, ok := ac.mutation.URL(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldURL,
-		})
+		_spec.SetField(article.FieldURL, field.TypeString, value)
 		_node.URL = value
 	}
 	if value, ok := ac.mutation.Description(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldDescription,
-		})
+		_spec.SetField(article.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
 	if value, ok := ac.mutation.Thumbnail(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldThumbnail,
-		})
+		_spec.SetField(article.FieldThumbnail, field.TypeString, value)
 		_node.Thumbnail = value
 	}
 	if value, ok := ac.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldCreatedAt,
-		})
+		_spec.SetField(article.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := ac.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldUpdatedAt,
-		})
+		_spec.SetField(article.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := ac.mutation.DeletedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldDeletedAt,
-		})
+		_spec.SetField(article.FieldDeletedAt, field.TypeTime, value)
 		_node.DeletedAt = &value
 	}
 	if nodes := ac.mutation.TagsIDs(); len(nodes) > 0 {

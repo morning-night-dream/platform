@@ -159,18 +159,10 @@ func (rau *ReadArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := rau.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: readarticle.FieldUserID,
-		})
+		_spec.SetField(readarticle.FieldUserID, field.TypeUUID, value)
 	}
 	if value, ok := rau.mutation.ReadAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: readarticle.FieldReadAt,
-		})
+		_spec.SetField(readarticle.FieldReadAt, field.TypeTime, value)
 	}
 	if rau.mutation.ArticleCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -385,18 +377,10 @@ func (rauo *ReadArticleUpdateOne) sqlSave(ctx context.Context) (_node *ReadArtic
 		}
 	}
 	if value, ok := rauo.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: readarticle.FieldUserID,
-		})
+		_spec.SetField(readarticle.FieldUserID, field.TypeUUID, value)
 	}
 	if value, ok := rauo.mutation.ReadAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: readarticle.FieldReadAt,
-		})
+		_spec.SetField(readarticle.FieldReadAt, field.TypeTime, value)
 	}
 	if rauo.mutation.ArticleCleared() {
 		edge := &sqlgraph.EdgeSpec{
