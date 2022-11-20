@@ -52,7 +52,7 @@ func randomArticle() *entpb.Article {
 	return &entpb.Article{
 		Id:          []byte{},
 		Title:       "test",
-		Url:         "https://example.com/2",
+		Url:         "https://example.com",
 		Description: "test",
 		Thumbnail:   "",
 		CreatedAt: &timestamppb.Timestamp{
