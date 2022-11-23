@@ -14,4 +14,4 @@ psql:
 
 .PHONY: rm
 rm:
-	@docker image rm ${APP_NAME}-app-core
+	@docker image rm ${APP_NAME}-app-core ${APP_NAME}-app-db 

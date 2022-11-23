@@ -4,19 +4,24 @@ import (
 	"context"
 	"log"
 	"net"
+	"os"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 	"github.com/morning-night-dream/platform/app/db/ent"
 	"github.com/morning-night-dream/platform/app/db/ent/proto/entpb"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	client, err := ent.Open("sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
+	dsn := os.Getenv("DATABASE_URL")
+
+	client, err := ent.Open("postgres", dsn)
 	if err != nil {
 		log.Fatalf("failed opening connection to sqlite: %v", err)
 	}
 	defer client.Close()
+
+	client = client.Debug()
 
 	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
@@ -30,7 +35,7 @@ func main() {
 	entpb.RegisterUserServiceServer(server, entpb.NewUserService(client))
 	entpb.RegisterAuthServiceServer(server, entpb.NewAuthService(client))
 
-	log.Println(":5555")
+	log.Println("db app run ...")
 
 	lis, err := net.Listen("tcp", ":5555")
 	if err != nil {

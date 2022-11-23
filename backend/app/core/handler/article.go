@@ -2,13 +2,11 @@ package handler
 
 import (
 	"context"
-	"encoding/base64"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/bufbuild/connect-go"
@@ -16,23 +14,29 @@ import (
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/app/core/proto"
+	"github.com/morning-night-dream/platform/app/db/ent/proto/entpb"
 	articlev1 "github.com/morning-night-dream/platform/pkg/api/article/v1"
 	"github.com/pkg/errors"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Article struct {
 	key    string
 	client http.Client
 	store  store.Article
+	proto  *proto.Client
 }
 
 func NewArticle(
 	store store.Article,
+	proto *proto.Client,
 ) *Article {
 	return &Article{
 		key:    os.Getenv("API_KEY"),
 		client: *http.DefaultClient,
 		store:  store,
+		proto:  proto,
 	}
 }
 
@@ -75,13 +79,24 @@ func (a *Article) Share(
 		thumbnail = og.Images[0].URL
 	}
 
-	if err := a.store.Save(ctx, model.Article{
-		ID:          uuid.NewString(),
-		URL:         og.URL,
-		Title:       og.Title,
-		Thumbnail:   thumbnail,
-		Description: og.Description,
-	}); err != nil {
+	now := timestamppb.Now()
+
+	if _, err := a.proto.Article.Create(
+		ctx,
+		&entpb.CreateArticleRequest{
+			Article: &entpb.Article{
+				Id:           []byte(uuid.New().String()),
+				Title:        og.Title,
+				Url:          og.URL,
+				Description:  og.Description,
+				Thumbnail:    thumbnail,
+				CreatedAt:    now,
+				UpdatedAt:    now,
+				Tags:         []*entpb.ArticleTag{},
+				ReadArticles: []*entpb.ReadArticle{},
+			},
+		},
+	); err != nil {
 		log.Print(err)
 
 		return nil, ErrInternal
@@ -96,42 +111,37 @@ func (a *Article) List(
 ) (*connect.Response[articlev1.ListResponse], error) {
 	limit := int(req.Msg.MaxPageSize)
 
-	dec, err := base64.StdEncoding.DecodeString(req.Msg.PageToken)
+	items, err := a.proto.Article.List(ctx, &entpb.ListArticleRequest{
+		PageSize:  int32(limit),
+		PageToken: req.Msg.PageToken,
+		View:      1,
+	})
 	if err != nil {
-		dec = []byte("0")
-	}
-
-	offset, err := strconv.Atoi(string(dec))
-	if err != nil {
-		offset = 0
-	}
-
-	items, err := a.store.FindAll(ctx, limit, offset)
-	if err != nil {
+		log.Print(err)
 		return nil, errors.Wrap(err, "")
 	}
 
-	articles := make([]*articlev1.Article, 0, len(items))
+	articles := make([]*articlev1.Article, 0, len(items.ArticleList))
 
-	for _, item := range items {
+	for _, item := range items.ArticleList {
+		tags := make([]string, len(item.Tags))
+		for i, tag := range item.Tags {
+			tags[i] = tag.Tag
+		}
+
 		articles = append(articles, &articlev1.Article{
-			Id:          item.ID,
+			Id:          string(item.Id),
 			Title:       item.Title,
-			Url:         item.URL,
+			Url:         item.Url,
 			Description: item.Description,
 			Thumbnail:   item.Thumbnail,
-			Tags:        item.Tags,
+			Tags:        tags,
 		})
-	}
-
-	token := base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(offset + limit)))
-	if len(articles) < limit {
-		token = ""
 	}
 
 	res := connect.NewResponse(&articlev1.ListResponse{
 		Articles:      articles,
-		NextPageToken: token,
+		NextPageToken: items.NextPageToken,
 	})
 
 	return res, nil

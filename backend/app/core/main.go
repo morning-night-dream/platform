@@ -6,6 +6,7 @@ import (
 	"github.com/morning-night-dream/platform/app/core/database"
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/handler"
+	"github.com/morning-night-dream/platform/app/core/proto"
 	"github.com/morning-night-dream/platform/app/core/server"
 )
 
@@ -18,7 +19,9 @@ func main() {
 
 	sa := store.NewArticle(db)
 
-	ah := handler.NewArticle(*sa)
+	pb := proto.NewClient()
+
+	ah := handler.NewArticle(*sa, pb)
 
 	sh := handler.NewSlack(secret, sa)
 
