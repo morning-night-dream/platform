@@ -260,43 +260,23 @@ func (ac *AuthCreate) createSpec() (*Auth, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = &id
 	}
 	if value, ok := ac.mutation.LoginID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldLoginID,
-		})
+		_spec.SetField(auth.FieldLoginID, field.TypeString, value)
 		_node.LoginID = value
 	}
 	if value, ok := ac.mutation.Email(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldEmail,
-		})
+		_spec.SetField(auth.FieldEmail, field.TypeString, value)
 		_node.Email = value
 	}
 	if value, ok := ac.mutation.Password(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldPassword,
-		})
+		_spec.SetField(auth.FieldPassword, field.TypeString, value)
 		_node.Password = value
 	}
 	if value, ok := ac.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: auth.FieldCreatedAt,
-		})
+		_spec.SetField(auth.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := ac.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: auth.FieldUpdatedAt,
-		})
+		_spec.SetField(auth.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
 	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {

@@ -254,59 +254,28 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := au.mutation.Title(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldTitle,
-		})
+		_spec.SetField(article.FieldTitle, field.TypeString, value)
 	}
 	if value, ok := au.mutation.URL(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldURL,
-		})
+		_spec.SetField(article.FieldURL, field.TypeString, value)
 	}
 	if value, ok := au.mutation.Description(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldDescription,
-		})
+		_spec.SetField(article.FieldDescription, field.TypeString, value)
 	}
 	if value, ok := au.mutation.Thumbnail(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldThumbnail,
-		})
+		_spec.SetField(article.FieldThumbnail, field.TypeString, value)
 	}
 	if value, ok := au.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldCreatedAt,
-		})
+		_spec.SetField(article.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldUpdatedAt,
-		})
+		_spec.SetField(article.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.DeletedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldDeletedAt,
-		})
+		_spec.SetField(article.FieldDeletedAt, field.TypeTime, value)
 	}
 	if au.mutation.DeletedAtCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Column: article.FieldDeletedAt,
-		})
+		_spec.ClearField(article.FieldDeletedAt, field.TypeTime)
 	}
 	if au.mutation.TagsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -688,59 +657,28 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 		}
 	}
 	if value, ok := auo.mutation.Title(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldTitle,
-		})
+		_spec.SetField(article.FieldTitle, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.URL(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldURL,
-		})
+		_spec.SetField(article.FieldURL, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.Description(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldDescription,
-		})
+		_spec.SetField(article.FieldDescription, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.Thumbnail(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: article.FieldThumbnail,
-		})
+		_spec.SetField(article.FieldThumbnail, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldCreatedAt,
-		})
+		_spec.SetField(article.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldUpdatedAt,
-		})
+		_spec.SetField(article.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.DeletedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: article.FieldDeletedAt,
-		})
+		_spec.SetField(article.FieldDeletedAt, field.TypeTime, value)
 	}
 	if auo.mutation.DeletedAtCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Column: article.FieldDeletedAt,
-		})
+		_spec.ClearField(article.FieldDeletedAt, field.TypeTime)
 	}
 	if auo.mutation.TagsCleared() {
 		edge := &sqlgraph.EdgeSpec{

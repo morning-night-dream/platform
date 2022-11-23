@@ -13,6 +13,12 @@ packages:
 - name: google.golang.org/protobuf/cmd/protoc-gen-go
   registry: local
   version: v1.28.1
+- name: google.golang.org/grpc/cmd/protoc-gen-go-grpc
+  registry: local
+  version: v1.2.0
 - name: github.com/bufbuild/connect-go/cmd/protoc-gen-connect-go
   registry: local
   version: v1.1.0
+- name: entgo.io/contrib/entproto/cmd/protoc-gen-entgrpc
+  registry: local
+  version: v0.3.4

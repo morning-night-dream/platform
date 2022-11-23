@@ -174,25 +174,13 @@ func (atu *ArticleTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := atu.mutation.Tag(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: articletag.FieldTag,
-		})
+		_spec.SetField(articletag.FieldTag, field.TypeString, value)
 	}
 	if value, ok := atu.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: articletag.FieldCreatedAt,
-		})
+		_spec.SetField(articletag.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := atu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: articletag.FieldUpdatedAt,
-		})
+		_spec.SetField(articletag.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if atu.mutation.ArticleCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -422,25 +410,13 @@ func (atuo *ArticleTagUpdateOne) sqlSave(ctx context.Context) (_node *ArticleTag
 		}
 	}
 	if value, ok := atuo.mutation.Tag(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: articletag.FieldTag,
-		})
+		_spec.SetField(articletag.FieldTag, field.TypeString, value)
 	}
 	if value, ok := atuo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: articletag.FieldCreatedAt,
-		})
+		_spec.SetField(articletag.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := atuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: articletag.FieldUpdatedAt,
-		})
+		_spec.SetField(articletag.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if atuo.mutation.ArticleCleared() {
 		edge := &sqlgraph.EdgeSpec{

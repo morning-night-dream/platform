@@ -332,6 +332,11 @@ func (raq *ReadArticleQuery) Select(fields ...string) *ReadArticleSelect {
 	return selbuild
 }
 
+// Aggregate returns a ReadArticleSelect configured with the given aggregations.
+func (raq *ReadArticleQuery) Aggregate(fns ...AggregateFunc) *ReadArticleSelect {
+	return raq.Select().Aggregate(fns...)
+}
+
 func (raq *ReadArticleQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range raq.fields {
 		if !readarticle.ValidColumn(f) {
@@ -562,8 +567,6 @@ func (ragb *ReadArticleGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range ragb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(ragb.fields)+len(ragb.fns))
 		for _, f := range ragb.fields {
@@ -583,6 +586,12 @@ type ReadArticleSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (ras *ReadArticleSelect) Aggregate(fns ...AggregateFunc) *ReadArticleSelect {
+	ras.fns = append(ras.fns, fns...)
+	return ras
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (ras *ReadArticleSelect) Scan(ctx context.Context, v any) error {
 	if err := ras.prepareQuery(ctx); err != nil {
@@ -593,6 +602,16 @@ func (ras *ReadArticleSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (ras *ReadArticleSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(ras.fns))
+	for _, fn := range ras.fns {
+		aggregation = append(aggregation, fn(ras.sql))
+	}
+	switch n := len(*ras.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		ras.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		ras.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := ras.sql.Query()
 	if err := ras.driver.Query(ctx, query, args, rows); err != nil {

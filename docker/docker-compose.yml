@@ -15,6 +15,22 @@ services:
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
       POSTGRES_HOST_AUTH_METHOD: trust
     restart: always
+  app-db:
+    container_name: ${APP_NAME}-app-db
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+      args:
+        GOLANG_VERSION: ${GOLANG_VERSION}
+    ports:
+      - 5551:5555
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+    volumes:
+      - ../backend:/app
+    restart: always
+    depends_on:
+      - db
   app-core:
     container_name: ${APP_NAME}-app-core
     build:
@@ -27,8 +43,9 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
       API_KEY: local
+      APP_DB_ADDRESS: app-db:5555
     volumes:
       - ../backend:/app
     restart: always
     depends_on:
-      - db
+      - app-db

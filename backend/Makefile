@@ -27,7 +27,17 @@ test:
 
 .PHONY: gen
 gen:
-	@go generate ./...
+	@go generate ./... && go generate ./...
+
+.PHONY: ent
+ent:
+	@mkdir tmp && \
+	cp app/db/ent/generate.go tmp/ && \
+	cp -r app/db/ent/schema/ tmp/schema/ && \
+	rm -rf app/db/ent/ && \
+	mkdir -p app/db/ent && \
+	cp -r tmp/ app/db/ent/ && \
+	rm -rf tmp
 
 .PHONY: migrate
 migrate:
