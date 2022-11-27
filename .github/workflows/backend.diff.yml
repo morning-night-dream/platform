@@ -1,20 +1,23 @@
-name: check
+name: backend diff
 
 on:
   pull_request:
     paths:
+      - .github/workflows/backend.diff.yml
       - api/**/*.proto
       - backend/**/*.go
 
 jobs:
-  test:
+  diff:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up
-        uses: ./.github/actions/backend/setup
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: backend/go.mod
 
       - name: Generate connect code
         working-directory: ./api

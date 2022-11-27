@@ -5,10 +5,12 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/document.yml
       - api/**/*.proto
       - backend/pkg/ent/schema/*.go
   pull_request:
     paths:
+      - .github/workflows/document.yml
       - api/**/*.proto
       - backend/pkg/ent/schema/*.go
 
@@ -57,8 +59,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up
-        uses: ./.github/actions/backend/setup
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: backend/go.mod
 
       - name: Set up tbls
         run: go install github.com/k1LoW/tbls@main
