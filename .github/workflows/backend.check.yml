@@ -24,6 +24,10 @@ jobs:
         working-directory: ./backend
         run: go generate ./...
 
+      - name: Go mod tidy
+        working-directory: ./backend
+        run: go mod tidy
+
       - name: Check diff
         run: |
           if [ -n "$(git status --porcelain)" ]; then
