@@ -1,6 +1,7 @@
 name: backend container push
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -8,7 +9,6 @@ on:
       - .github/workflows/backend.container.push.yml
       - api/**/*.proto
       - backend/**/*.go
-  pull_request:
 
 permissions:
   id-token: write
