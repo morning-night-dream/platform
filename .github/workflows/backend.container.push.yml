@@ -8,6 +8,7 @@ on:
       - .github/workflows/backend.container.push.yml
       - api/**/*.proto
       - backend/**/*.go
+  pull_request:
 
 permissions:
   id-token: write
@@ -30,12 +31,19 @@ jobs:
         with:
           go-version-file: backend/go.mod
 
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.MY_GITHUB_APP_ID }}
+          private_key: ${{ secrets.MY_GITHUB_APP_PRIVATE_KEY }}
+
       - name: Docker login
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          password: ${{ steps.generate_token.outputs.token }}
 
       - name: Container build and push
         id: build-and-push
