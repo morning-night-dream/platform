@@ -10,11 +10,6 @@ on:
       - backend/**/*.go
   pull_request:
 
-permissions:
-  id-token: write
-  contents: read
-  packages: write
-
 jobs:
   container:
     runs-on: ubuntu-latest
