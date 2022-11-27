@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/morning-night-dream/platform/app/core/database"
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/handler"
@@ -8,7 +10,7 @@ import (
 )
 
 func main() {
-	db := database.NewClient("file:database?mode=memory&cache=shared&_fk=1")
+	db := database.NewClient(os.Getenv("DATABASE_URL"))
 
 	sa := store.NewArticle(db)
 
