@@ -12,7 +12,7 @@ import (
 func NewClient(dsn string) *ent.Client {
 	client, err := ent.Open("postgres", dsn)
 
-	if err := client.Debug().Schema.Create(context.Background()); err != nil {
+	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("Failed create schema: %v", err)
 	}
 

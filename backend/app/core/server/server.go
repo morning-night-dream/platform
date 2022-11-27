@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/bufbuild/connect-go"
 	"github.com/morning-night-dream/platform/app/core/handler"
 	"github.com/morning-night-dream/platform/pkg/api/article/v1/articlev1connect"
 	"github.com/morning-night-dream/platform/pkg/api/auth/v1/authv1connect"
@@ -33,10 +34,12 @@ func NewHTTPServer(
 	article *handler.Article,
 	auth *handler.Auth,
 ) *HTTPServer {
+	interceptor := connect.WithInterceptors(NewInterceptor())
+
 	mux := NewRouter(
-		NewRoute(healthv1connect.NewHealthServiceHandler(health)),
-		NewRoute(articlev1connect.NewArticleServiceHandler(article)),
-		NewRoute(authv1connect.NewAuthServiceHandler(auth)),
+		NewRoute(healthv1connect.NewHealthServiceHandler(health, interceptor)),
+		NewRoute(articlev1connect.NewArticleServiceHandler(article, interceptor)),
+		NewRoute(authv1connect.NewAuthServiceHandler(auth, interceptor)),
 	).Mux()
 
 	port := os.Getenv("PORT")
