@@ -38,5 +38,6 @@ func NewInterceptor() connect.UnaryInterceptorFunc {
 			return res, err
 		})
 	}
+
 	return connect.UnaryInterceptorFunc(interceptor)
 }
