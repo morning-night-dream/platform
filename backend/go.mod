@@ -12,7 +12,6 @@ require (
 	entgo.io/ent v0.11.4
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/lib/pq v1.10.7
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pkg/errors v0.9.1
@@ -35,7 +34,6 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/sys v0.2.0 // indirect
 	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6 // indirect
 )
 
