@@ -13,6 +13,12 @@
   
     - [AuthService](#auth-v1-AuthService)
   
+- [api/health/v1/health.proto](#api_health_v1_health-proto)
+    - [CheckRequest](#health-v1-CheckRequest)
+    - [CheckResponse](#health-v1-CheckResponse)
+  
+    - [HealthService](#health-v1-HealthService)
+  
 - [api/article/v1/article.proto](#api_article_v1_article-proto)
     - [AddTagRequest](#article-v1-AddTagRequest)
     - [AddTagResponse](#article-v1-AddTagResponse)
@@ -147,6 +153,52 @@
 | SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
 | SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
 | Refresh | [RefreshRequest](#auth-v1-RefreshRequest) | [RefreshResponse](#auth-v1-RefreshResponse) | リフレッシュ Need Authorization Header |
+
+ 
+
+
+
+<a name="api_health_v1_health-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## api/health/v1/health.proto
+
+
+
+<a name="health-v1-CheckRequest"></a>
+
+### CheckRequest
+チェックリクエスト
+
+
+
+
+
+
+<a name="health-v1-CheckResponse"></a>
+
+### CheckResponse
+チェックレスポンス
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="health-v1-HealthService"></a>
+
+### HealthService
+ヘルスサービス
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| Check | [CheckRequest](#health-v1-CheckRequest) | [CheckResponse](#health-v1-CheckResponse) | チェック |
 
  
 
