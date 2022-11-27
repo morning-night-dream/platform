@@ -1,20 +1,36 @@
-name: check
+name: backend diff
 
 on:
   pull_request:
     paths:
+      - .github/workflows/backend.diff.yml
       - api/**/*.proto
       - backend/**/*.go
 
 jobs:
-  test:
+  diff:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up
-        uses: ./.github/actions/backend/setup
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: backend/go.mod
+
+      - name: Set up aqua
+        uses: aquaproj/aqua-installer@v1.1.2
+        with:
+          aqua_version: v1.25.0
+
+      - name: Set up api go tool
+        working-directory: ./api
+        run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
+
+      - name: Set up backend go tool
+        working-directory: ./backend
+        run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
 
       - name: Generate connect code
         working-directory: ./api

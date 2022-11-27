@@ -5,10 +5,12 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/document.yml
       - api/**/*.proto
       - backend/pkg/ent/schema/*.go
   pull_request:
     paths:
+      - .github/workflows/document.yml
       - api/**/*.proto
       - backend/pkg/ent/schema/*.go
 
@@ -57,23 +59,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up
-        uses: ./.github/actions/backend/setup
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: backend/go.mod
 
       - name: Set up tbls
         run: go install github.com/k1LoW/tbls@main
-
-      - name: Generate connect code
-        working-directory: ./api
-        run: buf generate --template buf.backend.gen.yaml
-
-      - name: Go Generate
-        working-directory: ./backend
-        run: go generate ./...
-
-      - name: Set up wire
-        working-directory: ./backend/app/core
-        run: wire
 
       - name: Migrate
         working-directory: ./backend

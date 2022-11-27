@@ -1,4 +1,4 @@
-name: test
+name: backend test
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - "main"
   pull_request:
     paths:
+      - .github/workflows/backend.test.yml
       - api/**/*.proto
       - backend/**/*.go
 
@@ -16,8 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up
-        uses: ./.github/actions/backend/setup
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: backend/go.mod
 
       - name: Go Test
         working-directory: ./backend
