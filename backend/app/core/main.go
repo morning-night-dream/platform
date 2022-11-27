@@ -10,23 +10,19 @@ import (
 )
 
 func main() {
-	dsn := os.Getenv("DATABASE_URL")
-
-	secret := os.Getenv("SLACK_SIGNING_SECRET")
-
-	db := database.NewClient(dsn)
+	db := database.NewClient(os.Getenv("DATABASE_URL"))
 
 	sa := store.NewArticle(db)
 
 	ah := handler.NewArticle(*sa)
 
-	sh := handler.NewSlack(secret, sa)
+	hh := handler.NewHealth()
 
 	aua := store.NewAuth(db)
 
 	auh := handler.NewAuth(*aua)
 
-	srv := server.NewHTTPServer(ah, auh, sh)
+	srv := server.NewHTTPServer(hh, ah, auh)
 
 	srv.Run()
 }

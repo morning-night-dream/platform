@@ -194,39 +194,19 @@ func (au *AuthUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := au.mutation.LoginID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldLoginID,
-		})
+		_spec.SetField(auth.FieldLoginID, field.TypeString, value)
 	}
 	if value, ok := au.mutation.Email(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldEmail,
-		})
+		_spec.SetField(auth.FieldEmail, field.TypeString, value)
 	}
 	if value, ok := au.mutation.Password(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldPassword,
-		})
+		_spec.SetField(auth.FieldPassword, field.TypeString, value)
 	}
 	if value, ok := au.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: auth.FieldCreatedAt,
-		})
+		_spec.SetField(auth.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: auth.FieldUpdatedAt,
-		})
+		_spec.SetField(auth.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if au.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -476,39 +456,19 @@ func (auo *AuthUpdateOne) sqlSave(ctx context.Context) (_node *Auth, err error) 
 		}
 	}
 	if value, ok := auo.mutation.LoginID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldLoginID,
-		})
+		_spec.SetField(auth.FieldLoginID, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.Email(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldEmail,
-		})
+		_spec.SetField(auth.FieldEmail, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.Password(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: auth.FieldPassword,
-		})
+		_spec.SetField(auth.FieldPassword, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: auth.FieldCreatedAt,
-		})
+		_spec.SetField(auth.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: auth.FieldUpdatedAt,
-		})
+		_spec.SetField(auth.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if auo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{

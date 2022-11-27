@@ -230,27 +230,15 @@ func (atc *ArticleTagCreate) createSpec() (*ArticleTag, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = &id
 	}
 	if value, ok := atc.mutation.Tag(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: articletag.FieldTag,
-		})
+		_spec.SetField(articletag.FieldTag, field.TypeString, value)
 		_node.Tag = value
 	}
 	if value, ok := atc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: articletag.FieldCreatedAt,
-		})
+		_spec.SetField(articletag.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := atc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: articletag.FieldUpdatedAt,
-		})
+		_spec.SetField(articletag.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
 	if nodes := atc.mutation.ArticleIDs(); len(nodes) > 0 {

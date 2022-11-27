@@ -8,6 +8,7 @@ on:
       - .github/workflows/backend.container.push.yml
       - api/**/*.proto
       - backend/**/*.go
+  pull_request:
 
 jobs:
   container:
