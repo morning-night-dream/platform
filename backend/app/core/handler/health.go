@@ -7,8 +7,7 @@ import (
 	healthv1 "github.com/morning-night-dream/platform/pkg/api/health/v1"
 )
 
-type Health struct {
-}
+type Health struct{}
 
 func NewHealth() *Health {
 	return &Health{}
