@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package health.v1;
+
+option go_package = "github.com/morning-night-dream/platform/pkg/api/health/v1;healthv1";
+
+// ヘルスサービス
+service HealthService {
+  // チェック
+  rpc Check(CheckRequest) returns (CheckResponse) {}
+}
+
+// チェックリクエスト
+message CheckRequest {}
+
+// チェックレスポンス
+message CheckResponse {}
+

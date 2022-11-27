@@ -14,6 +14,7 @@ import (
 	"github.com/morning-night-dream/platform/app/core/handler"
 	"github.com/morning-night-dream/platform/pkg/api/article/v1/articlev1connect"
 	"github.com/morning-night-dream/platform/pkg/api/auth/v1/authv1connect"
+	"github.com/morning-night-dream/platform/pkg/api/health/v1/healthv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -28,16 +29,15 @@ type HTTPServer struct {
 }
 
 func NewHTTPServer(
+	health *handler.Health,
 	article *handler.Article,
 	auth *handler.Auth,
-	slack *handler.Slack,
 ) *HTTPServer {
 	mux := NewRouter(
+		NewRoute(healthv1connect.NewHealthServiceHandler(health)),
 		NewRoute(articlev1connect.NewArticleServiceHandler(article)),
 		NewRoute(authv1connect.NewAuthServiceHandler(auth)),
 	).Mux()
-
-	mux.HandleFunc("/api/slack/events", slack.Events)
 
 	port := os.Getenv("PORT")
 

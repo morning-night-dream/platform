@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"github.com/morning-night-dream/platform/app/core/database"
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/handler"
@@ -10,23 +8,19 @@ import (
 )
 
 func main() {
-	dsn := os.Getenv("DATABASE_URL")
-
-	secret := os.Getenv("SLACK_SIGNING_SECRET")
-
-	db := database.NewClient(dsn)
+	db := database.NewClient("file:database?mode=memory&cache=shared&_fk=1")
 
 	sa := store.NewArticle(db)
 
 	ah := handler.NewArticle(*sa)
 
-	sh := handler.NewSlack(secret, sa)
+	hh := handler.NewHealth()
 
 	aua := store.NewAuth(db)
 
 	auh := handler.NewAuth(*aua)
 
-	srv := server.NewHTTPServer(ah, auh, sh)
+	srv := server.NewHTTPServer(hh, ah, auh)
 
 	srv.Run()
 }
