@@ -2,12 +2,12 @@ name: backend container push
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/backend.container.push.yml
-      - api/**/*.proto
-      - backend/**/*.go
+    #branches:
+    #  - main
+    #paths:
+    #  - .github/workflows/backend.container.push.yml
+    #  - api/**/*.proto
+    #  - backend/**/*.go
 
 jobs:
   container:
@@ -110,5 +110,5 @@ jobs:
       - name: Create release pr
         run: |
           export GH_TOKEN=${{ steps.generate_token.outputs.token }}
-          gh pr create --base main --title "Release ${{ needs.container.outputs.image_name }} ${{ needs.container.outputs.image_tag }}" -b ""
+          gh pr create --base main --title "Release ${{ needs.container.outputs.image_name }} ${{ needs.container.outputs.image_tag }}" -b "" --reviewer Shitomo
         working-directory: ${{ env.MANIFEST_REPO_NAME }}
