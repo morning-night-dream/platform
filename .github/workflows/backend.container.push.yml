@@ -2,12 +2,12 @@ name: backend container push
 
 on:
   push:
-     branches:
-       - main
-     paths:
-       - .github/workflows/backend.container.push.yml
-       - api/**/*.proto
-       - backend/**/*.go
+    branches:
+      - main
+    paths:
+      - .github/workflows/backend.container.push.yml
+      - api/**/*.proto
+      - backend/**/*.go
 
 jobs:
   container:
