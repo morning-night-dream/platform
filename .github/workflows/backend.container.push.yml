@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MANIFEST_REPO_NAME: platform-manifest
-      BRANCH_NAME: release/${{ needs.container.outputs.image_name }}-${{ needs.container.outputs.image_tag }}
+      BRANCH_NAME: release/${{ needs.container.outputs.image_tag }}
     steps:
       - name: Generate token
         id: generate_token
@@ -77,9 +77,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          repository: ${{ github.repository_owner }}/${MANIFEST_REPO_NAME}
+          repository: ${{ github.repository_owner }}/platform-manifest
           token: ${{ steps.generate_token.outputs.token }}
-          path: $MANIFEST_REPO_NAME
+          path: platform-manifest
 
       - name: Install yq
         run: sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/bin/yq
