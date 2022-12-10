@@ -65,6 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MANIFEST_REPO_NAME: platform-manifest
+      DOCKER_REPO_NAME: morningnightdream
       BRANCH_NAME: release/${{ needs.container.outputs.image_tag }}
     steps:
       - name: Generate token
@@ -92,7 +93,7 @@ jobs:
 
       - name: Update image tag
         run: |
-          export IMAGE_NAME=${{ needs.container.outputs.image_name }}:${{ needs.container.outputs.image_tag }}
+          export IMAGE_NAME=${{ env.DOCKER_REPO_NAME }}/${{ needs.container.outputs.image_name }}:${{ needs.container.outputs.image_tag }}
           yq '.spec.template.spec.containers.[0].image=env(IMAGE_NAME)' deployment.yaml > tmp.yml && mv tmp.yml deployment.yaml
         working-directory: ${{ env.MANIFEST_REPO_NAME }}/k8s/templates
 
