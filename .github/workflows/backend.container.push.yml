@@ -77,9 +77,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          repository: ${{ github.repository_owner }}/platform-manifest
+          repository: ${{ github.repository_owner }}/${{ env.MANIFEST_REPO_NAME }}
           token: ${{ steps.generate_token.outputs.token }}
-          path: platform-manifest
+          path: ${{ env.MANIFEST_REPO_NAME }}
 
       - name: Install yq
         run: sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/bin/yq
