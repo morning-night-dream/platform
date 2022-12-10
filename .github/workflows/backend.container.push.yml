@@ -86,15 +86,15 @@ jobs:
 
       - name: checkout branch
         run: |
-          git branch $BRANCH_NAME
-          git checkout $BRANCH_NAME
-        working-directory: $MANIFEST_REPO_NAME
+          git branch ${{ env.BRANCH_NAME }}}}
+          git checkout ${{ env.BRANCH_NAME }}}}
+        working-directory: ${{ env.MANIFEST_REPO_NAME }}
 
       - name: Update image tag
         run: |
           export IMAGE_NAME=${{ needs.container.outputs.image_name }}:${{ needs.container.outputs.image_tag }}
           yq '.spec.template.spec.containers.[0].image=env(IMAGE_NAME)' deployment.yaml > tmp.yml && mv tmp.yml deployment.yaml
-        working-directory: $MANIFEST_REPO_NAME/k8s/templates
+        working-directory: ${{ env.MANIFEST_REPO_NAME }}/k8s/templates
 
       - name: Git push
         run: |
@@ -102,11 +102,11 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "update core manifest"
-          git push --set-upstream origin $BRANCH_NAME
-        working-directory: $MANIFEST_REPO_NAME
+          git push --set-upstream origin ${{ env.BRANCH_NAME }}}}
+        working-directory: ${{ env.MANIFEST_REPO_NAME }}
 
       - name: Create release pr
         run: |
           export GH_TOKEN=${{ steps.generate_token.outputs.token }}
           gh pr create --base main --title "Release ${{ needs.container.outputs.image_name }} ${{ needs.container.outputs.image_tag }}" -b ""
-        working-directory: $MANIFEST_REPO_NAME
+        working-directory: ${{ env.MANIFEST_REPO_NAME }}
