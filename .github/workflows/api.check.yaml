@@ -1,10 +1,8 @@
 name: api check
-
 on:
   pull_request:
     paths:
       - api/**/*.proto
-
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -13,7 +11,7 @@ jobs:
       - name: Set up Buf
         uses: bufbuild/buf-setup-action@v1
         with:
-          version : 'latest'
+          version: 'latest'
       - name: Buf lint
         working-directory: ./api
         run: buf lint

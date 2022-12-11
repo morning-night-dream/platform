@@ -17,9 +17,17 @@ doc:
 lint:
 	@golangci-lint run --fix
 
-.PHONY: lib
-lib:
-	@go list -u -m all && go get -u ./...
+.PHONY: modules
+modules:
+	@go list -u -m all
+
+.PHONY: renovate
+renovate:
+	@go get -u -t ./...
+
+.PHONY: compile
+compile:
+	@go build -v ./... && go clean
 
 .PHONY: test
 test:
