@@ -13,7 +13,7 @@ jobs:
         with:
           version: 'latest'
       - name: Buf lint
-        working-directory: ./api
+        working-directory: ./api/proto
         run: buf lint
       - name: Buf format
         working-directory: ./api
