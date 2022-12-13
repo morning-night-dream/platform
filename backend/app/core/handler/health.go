@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/bufbuild/connect-go"
-	healthv1 "github.com/morning-night-dream/platform/pkg/api/health/v1"
+	healthv1 "github.com/morning-night-dream/platform/pkg/proto/health/v1"
 )
 
 type Health struct{}
