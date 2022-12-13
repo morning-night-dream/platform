@@ -13,9 +13,9 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/morning-night-dream/platform/app/core/handler"
-	"github.com/morning-night-dream/platform/pkg/api/article/v1/articlev1connect"
-	"github.com/morning-night-dream/platform/pkg/api/auth/v1/authv1connect"
-	"github.com/morning-night-dream/platform/pkg/api/health/v1/healthv1connect"
+	"github.com/morning-night-dream/platform/pkg/proto/article/v1/articlev1connect"
+	"github.com/morning-night-dream/platform/pkg/proto/auth/v1/authv1connect"
+	"github.com/morning-night-dream/platform/pkg/proto/health/v1/healthv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )

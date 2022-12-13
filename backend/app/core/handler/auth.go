@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/model"
-	authv1 "github.com/morning-night-dream/platform/pkg/api/auth/v1"
+	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
 type Auth struct {

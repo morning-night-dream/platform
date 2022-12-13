@@ -1,10 +1,10 @@
-.PHONY: init
-init:
+.PHONY: tool
+tool:
 	@aqua i && npm install
 
 .PHONY: lint
 lint:
-	@buf lint
+	@(cd proto && buf lint)
 
 .PHONY: format
 format:
@@ -20,4 +20,7 @@ frontend:
 
 .PHONY: doc
 doc:
-	@rm -rf doc && mkdir -p doc/api && protoc --doc_out=./doc/api --doc_opt=markdown,README.md article/**/*.proto auth/**/*.proto
+	@rm -rf doc && mkdir -p doc/api && protoc --doc_out=./doc/api --doc_opt=markdown,README.md \
+		proto/article/**/*.proto \
+		proto/auth/**/*.proto \
+		proto/health/**/*.proto
