@@ -13,6 +13,7 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/morning-night-dream/platform/app/core/handler"
+	"github.com/morning-night-dream/platform/app/core/model"
 	"github.com/morning-night-dream/platform/pkg/proto/article/v1/articlev1connect"
 	"github.com/morning-night-dream/platform/pkg/proto/auth/v1/authv1connect"
 	"github.com/morning-night-dream/platform/pkg/proto/health/v1/healthv1connect"
@@ -60,6 +61,7 @@ func NewHTTPServer(
 }
 
 func (s *HTTPServer) Run() {
+	log.Printf("env is %s\n", model.Env.String())
 	log.Printf("Server running on %s", s.Addr)
 
 	go func() {
