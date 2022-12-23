@@ -5,6 +5,8 @@ on:
       - .github/workflows/backend.diff.yaml
       - api/**/*.proto
       - backend/**/*.go
+      - backend/go.mod
+      - backend/go.sum
 jobs:
   diff:
     runs-on: ubuntu-latest
