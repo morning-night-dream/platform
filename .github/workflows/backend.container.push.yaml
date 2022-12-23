@@ -7,6 +7,8 @@ on:
       - .github/workflows/backend.container.push.yaml
       - api/**/*.proto
       - backend/**/*.go
+      - backend/go.mod
+      - backend/go.sum
 jobs:
   container:
     runs-on: ubuntu-latest

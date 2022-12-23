@@ -8,6 +8,8 @@ on:
       - .github/workflows/backend.test.yaml
       - api/**/*.proto
       - backend/**/*.go
+      - backend/go.mod
+      - backend/go.sum
 jobs:
   test:
     runs-on: ubuntu-latest
