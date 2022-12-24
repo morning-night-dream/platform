@@ -81,8 +81,8 @@ jobs:
         working-directory: ${{ env.MANIFEST_REPO_NAME }}
       - name: Update image tag
         run: |
-          export IMAGE_NAME=${{ env.DOCKER_REPO_NAME }}/${{ needs.container.outputs.image_name }}:${{ needs.container.outputs.image_tag }}
-          yq '.image.tag="env(IMAGE_NAME)"' prod.yaml > tmp.yml && mv tmp.yml prod.yaml
+          export IMAGE_TAG=${{ needs.container.outputs.image_tag }}
+          yq '.image.tag="env(IMAGE_TAG)"' prod.yaml > tmp.yml && mv tmp.yml prod.yaml
         working-directory: ${{ env.MANIFEST_REPO_NAME }}/k8s/env
       - name: Git push
         run: |
