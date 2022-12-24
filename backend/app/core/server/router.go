@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/pkg/log"
+	"github.com/newrelic/go-agent/v3/integrations/nrzap"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
@@ -29,6 +31,9 @@ func NewRouter(routes ...Route) *Router {
 		newrelic.ConfigAppName(model.Config.NewRelicAppName),
 		newrelic.ConfigLicense(model.Config.NewRelicLicense),
 		newrelic.ConfigAppLogForwardingEnabled(true),
+		func(c *newrelic.Config) {
+			c.Logger = nrzap.Transform(log.Log())
+		},
 	)
 
 	return &Router{
