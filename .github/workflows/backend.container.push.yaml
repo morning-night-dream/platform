@@ -82,8 +82,8 @@ jobs:
       - name: Update image tag
         run: |
           export IMAGE_NAME=${{ env.DOCKER_REPO_NAME }}/${{ needs.container.outputs.image_name }}:${{ needs.container.outputs.image_tag }}
-          yq '.spec.template.spec.containers.[0].image=env(IMAGE_NAME)' deployment.yaml > tmp.yml && mv tmp.yml deployment.yaml
-        working-directory: ${{ env.MANIFEST_REPO_NAME }}/k8s/templates
+          yq '.image.tag="env(IMAGE_NAME)"' prod.yaml > tmp.yml && mv tmp.yml prod.yaml
+        working-directory: ${{ env.MANIFEST_REPO_NAME }}/k8s/env
       - name: Git push
         run: |
           git config --global credential.helper 'github-apps -privatekey ${{ secrets.MY_GITHUB_APP_PRIVATE_KEY }} -appid ${{ secrets.MY_GITHUB_APP_ID }} -login ${{ github.repository_owner }}'
