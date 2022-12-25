@@ -50,6 +50,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: backend/go.mod
+          cache: true
       - name: Set up tbls
         run: go install github.com/k1LoW/tbls@main
       - name: Migrate

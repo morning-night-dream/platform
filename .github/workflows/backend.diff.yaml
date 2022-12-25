@@ -15,6 +15,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: backend/go.mod
+          cache: true
       - name: Set up aqua
         uses: aquaproj/aqua-installer@v1.1.2
         with:
