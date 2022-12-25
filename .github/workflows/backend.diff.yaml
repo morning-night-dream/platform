@@ -13,10 +13,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup go
+      - name: Set up go
         uses: actions/setup-go@v3
         with:
           go-version-file: backend/go.mod
+          cache: true
+          cache-dependency-path: backend/go.sum
       - name: Set up aqua
         uses: aquaproj/aqua-installer@v1.1.2
         with:
