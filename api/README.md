@@ -3,6 +3,16 @@
 
 ## Table of Contents
 
+- [api/proto/auth/v1/auth.proto](#api_proto_auth_v1_auth-proto)
+    - [RefreshRequest](#auth-v1-RefreshRequest)
+    - [RefreshResponse](#auth-v1-RefreshResponse)
+    - [SignInRequest](#auth-v1-SignInRequest)
+    - [SignInResponse](#auth-v1-SignInResponse)
+    - [SignUpRequest](#auth-v1-SignUpRequest)
+    - [SignUpResponse](#auth-v1-SignUpResponse)
+  
+    - [AuthService](#auth-v1-AuthService)
+  
 - [api/proto/health/v1/health.proto](#api_proto_health_v1_health-proto)
     - [CheckRequest](#health-v1-CheckRequest)
     - [CheckResponse](#health-v1-CheckResponse)
@@ -26,17 +36,125 @@
   
     - [ArticleService](#article-v1-ArticleService)
   
-- [api/proto/auth/v1/auth.proto](#api_proto_auth_v1_auth-proto)
-    - [RefreshRequest](#auth-v1-RefreshRequest)
-    - [RefreshResponse](#auth-v1-RefreshResponse)
-    - [SignInRequest](#auth-v1-SignInRequest)
-    - [SignInResponse](#auth-v1-SignInResponse)
-    - [SignUpRequest](#auth-v1-SignUpRequest)
-    - [SignUpResponse](#auth-v1-SignUpResponse)
-  
-    - [AuthService](#auth-v1-AuthService)
-  
 - [Scalar Value Types](#scalar-value-types)
+
+
+
+<a name="api_proto_auth_v1_auth-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## api/proto/auth/v1/auth.proto
+
+
+
+<a name="auth-v1-RefreshRequest"></a>
+
+### RefreshRequest
+リフレッシュリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| refresh_token | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-RefreshResponse"></a>
+
+### RefreshResponse
+リフレッシュレスポンス
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id_token | [string](#string) |  |  |
+| refresh_token | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignInRequest"></a>
+
+### SignInRequest
+サインインリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| login_id | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignInResponse"></a>
+
+### SignInResponse
+サインインレスポンス
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id_token | [string](#string) |  |  |
+| refresh_token | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignUpRequest"></a>
+
+### SignUpRequest
+サインアップリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| login_id | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignUpResponse"></a>
+
+### SignUpResponse
+サインアップレスポンス
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="auth-v1-AuthService"></a>
+
+### AuthService
+認証サービス
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
+| SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
+| Refresh | [RefreshRequest](#auth-v1-RefreshRequest) | [RefreshResponse](#auth-v1-RefreshResponse) | リフレッシュ Need Authorization Header |
+
+ 
 
 
 
@@ -290,124 +408,6 @@
 | Read | [ReadRequest](#article-v1-ReadRequest) | [ReadResponse](#article-v1-ReadResponse) | 既読 Need Authorization Header |
 | AddTag | [AddTagRequest](#article-v1-AddTagRequest) | [AddTagResponse](#article-v1-AddTagResponse) | タグ追加 |
 | ListTag | [ListTagRequest](#article-v1-ListTagRequest) | [ListTagResponse](#article-v1-ListTagResponse) | タグ一覧 |
-
- 
-
-
-
-<a name="api_proto_auth_v1_auth-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## api/proto/auth/v1/auth.proto
-
-
-
-<a name="auth-v1-RefreshRequest"></a>
-
-### RefreshRequest
-リフレッシュリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| refresh_token | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-RefreshResponse"></a>
-
-### RefreshResponse
-リフレッシュレスポンス
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id_token | [string](#string) |  |  |
-| refresh_token | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignInRequest"></a>
-
-### SignInRequest
-サインインリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| login_id | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignInResponse"></a>
-
-### SignInResponse
-サインインレスポンス
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id_token | [string](#string) |  |  |
-| refresh_token | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignUpRequest"></a>
-
-### SignUpRequest
-サインアップリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| email | [string](#string) |  |  |
-| login_id | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignUpResponse"></a>
-
-### SignUpResponse
-サインアップレスポンス
-
-
-
-
-
- 
-
- 
-
- 
-
-
-<a name="auth-v1-AuthService"></a>
-
-### AuthService
-認証サービス
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
-| SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
-| Refresh | [RefreshRequest](#auth-v1-RefreshRequest) | [RefreshResponse](#auth-v1-RefreshResponse) | リフレッシュ Need Authorization Header |
 
  
 
