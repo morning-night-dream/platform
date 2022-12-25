@@ -32,3 +32,16 @@ services:
     restart: always
     depends_on:
       - db
+  db-migration:
+    container_name: ${APP_NAME}-db-migration
+    build:
+      context: .
+      dockerfile: migration/Dockerfile
+      args:
+        GOLANG_VERSION: ${GOLANG_VERSION}
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+    volumes:
+      - ../backend:/app
+    depends_on:
+      - db
