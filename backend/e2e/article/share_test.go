@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
@@ -49,6 +50,29 @@ func TestE2EArticleShare(t *testing.T) {
 		}
 		if !reflect.DeepEqual(res.Msg.Article.Thumbnail, req.Thumbnail) {
 			t.Errorf("Thumbnail = %v, want %v", res.Msg.Article.Thumbnail, req.Thumbnail)
+		}
+	})
+
+	t.Run("Api-Keyがなくて記事が共有できない", func(t *testing.T) {
+		t.Parallel()
+
+		hc := &http.Client{}
+
+		client := article.New(t, hc, url)
+
+		req := &articlev1.ShareRequest{
+			Url:         "http://www.example.com",
+			Title:       "title",
+			Description: "description",
+			Thumbnail:   "http://www.example.com/thumbnail.jpg",
+		}
+
+		_, err := client.Article.Share(context.Background(), connect.NewRequest(req))
+		if !strings.Contains(err.Error(), "Unauthenticated") {
+			t.Errorf("err = %v", err)
+		}
+		if !strings.Contains(err.Error(), "unauthorized") {
+			t.Errorf("err = %v", err)
 		}
 	})
 }
