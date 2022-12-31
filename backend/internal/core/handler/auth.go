@@ -10,8 +10,8 @@ import (
 	"github.com/bufbuild/connect-go"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/app/core/database/store"
-	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/internal/core/database/store"
+	"github.com/morning-night-dream/platform/internal/core/model"
 	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 

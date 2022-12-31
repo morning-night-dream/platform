@@ -11,8 +11,8 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/app/core/database/store"
-	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/internal/core/database/store"
+	"github.com/morning-night-dream/platform/internal/core/model"
 	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
 	"github.com/pkg/errors"
 )
