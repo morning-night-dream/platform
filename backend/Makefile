@@ -33,6 +33,10 @@ compile:
 test:
 	@go test ./...
 
+.PHONY: e2e
+e2e:
+	@go test ./e2e/... -tags e2e
+
 .PHONY: gen
 gen:
 	@go generate ./...
