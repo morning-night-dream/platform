@@ -3,16 +3,13 @@ package handler
 import (
 	"context"
 	"encoding/base64"
-	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/bufbuild/connect-go"
-	"github.com/dyatlov/go-opengraph/opengraph"
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/app/core/database/store"
 	"github.com/morning-night-dream/platform/app/core/model"
@@ -49,45 +46,31 @@ func (a *Article) Share(
 		return nil, ErrInvalidArgument
 	}
 
-	gr, err := http.NewRequest(http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, ErrInvalidArgument
-	}
-
-	res, err := a.client.Do(gr.WithContext(ctx))
-	if err != nil {
-		return nil, ErrInternal
-	}
-
-	defer res.Body.Close()
-
-	body, _ := io.ReadAll(res.Body)
-
-	og := opengraph.NewOpenGraph()
-
-	err = og.ProcessHTML(strings.NewReader(string(body)))
-	if err != nil {
-		return nil, ErrInternal
-	}
-
-	thumbnail := ""
-	if len(og.Images) > 0 {
-		thumbnail = og.Images[0].URL
-	}
+	id := uuid.NewString()
 
 	if err := a.store.Save(ctx, model.Article{
-		ID:          uuid.NewString(),
-		URL:         og.URL,
-		Title:       og.Title,
-		Thumbnail:   thumbnail,
-		Description: og.Description,
+		ID:          id,
+		URL:         u.String(),
+		Title:       req.Msg.Title,
+		Thumbnail:   req.Msg.Thumbnail,
+		Description: req.Msg.Description,
 	}); err != nil {
 		log.Print(err)
 
 		return nil, ErrInternal
 	}
 
-	return connect.NewResponse(&articlev1.ShareResponse{}), nil
+	res := &articlev1.ShareResponse{
+		Article: &articlev1.Article{
+			Id:          id,
+			Url:         u.String(),
+			Title:       req.Msg.Title,
+			Thumbnail:   req.Msg.Thumbnail,
+			Description: req.Msg.Description,
+		},
+	}
+
+	return connect.NewResponse(res), nil
 }
 
 func (a *Article) List(

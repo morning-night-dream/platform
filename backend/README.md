@@ -1,5 +1,19 @@
 # backend
 
+# .vscode
+
+`.vscode/settings.json`
+
+```json
+{
+    "go.toolsEnvVars": {
+        "GOFLAGS": "-tags=e2e"
+    }
+}
+```
+
+# cURL
+
 ```bash
 curl -H "Content-Type: application/json" -H "X-API-KEY: local" --data '{"url": "https://example.com"}' http://localhost:8080/article.v1.ArticleService/Share
 ```
