@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/morning-night-dream/platform/app/core/model"
+	"github.com/morning-night-dream/platform/internal/core/model"
 	"github.com/morning-night-dream/platform/pkg/log"
 	"github.com/newrelic/go-agent/v3/integrations/nrzap"
 	"github.com/newrelic/go-agent/v3/newrelic"
