@@ -10,13 +10,14 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/morning-night-dream/platform/e2e/health"
+	"github.com/morning-night-dream/platform/e2e/helper"
 	healthv1 "github.com/morning-night-dream/platform/pkg/proto/health/v1"
 )
 
 func TestE2EHealthCheck(t *testing.T) {
 	t.Parallel()
 
-	url := "http://localhost:8081"
+	url := helper.GetEndpoint(t)
 
 	t.Run("ヘルスチェックが成功する", func(t *testing.T) {
 		t.Parallel()
