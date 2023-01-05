@@ -25,7 +25,7 @@ func TestE2EArticleShare(t *testing.T) {
 		t.Parallel()
 
 		hc := &http.Client{
-			Transport: helper.NewAPIKeyTransport(t, "local"),
+			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
 
 		client := article.New(t, hc, url)

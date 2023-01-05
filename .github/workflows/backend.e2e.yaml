@@ -42,6 +42,7 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+          API_KEY: e2e
         run: |
           go run cmd/core/main.go &
           echo PID=$! >> $GITHUB_ENV
@@ -49,6 +50,7 @@ jobs:
         working-directory: ./backend
         env:
           ENDPOINT: http://localhost:8080
+          API_KEY: e2e
         run: go test ./e2e/... -tags e2e
       - name: Shutdown
         if: always()
