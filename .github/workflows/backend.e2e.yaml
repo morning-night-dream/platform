@@ -1,4 +1,4 @@
-name: document
+name: e2e
 on:
   push:
     branches:
@@ -42,9 +42,14 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
-        run: go run cmd/core/main.go
+        run: |
+          go run cmd/core/main.go &
+          echo PID=$! >> $GITHUB_ENV
       - name: Go test e2e
         working-directory: ./backend
         env:
           ENDPOINT: http://localhost:8080
         run: go test ./e2e/... -tags e2e
+      - name: Shutdown
+        if: always()
+        run: kill ${{ env.PID }}
