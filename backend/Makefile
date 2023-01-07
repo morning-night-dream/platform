@@ -1,6 +1,8 @@
 export
 DATABASE_URL := postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable
 ENDPOINT := http://localhost:8081
+ENV := local
+API_KEY := local
 
 .PHONY: aqua
 aqua: # export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH"
