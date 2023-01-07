@@ -19,13 +19,13 @@ import (
 func TestE2EArticleShare(t *testing.T) {
 	t.Parallel()
 
-	url := "http://localhost:8081"
+	url := helper.GetEndpoint(t)
 
 	t.Run("記事が共有できる", func(t *testing.T) {
 		t.Parallel()
 
 		hc := &http.Client{
-			Transport: helper.NewAPIKeyTransport(t, "local"),
+			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
 
 		client := article.New(t, hc, url)
