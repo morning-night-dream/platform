@@ -52,6 +52,7 @@ jobs:
         env:
           ENDPOINT: http://localhost:8080
           API_KEY: e2e
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
         run: go test ./e2e/... -tags e2e
       - name: Shutdown
         if: always()
