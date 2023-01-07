@@ -46,6 +46,7 @@ jobs:
         run: |
           go run cmd/core/main.go &
           echo PID=$! >> $GITHUB_ENV
+          sleep 10
       - name: Go test e2e
         working-directory: ./backend
         env:
