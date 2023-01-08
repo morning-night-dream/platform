@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
-	"github.com/morning-night-dream/platform/internal/core/database"
-	"github.com/morning-night-dream/platform/internal/core/database/store"
-	"github.com/morning-night-dream/platform/internal/core/handler"
-	"github.com/morning-night-dream/platform/internal/core/server"
+	"github.com/morning-night-dream/platform/internal/database"
+	"github.com/morning-night-dream/platform/internal/database/store"
+	"github.com/morning-night-dream/platform/internal/handler"
+	"github.com/morning-night-dream/platform/internal/server"
 )
 
 func main() {
