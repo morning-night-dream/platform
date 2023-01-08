@@ -74,40 +74,7 @@ func (rau *ReadArticleUpdate) ClearArticle() *ReadArticleUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (rau *ReadArticleUpdate) Save(ctx context.Context) (int, error) {
-	var (
-		err      error
-		affected int
-	)
-	if len(rau.hooks) == 0 {
-		if err = rau.check(); err != nil {
-			return 0, err
-		}
-		affected, err = rau.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*ReadArticleMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = rau.check(); err != nil {
-				return 0, err
-			}
-			rau.mutation = mutation
-			affected, err = rau.sqlSave(ctx)
-			mutation.done = true
-			return affected, err
-		})
-		for i := len(rau.hooks) - 1; i >= 0; i-- {
-			if rau.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = rau.hooks[i](mut)
-		}
-		if _, err := mut.Mutate(ctx, rau.mutation); err != nil {
-			return 0, err
-		}
-	}
-	return affected, err
+	return withHooks[int, ReadArticleMutation](ctx, rau.sqlSave, rau.mutation, rau.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -141,6 +108,9 @@ func (rau *ReadArticleUpdate) check() error {
 }
 
 func (rau *ReadArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := rau.check(); err != nil {
+		return n, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   readarticle.Table,
@@ -207,6 +177,7 @@ func (rau *ReadArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
+	rau.mutation.done = true
 	return n, nil
 }
 
@@ -269,46 +240,7 @@ func (rauo *ReadArticleUpdateOne) Select(field string, fields ...string) *ReadAr
 
 // Save executes the query and returns the updated ReadArticle entity.
 func (rauo *ReadArticleUpdateOne) Save(ctx context.Context) (*ReadArticle, error) {
-	var (
-		err  error
-		node *ReadArticle
-	)
-	if len(rauo.hooks) == 0 {
-		if err = rauo.check(); err != nil {
-			return nil, err
-		}
-		node, err = rauo.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*ReadArticleMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = rauo.check(); err != nil {
-				return nil, err
-			}
-			rauo.mutation = mutation
-			node, err = rauo.sqlSave(ctx)
-			mutation.done = true
-			return node, err
-		})
-		for i := len(rauo.hooks) - 1; i >= 0; i-- {
-			if rauo.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = rauo.hooks[i](mut)
-		}
-		v, err := mut.Mutate(ctx, rauo.mutation)
-		if err != nil {
-			return nil, err
-		}
-		nv, ok := v.(*ReadArticle)
-		if !ok {
-			return nil, fmt.Errorf("unexpected node type %T returned from ReadArticleMutation", v)
-		}
-		node = nv
-	}
-	return node, err
+	return withHooks[*ReadArticle, ReadArticleMutation](ctx, rauo.sqlSave, rauo.mutation, rauo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -342,6 +274,9 @@ func (rauo *ReadArticleUpdateOne) check() error {
 }
 
 func (rauo *ReadArticleUpdateOne) sqlSave(ctx context.Context) (_node *ReadArticle, err error) {
+	if err := rauo.check(); err != nil {
+		return _node, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   readarticle.Table,
@@ -428,5 +363,6 @@ func (rauo *ReadArticleUpdateOne) sqlSave(ctx context.Context) (_node *ReadArtic
 		}
 		return nil, err
 	}
+	rauo.mutation.done = true
 	return _node, nil
 }

@@ -77,50 +77,8 @@ func (rac *ReadArticleCreate) Mutation() *ReadArticleMutation {
 
 // Save creates the ReadArticle in the database.
 func (rac *ReadArticleCreate) Save(ctx context.Context) (*ReadArticle, error) {
-	var (
-		err  error
-		node *ReadArticle
-	)
 	rac.defaults()
-	if len(rac.hooks) == 0 {
-		if err = rac.check(); err != nil {
-			return nil, err
-		}
-		node, err = rac.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*ReadArticleMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = rac.check(); err != nil {
-				return nil, err
-			}
-			rac.mutation = mutation
-			if node, err = rac.sqlSave(ctx); err != nil {
-				return nil, err
-			}
-			mutation.id = &node.ID
-			mutation.done = true
-			return node, err
-		})
-		for i := len(rac.hooks) - 1; i >= 0; i-- {
-			if rac.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = rac.hooks[i](mut)
-		}
-		v, err := mut.Mutate(ctx, rac.mutation)
-		if err != nil {
-			return nil, err
-		}
-		nv, ok := v.(*ReadArticle)
-		if !ok {
-			return nil, fmt.Errorf("unexpected node type %T returned from ReadArticleMutation", v)
-		}
-		node = nv
-	}
-	return node, err
+	return withHooks[*ReadArticle, ReadArticleMutation](ctx, rac.sqlSave, rac.mutation, rac.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -175,6 +133,9 @@ func (rac *ReadArticleCreate) check() error {
 }
 
 func (rac *ReadArticleCreate) sqlSave(ctx context.Context) (*ReadArticle, error) {
+	if err := rac.check(); err != nil {
+		return nil, err
+	}
 	_node, _spec := rac.createSpec()
 	if err := sqlgraph.CreateNode(ctx, rac.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
@@ -189,6 +150,8 @@ func (rac *ReadArticleCreate) sqlSave(ctx context.Context) (*ReadArticle, error)
 			return nil, err
 		}
 	}
+	rac.mutation.id = &_node.ID
+	rac.mutation.done = true
 	return _node, nil
 }
 

@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/morning-night-dream/platform/internal/core/database"
+	"github.com/morning-night-dream/platform/internal/database"
 )
 
 func main() {

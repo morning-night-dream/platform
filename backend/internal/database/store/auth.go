@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/core/model"
+	"github.com/morning-night-dream/platform/internal/model"
 	"github.com/morning-night-dream/platform/pkg/ent"
 	"github.com/morning-night-dream/platform/pkg/ent/auth"
 	"github.com/pkg/errors"

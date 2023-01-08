@@ -111,50 +111,8 @@ func (ac *AuthCreate) Mutation() *AuthMutation {
 
 // Save creates the Auth in the database.
 func (ac *AuthCreate) Save(ctx context.Context) (*Auth, error) {
-	var (
-		err  error
-		node *Auth
-	)
 	ac.defaults()
-	if len(ac.hooks) == 0 {
-		if err = ac.check(); err != nil {
-			return nil, err
-		}
-		node, err = ac.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AuthMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = ac.check(); err != nil {
-				return nil, err
-			}
-			ac.mutation = mutation
-			if node, err = ac.sqlSave(ctx); err != nil {
-				return nil, err
-			}
-			mutation.id = &node.ID
-			mutation.done = true
-			return node, err
-		})
-		for i := len(ac.hooks) - 1; i >= 0; i-- {
-			if ac.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = ac.hooks[i](mut)
-		}
-		v, err := mut.Mutate(ctx, ac.mutation)
-		if err != nil {
-			return nil, err
-		}
-		nv, ok := v.(*Auth)
-		if !ok {
-			return nil, fmt.Errorf("unexpected node type %T returned from AuthMutation", v)
-		}
-		node = nv
-	}
-	return node, err
+	return withHooks[*Auth, AuthMutation](ctx, ac.sqlSave, ac.mutation, ac.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -226,6 +184,9 @@ func (ac *AuthCreate) check() error {
 }
 
 func (ac *AuthCreate) sqlSave(ctx context.Context) (*Auth, error) {
+	if err := ac.check(); err != nil {
+		return nil, err
+	}
 	_node, _spec := ac.createSpec()
 	if err := sqlgraph.CreateNode(ctx, ac.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
@@ -240,6 +201,8 @@ func (ac *AuthCreate) sqlSave(ctx context.Context) (*Auth, error) {
 			return nil, err
 		}
 	}
+	ac.mutation.id = &_node.ID
+	ac.mutation.done = true
 	return _node, nil
 }
 
