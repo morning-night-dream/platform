@@ -42,7 +42,7 @@ e2e:
 
 .PHONY: gen
 gen:
-	@go generate ./...
+	@go generate ./... && go mod tidy
 
 .PHONY: migrate
 migrate:

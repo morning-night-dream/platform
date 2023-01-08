@@ -24,6 +24,7 @@ type ReadArticleQuery struct {
 	unique      *bool
 	order       []OrderFunc
 	fields      []string
+	inters      []Interceptor
 	predicates  []predicate.ReadArticle
 	withArticle *ArticleQuery
 	// intermediate query (i.e. traversal path).
@@ -37,13 +38,13 @@ func (raq *ReadArticleQuery) Where(ps ...predicate.ReadArticle) *ReadArticleQuer
 	return raq
 }
 
-// Limit adds a limit step to the query.
+// Limit the number of records to be returned by this query.
 func (raq *ReadArticleQuery) Limit(limit int) *ReadArticleQuery {
 	raq.limit = &limit
 	return raq
 }
 
-// Offset adds an offset step to the query.
+// Offset to start from.
 func (raq *ReadArticleQuery) Offset(offset int) *ReadArticleQuery {
 	raq.offset = &offset
 	return raq
@@ -56,7 +57,7 @@ func (raq *ReadArticleQuery) Unique(unique bool) *ReadArticleQuery {
 	return raq
 }
 
-// Order adds an order step to the query.
+// Order specifies how the records should be ordered.
 func (raq *ReadArticleQuery) Order(o ...OrderFunc) *ReadArticleQuery {
 	raq.order = append(raq.order, o...)
 	return raq
@@ -64,7 +65,7 @@ func (raq *ReadArticleQuery) Order(o ...OrderFunc) *ReadArticleQuery {
 
 // QueryArticle chains the current query on the "article" edge.
 func (raq *ReadArticleQuery) QueryArticle() *ArticleQuery {
-	query := &ArticleQuery{config: raq.config}
+	query := (&ArticleClient{config: raq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := raq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -87,7 +88,7 @@ func (raq *ReadArticleQuery) QueryArticle() *ArticleQuery {
 // First returns the first ReadArticle entity from the query.
 // Returns a *NotFoundError when no ReadArticle was found.
 func (raq *ReadArticleQuery) First(ctx context.Context) (*ReadArticle, error) {
-	nodes, err := raq.Limit(1).All(ctx)
+	nodes, err := raq.Limit(1).All(newQueryContext(ctx, TypeReadArticle, "First"))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (raq *ReadArticleQuery) FirstX(ctx context.Context) *ReadArticle {
 // Returns a *NotFoundError when no ReadArticle ID was found.
 func (raq *ReadArticleQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = raq.Limit(1).IDs(ctx); err != nil {
+	if ids, err = raq.Limit(1).IDs(newQueryContext(ctx, TypeReadArticle, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (raq *ReadArticleQuery) FirstIDX(ctx context.Context) uuid.UUID {
 // Returns a *NotSingularError when more than one ReadArticle entity is found.
 // Returns a *NotFoundError when no ReadArticle entities are found.
 func (raq *ReadArticleQuery) Only(ctx context.Context) (*ReadArticle, error) {
-	nodes, err := raq.Limit(2).All(ctx)
+	nodes, err := raq.Limit(2).All(newQueryContext(ctx, TypeReadArticle, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (raq *ReadArticleQuery) OnlyX(ctx context.Context) *ReadArticle {
 // Returns a *NotFoundError when no entities are found.
 func (raq *ReadArticleQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = raq.Limit(2).IDs(ctx); err != nil {
+	if ids, err = raq.Limit(2).IDs(newQueryContext(ctx, TypeReadArticle, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,10 +187,12 @@ func (raq *ReadArticleQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 
 // All executes the query and returns a list of ReadArticles.
 func (raq *ReadArticleQuery) All(ctx context.Context) ([]*ReadArticle, error) {
+	ctx = newQueryContext(ctx, TypeReadArticle, "All")
 	if err := raq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	return raq.sqlAll(ctx)
+	qr := querierAll[[]*ReadArticle, *ReadArticleQuery]()
+	return withInterceptors[[]*ReadArticle](ctx, raq, qr, raq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
@@ -204,6 +207,7 @@ func (raq *ReadArticleQuery) AllX(ctx context.Context) []*ReadArticle {
 // IDs executes the query and returns a list of ReadArticle IDs.
 func (raq *ReadArticleQuery) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	var ids []uuid.UUID
+	ctx = newQueryContext(ctx, TypeReadArticle, "IDs")
 	if err := raq.Select(readarticle.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -221,10 +225,11 @@ func (raq *ReadArticleQuery) IDsX(ctx context.Context) []uuid.UUID {
 
 // Count returns the count of the given query.
 func (raq *ReadArticleQuery) Count(ctx context.Context) (int, error) {
+	ctx = newQueryContext(ctx, TypeReadArticle, "Count")
 	if err := raq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return raq.sqlCount(ctx)
+	return withInterceptors[int](ctx, raq, querierCount[*ReadArticleQuery](), raq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
@@ -238,10 +243,15 @@ func (raq *ReadArticleQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (raq *ReadArticleQuery) Exist(ctx context.Context) (bool, error) {
-	if err := raq.prepareQuery(ctx); err != nil {
-		return false, err
+	ctx = newQueryContext(ctx, TypeReadArticle, "Exist")
+	switch _, err := raq.FirstID(ctx); {
+	case IsNotFound(err):
+		return false, nil
+	case err != nil:
+		return false, fmt.Errorf("ent: check existence: %w", err)
+	default:
+		return true, nil
 	}
-	return raq.sqlExist(ctx)
 }
 
 // ExistX is like Exist, but panics if an error occurs.
@@ -264,6 +274,7 @@ func (raq *ReadArticleQuery) Clone() *ReadArticleQuery {
 		limit:       raq.limit,
 		offset:      raq.offset,
 		order:       append([]OrderFunc{}, raq.order...),
+		inters:      append([]Interceptor{}, raq.inters...),
 		predicates:  append([]predicate.ReadArticle{}, raq.predicates...),
 		withArticle: raq.withArticle.Clone(),
 		// clone intermediate query.
@@ -276,7 +287,7 @@ func (raq *ReadArticleQuery) Clone() *ReadArticleQuery {
 // WithArticle tells the query-builder to eager-load the nodes that are connected to
 // the "article" edge. The optional arguments are used to configure the query builder of the edge.
 func (raq *ReadArticleQuery) WithArticle(opts ...func(*ArticleQuery)) *ReadArticleQuery {
-	query := &ArticleQuery{config: raq.config}
+	query := (&ArticleClient{config: raq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -299,16 +310,11 @@ func (raq *ReadArticleQuery) WithArticle(opts ...func(*ArticleQuery)) *ReadArtic
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (raq *ReadArticleQuery) GroupBy(field string, fields ...string) *ReadArticleGroupBy {
-	grbuild := &ReadArticleGroupBy{config: raq.config}
-	grbuild.fields = append([]string{field}, fields...)
-	grbuild.path = func(ctx context.Context) (prev *sql.Selector, err error) {
-		if err := raq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		return raq.sqlQuery(ctx), nil
-	}
+	raq.fields = append([]string{field}, fields...)
+	grbuild := &ReadArticleGroupBy{build: raq}
+	grbuild.flds = &raq.fields
 	grbuild.label = readarticle.Label
-	grbuild.flds, grbuild.scan = &grbuild.fields, grbuild.Scan
+	grbuild.scan = grbuild.Scan
 	return grbuild
 }
 
@@ -326,10 +332,10 @@ func (raq *ReadArticleQuery) GroupBy(field string, fields ...string) *ReadArticl
 //		Scan(ctx, &v)
 func (raq *ReadArticleQuery) Select(fields ...string) *ReadArticleSelect {
 	raq.fields = append(raq.fields, fields...)
-	selbuild := &ReadArticleSelect{ReadArticleQuery: raq}
-	selbuild.label = readarticle.Label
-	selbuild.flds, selbuild.scan = &raq.fields, selbuild.Scan
-	return selbuild
+	sbuild := &ReadArticleSelect{ReadArticleQuery: raq}
+	sbuild.label = readarticle.Label
+	sbuild.flds, sbuild.scan = &raq.fields, sbuild.Scan
+	return sbuild
 }
 
 // Aggregate returns a ReadArticleSelect configured with the given aggregations.
@@ -338,6 +344,16 @@ func (raq *ReadArticleQuery) Aggregate(fns ...AggregateFunc) *ReadArticleSelect 
 }
 
 func (raq *ReadArticleQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range raq.inters {
+		if inter == nil {
+			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
+		}
+		if trv, ok := inter.(Traverser); ok {
+			if err := trv.Traverse(ctx, raq); err != nil {
+				return err
+			}
+		}
+	}
 	for _, f := range raq.fields {
 		if !readarticle.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
@@ -424,17 +440,6 @@ func (raq *ReadArticleQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, raq.driver, _spec)
 }
 
-func (raq *ReadArticleQuery) sqlExist(ctx context.Context) (bool, error) {
-	switch _, err := raq.FirstID(ctx); {
-	case IsNotFound(err):
-		return false, nil
-	case err != nil:
-		return false, fmt.Errorf("ent: check existence: %w", err)
-	default:
-		return true, nil
-	}
-}
-
 func (raq *ReadArticleQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := &sqlgraph.QuerySpec{
 		Node: &sqlgraph.NodeSpec{
@@ -517,13 +522,8 @@ func (raq *ReadArticleQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // ReadArticleGroupBy is the group-by builder for ReadArticle entities.
 type ReadArticleGroupBy struct {
-	config
 	selector
-	fields []string
-	fns    []AggregateFunc
-	// intermediate query (i.e. traversal path).
-	sql  *sql.Selector
-	path func(context.Context) (*sql.Selector, error)
+	build *ReadArticleQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
@@ -532,58 +532,46 @@ func (ragb *ReadArticleGroupBy) Aggregate(fns ...AggregateFunc) *ReadArticleGrou
 	return ragb
 }
 
-// Scan applies the group-by query and scans the result into the given value.
+// Scan applies the selector query and scans the result into the given value.
 func (ragb *ReadArticleGroupBy) Scan(ctx context.Context, v any) error {
-	query, err := ragb.path(ctx)
-	if err != nil {
+	ctx = newQueryContext(ctx, TypeReadArticle, "GroupBy")
+	if err := ragb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	ragb.sql = query
-	return ragb.sqlScan(ctx, v)
+	return scanWithInterceptors[*ReadArticleQuery, *ReadArticleGroupBy](ctx, ragb.build, ragb, ragb.build.inters, v)
 }
 
-func (ragb *ReadArticleGroupBy) sqlScan(ctx context.Context, v any) error {
-	for _, f := range ragb.fields {
-		if !readarticle.ValidColumn(f) {
-			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for group-by", f)}
-		}
+func (ragb *ReadArticleGroupBy) sqlScan(ctx context.Context, root *ReadArticleQuery, v any) error {
+	selector := root.sqlQuery(ctx).Select()
+	aggregation := make([]string, 0, len(ragb.fns))
+	for _, fn := range ragb.fns {
+		aggregation = append(aggregation, fn(selector))
 	}
-	selector := ragb.sqlQuery()
+	if len(selector.SelectedColumns()) == 0 {
+		columns := make([]string, 0, len(*ragb.flds)+len(ragb.fns))
+		for _, f := range *ragb.flds {
+			columns = append(columns, selector.C(f))
+		}
+		columns = append(columns, aggregation...)
+		selector.Select(columns...)
+	}
+	selector.GroupBy(selector.Columns(*ragb.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ragb.driver.Query(ctx, query, args, rows); err != nil {
+	if err := ragb.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
 }
 
-func (ragb *ReadArticleGroupBy) sqlQuery() *sql.Selector {
-	selector := ragb.sql.Select()
-	aggregation := make([]string, 0, len(ragb.fns))
-	for _, fn := range ragb.fns {
-		aggregation = append(aggregation, fn(selector))
-	}
-	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(ragb.fields)+len(ragb.fns))
-		for _, f := range ragb.fields {
-			columns = append(columns, selector.C(f))
-		}
-		columns = append(columns, aggregation...)
-		selector.Select(columns...)
-	}
-	return selector.GroupBy(selector.Columns(ragb.fields...)...)
-}
-
 // ReadArticleSelect is the builder for selecting fields of ReadArticle entities.
 type ReadArticleSelect struct {
 	*ReadArticleQuery
 	selector
-	// intermediate query (i.e. traversal path).
-	sql *sql.Selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
@@ -594,26 +582,27 @@ func (ras *ReadArticleSelect) Aggregate(fns ...AggregateFunc) *ReadArticleSelect
 
 // Scan applies the selector query and scans the result into the given value.
 func (ras *ReadArticleSelect) Scan(ctx context.Context, v any) error {
+	ctx = newQueryContext(ctx, TypeReadArticle, "Select")
 	if err := ras.prepareQuery(ctx); err != nil {
 		return err
 	}
-	ras.sql = ras.ReadArticleQuery.sqlQuery(ctx)
-	return ras.sqlScan(ctx, v)
+	return scanWithInterceptors[*ReadArticleQuery, *ReadArticleSelect](ctx, ras.ReadArticleQuery, ras, ras.inters, v)
 }
 
-func (ras *ReadArticleSelect) sqlScan(ctx context.Context, v any) error {
+func (ras *ReadArticleSelect) sqlScan(ctx context.Context, root *ReadArticleQuery, v any) error {
+	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(ras.fns))
 	for _, fn := range ras.fns {
-		aggregation = append(aggregation, fn(ras.sql))
+		aggregation = append(aggregation, fn(selector))
 	}
 	switch n := len(*ras.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
-		ras.sql.Select(aggregation...)
+		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
-		ras.sql.AppendSelect(aggregation...)
+		selector.AppendSelect(aggregation...)
 	}
 	rows := &sql.Rows{}
-	query, args := ras.sql.Query()
+	query, args := selector.Query()
 	if err := ras.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}

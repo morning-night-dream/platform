@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -28,34 +27,7 @@ func (rad *ReadArticleDelete) Where(ps ...predicate.ReadArticle) *ReadArticleDel
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (rad *ReadArticleDelete) Exec(ctx context.Context) (int, error) {
-	var (
-		err      error
-		affected int
-	)
-	if len(rad.hooks) == 0 {
-		affected, err = rad.sqlExec(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*ReadArticleMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			rad.mutation = mutation
-			affected, err = rad.sqlExec(ctx)
-			mutation.done = true
-			return affected, err
-		})
-		for i := len(rad.hooks) - 1; i >= 0; i-- {
-			if rad.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = rad.hooks[i](mut)
-		}
-		if _, err := mut.Mutate(ctx, rad.mutation); err != nil {
-			return 0, err
-		}
-	}
-	return affected, err
+	return withHooks[int, ReadArticleMutation](ctx, rad.sqlExec, rad.mutation, rad.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -88,6 +60,7 @@ func (rad *ReadArticleDelete) sqlExec(ctx context.Context) (int, error) {
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
+	rad.mutation.done = true
 	return affected, err
 }
 
