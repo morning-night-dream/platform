@@ -28,7 +28,7 @@ jobs:
       - name: coverage
         working-directory: ./backend
         run: |
-          go test ./internal/...  -coverpkg=./... -coverprofile ./coverage.txt
+          go test ./internal/... -coverpkg=./... -coverprofile ./coverage.txt
       - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
