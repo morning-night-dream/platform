@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/bufbuild/connect-go"
-	"github.com/morning-night-dream/platform/e2e/article"
 	"github.com/morning-night-dream/platform/e2e/helper"
 	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
 )
@@ -28,7 +27,7 @@ func TestE2EArticleShare(t *testing.T) {
 			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
 
-		client := article.New(t, hc, url)
+		client := helper.NewClient(t, hc, url)
 
 		req := &articlev1.ShareRequest{
 			Url:         "http://www.example.com",
@@ -61,7 +60,7 @@ func TestE2EArticleShare(t *testing.T) {
 
 		hc := &http.Client{}
 
-		client := article.New(t, hc, url)
+		client := helper.NewClient(t, hc, url)
 
 		req := &articlev1.ShareRequest{
 			Url:         "http://www.example.com",
