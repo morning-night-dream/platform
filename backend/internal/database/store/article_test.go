@@ -21,8 +21,6 @@ func TestArticleStoreSave(t *testing.T) {
 	t.Parallel()
 
 	t.Run("記事を保存できる", func(t *testing.T) {
-		t.Parallel()
-
 		doc := test.NewDBDocker(t)
 
 		defer doc.TearDown(t)
@@ -86,8 +84,6 @@ func TestArticleStoreSave(t *testing.T) {
 	})
 
 	t.Run("記事を取得できる", func(t *testing.T) {
-		t.Parallel()
-
 		doc := test.NewDBDocker(t)
 
 		defer doc.TearDown(t)
@@ -136,8 +132,6 @@ func TestArticleStoreSave(t *testing.T) {
 	})
 
 	t.Run("記事を論理削除できる", func(t *testing.T) {
-		t.Parallel()
-
 		doc := test.NewDBDocker(t)
 
 		defer doc.TearDown(t)
@@ -197,8 +191,6 @@ func TestArticleStoreSave(t *testing.T) {
 	})
 
 	t.Run("タグ一覧を取得できる", func(t *testing.T) {
-		t.Parallel()
-
 		doc := test.NewDBDocker(t)
 
 		defer doc.TearDown(t)
