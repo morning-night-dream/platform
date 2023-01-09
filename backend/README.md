@@ -7,7 +7,7 @@
 ```json
 {
     "go.toolsEnvVars": {
-        "GOFLAGS": "-tags=e2em,integration"
+        "GOFLAGS": "-tags=e2e,integration"
     }
 }
 ```
