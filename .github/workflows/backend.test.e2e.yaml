@@ -1,4 +1,4 @@
-name: e2e
+name: backend e2e test
 on:
   pull_request:
     paths:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:14.5
+        image: postgres:14.6-alpine
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres

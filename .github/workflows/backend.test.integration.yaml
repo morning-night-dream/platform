@@ -1,0 +1,37 @@
+name: integration test
+on:
+  pull_request:
+    paths:
+      - .github/workflows/backend.integration.test.yaml
+      - api/**/*.proto
+      - backend/**/*.go
+      - backend/go.mod
+      - backend/go.sum
+env:
+  POSTGRES_IMAGE: postgres:14.6-alpine
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14.6-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: backend/go.mod
+          cache: true
+          cache-dependency-path: backend/go.sum
+      - name: Integration test
+        working-directory: ./backend
+        run: go test ./internal/database/store/... -tags integration

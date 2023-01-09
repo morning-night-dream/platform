@@ -1,35 +1,40 @@
+//go:build integration
+// +build integration
+
 package store_test
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/google/uuid"
-	_ "github.com/mattn/go-sqlite3"
+	// postgres driver.
+	_ "github.com/lib/pq"
 	"github.com/morning-night-dream/platform/internal/database/store"
+	"github.com/morning-night-dream/platform/internal/database/test"
 	"github.com/morning-night-dream/platform/internal/model"
 	"github.com/morning-night-dream/platform/pkg/ent"
-	"github.com/morning-night-dream/platform/pkg/ent/enttest"
-	"github.com/morning-night-dream/platform/pkg/ent/migrate"
 )
 
 func TestArticleStoreSave(t *testing.T) {
 	t.Parallel()
 
-	opts := []enttest.Option{
-		enttest.WithOptions(ent.Log(t.Log)),
-		// trueにすると、no such table: sqlite_sequenceでこけるため、falseにしておく
-		enttest.WithMigrateOptions(migrate.WithGlobalUniqueID(false)),
-	}
-
 	t.Run("記事を保存できる", func(t *testing.T) {
 		t.Parallel()
 
-		dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.NewString())
+		doc := test.NewDBDocker(t)
 
-		db := enttest.Open(t, "sqlite3", dsn, opts...)
+		defer doc.TearDown(t)
+
+		db, err := ent.Open("postgres", doc.DSN)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if err := db.Debug().Schema.Create(context.Background()); err != nil {
+			t.Fatalf("Failed create schema: %v", err)
+		}
 
 		sa := store.NewArticle(db)
 
@@ -83,9 +88,18 @@ func TestArticleStoreSave(t *testing.T) {
 	t.Run("記事を取得できる", func(t *testing.T) {
 		t.Parallel()
 
-		dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.NewString())
+		doc := test.NewDBDocker(t)
 
-		db := enttest.Open(t, "sqlite3", dsn, opts...)
+		defer doc.TearDown(t)
+
+		db, err := ent.Open("postgres", doc.DSN)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if err := db.Debug().Schema.Create(context.Background()); err != nil {
+			t.Fatalf("Failed create schema: %v", err)
+		}
 
 		sa := store.NewArticle(db)
 
@@ -124,9 +138,18 @@ func TestArticleStoreSave(t *testing.T) {
 	t.Run("記事を論理削除できる", func(t *testing.T) {
 		t.Parallel()
 
-		dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.NewString())
+		doc := test.NewDBDocker(t)
 
-		db := enttest.Open(t, "sqlite3", dsn, opts...)
+		defer doc.TearDown(t)
+
+		db, err := ent.Open("postgres", doc.DSN)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if err := db.Debug().Schema.Create(context.Background()); err != nil {
+			t.Fatalf("Failed create schema: %v", err)
+		}
 
 		sa := store.NewArticle(db)
 
@@ -176,9 +199,18 @@ func TestArticleStoreSave(t *testing.T) {
 	t.Run("タグ一覧を取得できる", func(t *testing.T) {
 		t.Parallel()
 
-		dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.NewString())
+		doc := test.NewDBDocker(t)
 
-		db := enttest.Open(t, "sqlite3", dsn, opts...)
+		defer doc.TearDown(t)
+
+		db, err := ent.Open("postgres", doc.DSN)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if err := db.Debug().Schema.Create(context.Background()); err != nil {
+			t.Fatalf("Failed create schema: %v", err)
+		}
 
 		sa := store.NewArticle(db)
 

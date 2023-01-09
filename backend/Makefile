@@ -1,5 +1,6 @@
 export
 DATABASE_URL := postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable
+POSTGRES_IMAGE := postgres:14.6-alpine
 ENDPOINT := http://localhost:8081
 ENV := local
 API_KEY := local
@@ -39,6 +40,10 @@ test:
 .PHONY: e2e
 e2e:
 	@go test ./e2e/... -tags e2e
+
+.PHONY: integration
+integration:
+	@go test ./internal/database/store/... -tags integration
 
 .PHONY: gen
 gen:

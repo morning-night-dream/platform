@@ -1,11 +1,11 @@
-name: backend test
+name: backend unit test
 on:
   push:
     branches:
       - "main"
   pull_request:
     paths:
-      - .github/workflows/backend.test.yaml
+      - .github/workflows/backend.test.unit.yaml
       - api/**/*.proto
       - backend/**/*.go
       - backend/go.mod
