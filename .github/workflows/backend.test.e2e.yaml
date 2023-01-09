@@ -2,7 +2,7 @@ name: backend e2e test
 on:
   pull_request:
     paths:
-      - .github/workflows/backend.e2e.yaml
+      - .github/workflows/backend.test.e2e.yaml
       - api/**/*.proto
       - backend/**/*.go
       - backend/go.mod
