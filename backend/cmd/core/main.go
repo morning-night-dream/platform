@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"github.com/morning-night-dream/platform/internal/cache"
 	"github.com/morning-night-dream/platform/internal/database"
 	"github.com/morning-night-dream/platform/internal/database/store"
@@ -13,7 +11,7 @@ import (
 )
 
 func main() {
-	db := database.NewClient(os.Getenv("DATABASE_URL"))
+	db := database.NewClient(model.Config.DSN)
 
 	cache := cache.NewClient()
 
