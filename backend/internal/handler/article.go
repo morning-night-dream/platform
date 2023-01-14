@@ -4,32 +4,37 @@ import (
 	"context"
 	"encoding/base64"
 	"log"
-	"net/http"
 	"net/url"
 	"os"
 	"strconv"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
+	"github.com/morning-night-dream/platform/internal/cache"
 	"github.com/morning-night-dream/platform/internal/database/store"
+	"github.com/morning-night-dream/platform/internal/firebase"
 	"github.com/morning-night-dream/platform/internal/model"
 	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
 	"github.com/pkg/errors"
 )
 
 type Article struct {
-	key    string
-	client http.Client
-	store  store.Article
+	key      string
+	store    *store.Article
+	cache    *cache.Client
+	firebase *firebase.Client
 }
 
 func NewArticle(
-	store store.Article,
+	store *store.Article,
+	cache *cache.Client,
+	firebase *firebase.Client,
 ) *Article {
 	return &Article{
-		key:    os.Getenv("API_KEY"),
-		client: *http.DefaultClient,
-		store:  store,
+		key:      os.Getenv("API_KEY"),
+		store:    store,
+		cache:    cache,
+		firebase: firebase,
 	}
 }
 
@@ -135,14 +140,21 @@ func (a *Article) Read(
 	ctx context.Context,
 	req *connect.Request[articlev1.ReadRequest],
 ) (*connect.Response[articlev1.ReadResponse], error) {
-	jwt := req.Header().Get("Authorization")
-
-	ctx, err := model.Authorize(ctx, jwt)
+	cookie, err := GetToken(req.Header())
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, ErrUnauthorized
 	}
 
-	if err := a.store.SaveRead(ctx, req.Msg.Id, model.GetUIDCtx(ctx)); err != nil {
+	auth, err := a.cache.Get(ctx, cookie.Value)
+	if err != nil {
+		return nil, ErrUnauthorized
+	}
+
+	if err := a.firebase.VerifyIDToken(ctx, auth.IDToken); err != nil {
+		return nil, ErrUnauthorized
+	}
+
+	if err := a.store.SaveRead(ctx, req.Msg.Id, auth.UserID); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 

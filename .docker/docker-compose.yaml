@@ -24,9 +24,13 @@ services:
     ports:
       - 8081:8080
     environment:
+      DOMAIN: http://localhost:8081
       DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
       API_KEY: local
       ENV: ${ENV}
+      FIREBASE_SECRET: ${FIREBASE_SECRET}
+      FIREBASE_API_ENDPOINT: ${FIREBASE_API_ENDPOINT}
+      FIREBASE_API_KEY: ${FIREBASE_API_KEY}
     volumes:
       - ../backend:/app
     restart: always

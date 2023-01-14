@@ -1,8 +1,31 @@
 package model
 
+import "context"
+
 type Auth struct {
-	UserID   string `json:"userId"`
-	LoginID  string `json:"loginId"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID           string `json:"id"`
+	UserID       string `json:"userId"`
+	IDToken      string `json:"idToken"`
+	RefreshToken string `json:"refreshToken"`
+	SessionToken string `json:"sessionToken"`
+	ExpiresIn    int    `json:"expiresIn"`
+}
+
+func Authorize(ctx context.Context) error {
+	return nil
+}
+
+func SetUIDCtx(ctx context.Context, uid string) context.Context {
+	return context.WithValue(ctx, uidCtxKey{}, uid)
+}
+
+func GetUIDCtx(ctx context.Context) string {
+	v := ctx.Value(uidCtxKey{})
+
+	id, ok := v.(string)
+	if !ok {
+		return ""
+	}
+
+	return id
 }

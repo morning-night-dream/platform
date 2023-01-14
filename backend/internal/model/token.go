@@ -1,7 +1,6 @@
 package model
 
 import (
-	"context"
 	"errors"
 	"log"
 	"time"
@@ -66,40 +65,6 @@ func CreateTokenFrom(tokenStr string) (jwt.Token, error) {
 	}
 
 	return *token, nil
-}
-
-func Authorize(ctx context.Context, tokenStr string) (context.Context, error) {
-	idToken, err := CreateTokenFrom(tokenStr)
-	if err != nil {
-		return nil, err
-	}
-
-	claims, ok := idToken.Claims.(jwt.MapClaims)
-	if ok && !idToken.Valid {
-		return nil, ErrInvalid
-	}
-
-	uid, ok := claims["uid"].(string)
-	if !ok {
-		return nil, ErrInvalid
-	}
-
-	return SetUIDCtx(ctx, uid), nil
-}
-
-func SetUIDCtx(ctx context.Context, uid string) context.Context {
-	return context.WithValue(ctx, uidCtxKey{}, uid)
-}
-
-func GetUIDCtx(ctx context.Context) string {
-	v := ctx.Value(uidCtxKey{})
-
-	id, ok := v.(string)
-	if !ok {
-		return ""
-	}
-
-	return id
 }
 
 type Token struct {

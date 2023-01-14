@@ -10,16 +10,12 @@ service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
   // サインイン
   rpc SignIn(SignInRequest) returns (SignInResponse) {}
-  // リフレッシュ
-  // Need Authorization Header
-  rpc Refresh(RefreshRequest) returns (RefreshResponse) {}
 }
 
 // サインアップリクエスト
 message SignUpRequest {
   string email = 1;
-  string login_id = 2;
-  string password = 3;
+  string password = 2;
 }
 
 // サインアップレスポンス
@@ -27,23 +23,9 @@ message SignUpResponse {}
 
 // サインインリクエスト
 message SignInRequest {
-  string login_id = 1;
+  string email = 1;
   string password = 2;
 }
 
 // サインインレスポンス
-message SignInResponse {
-  string id_token = 1;
-  string refresh_token = 2;
-}
-
-// リフレッシュリクエスト
-message RefreshRequest {
-  string refresh_token = 1;
-}
-
-// リフレッシュレスポンス
-message RefreshResponse {
-  string id_token = 1;
-  string refresh_token = 2;
-}
+message SignInResponse {}

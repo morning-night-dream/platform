@@ -35,6 +35,10 @@ func NewInterceptor() connect.UnaryInterceptorFunc {
 				zap.Int64("elapsed(ns)", time.Since(now).Nanoseconds()),
 			)
 
+			if err != nil {
+				logger.Warn(err.Error())
+			}
+
 			return res, err
 		})
 	}

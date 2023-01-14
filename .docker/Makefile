@@ -1,4 +1,6 @@
 include .env
+include .secret.env
+export
 
 .PHONY: up
 up:

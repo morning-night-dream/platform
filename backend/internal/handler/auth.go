@@ -5,23 +5,31 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"log"
+	"net/http"
+	"net/textproto"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bufbuild/connect-go"
-	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/database/store"
+	"github.com/morning-night-dream/platform/internal/cache"
+	"github.com/morning-night-dream/platform/internal/firebase"
 	"github.com/morning-night-dream/platform/internal/model"
 	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
 type Auth struct {
-	store store.Auth
+	firebase *firebase.Client
+	cache    *cache.Client
 }
 
-func NewAuth(store store.Auth) *Auth {
+const age = 5 * 60
+
+func NewAuth(firebase *firebase.Client, cache *cache.Client) *Auth {
 	return &Auth{
-		store: store,
+		firebase: firebase,
+		cache:    cache,
 	}
 }
 
@@ -43,25 +51,9 @@ func (a Auth) SignUp(
 		return nil, ErrInvalidArgument
 	}
 
-	loginID := req.Msg.LoginId
-	if loginID == "" {
-		log.Printf("fail to sign up caused by invalid loginId %s", loginID)
-
-		return nil, ErrInvalidArgument
-	}
-
-	auth := model.Auth{
-		UserID:   uuid.NewString(),
-		Email:    email,
-		Password: password,
-		LoginID:  loginID,
-	}
-
-	err := a.store.Save(ctx, auth)
-	if err != nil {
-		log.Printf("fail to sign up caused by %v", err)
-
-		return nil, ErrInternal
+	// firebase に新規登録
+	if err := a.firebase.CreateUser(ctx, uuid.NewString(), email, password); err != nil {
+		return nil, err
 	}
 
 	return connect.NewResponse(&authv1.SignUpResponse{}), nil
@@ -71,8 +63,8 @@ func (a Auth) SignIn(
 	ctx context.Context,
 	req *connect.Request[authv1.SignInRequest],
 ) (*connect.Response[authv1.SignInResponse], error) {
-	loginID := req.Msg.LoginId
-	if loginID == "" {
+	email := req.Msg.Email
+	if email == "" {
 		return nil, ErrUnauthorized
 	}
 
@@ -81,84 +73,88 @@ func (a Auth) SignIn(
 		return nil, ErrUnauthorized
 	}
 
-	auth, err := a.store.FindFromIDPass(ctx, loginID, password)
+	// firebase にログイン
+	sres, err := a.firebase.Login(ctx, email, password)
 	if err != nil {
-		log.Printf("fail to sign in caused by %v", err)
-
+		log.Printf("fail to sign in caused by %s", err)
 		return nil, ErrUnauthorized
 	}
 
-	tokenPair, err := model.GenerateToken(auth.UserID)
-	if err != nil {
-		log.Printf("fail to sign in caused by %v", err)
+	// アクセストークンからセッショントークンを取得 -> 現状はおれおれセッショントークンで対応するので不要
 
-		return nil, ErrUnauthorized
+	// アクセストークン/リフレッシュトークン/セッショントークンを紐づけてキャッシュに保存
+	exp, _ := strconv.Atoi(sres.ExpiresIn)
+
+	strs := strings.Split(sres.IDToken, ".")
+
+	payload, _ := base64.StdEncoding.DecodeString(strs[1])
+
+	var mapData map[string]interface{}
+
+	if err := json.Unmarshal(payload, &mapData); err != nil {
+		return nil, err
 	}
 
-	res := &authv1.SignInResponse{
-		IdToken:      tokenPair.IDToken.String(),
-		RefreshToken: tokenPair.RefreshToken.String(),
+	sessionToken := uuid.NewString()
+
+	au := model.Auth{
+		ID:           sessionToken,
+		UserID:       mapData["user_id"].(string),
+		IDToken:      sres.IDToken,
+		RefreshToken: sres.RefreshToken,
+		SessionToken: sessionToken,
+		ExpiresIn:    exp,
 	}
 
-	return connect.NewResponse(res), nil
+	a.cache.Set(ctx, sessionToken, au)
+
+	// セッショントークンを返す
+	res := connect.NewResponse(&authv1.SignInResponse{})
+
+	cookie := http.Cookie{
+		Name:       "token",
+		Value:      sessionToken,
+		Path:       "",
+		Domain:     "",
+		Expires:    time.Now().Add(60 * time.Minute),
+		RawExpires: "",
+		MaxAge:     age,
+		Secure:     true,
+		HttpOnly:   true,
+		SameSite:   0,
+		Raw:        "",
+		Unparsed:   []string{},
+	}
+
+	res.Header().Set("Set-Cookie", cookie.String())
+
+	return res, nil
 }
 
-func (a Auth) Refresh(
-	ctx context.Context,
-	req *connect.Request[authv1.RefreshRequest],
-) (*connect.Response[authv1.RefreshResponse], error) {
-	idTokenString := req.Header().Get("Authorization")
-
-	payload := strings.Split(idTokenString, ".")[1]
-
-	decode, err := base64.RawURLEncoding.DecodeString(payload)
-	if err != nil {
-		log.Printf("fail to refresh caused by %v", err)
-
-		return nil, ErrUnauthorized
+func GetToken(h http.Header) (http.Cookie, error) {
+	lines := h["Cookie"]
+	if len(lines) == 0 {
+		return http.Cookie{}, ErrUnauthorized
 	}
 
-	var p struct {
-		UID string `json:"uid"`
+	for _, line := range lines {
+		line = textproto.TrimString(line)
+
+		var part string
+
+		for len(line) > 0 { // continue since we have rest
+			part, line, _ = strings.Cut(line, ";")
+			part = textproto.TrimString(part)
+			if part == "" {
+				continue
+			}
+			name, val, _ := strings.Cut(part, "=")
+			if name != "token" {
+				return http.Cookie{}, ErrUnauthorized
+			}
+			return http.Cookie{Name: name, Value: val}, nil
+		}
 	}
 
-	if err := json.Unmarshal(decode, &p); err != nil {
-		log.Printf("fail to refresh caused by %v", err)
-
-		return nil, ErrUnauthorized
-	}
-
-	refreshToken, err := model.CreateTokenFrom(req.Msg.RefreshToken)
-	if err != nil {
-		log.Printf("fail to refresh caused by %v", err)
-
-		return nil, ErrUnauthorized
-	}
-
-	claims, ok := refreshToken.Claims.(jwt.MapClaims)
-	if ok && !refreshToken.Valid {
-		log.Printf("fail to refresh caused by invalid refresh token")
-
-		return nil, ErrUnauthorized
-	}
-
-	if sub, _ := claims["sub"].(string); sub != p.UID {
-		log.Printf("fail to refresh caused by invalid uid")
-
-		return nil, ErrUnauthorized
-	}
-
-	tokenPair, err := model.GenerateToken(p.UID)
-	if err != nil {
-		log.Printf("fail to refresh caused by %v", err)
-
-		return nil, ErrUnauthorized
-	}
-
-	res := &authv1.RefreshResponse{
-		IdToken:      tokenPair.IDToken.String(),
-		RefreshToken: tokenPair.RefreshToken.String(),
-	}
-
-	return connect.NewResponse(res), nil
+	return http.Cookie{}, ErrUnauthorized
 }
