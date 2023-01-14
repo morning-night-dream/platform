@@ -13,7 +13,7 @@ import (
 func main() {
 	db := database.NewClient(model.Config.DSN)
 
-	cache := cache.NewClient()
+	cache := cache.NewClient(model.Config.CacheURL)
 
 	sa := store.NewArticle(db)
 

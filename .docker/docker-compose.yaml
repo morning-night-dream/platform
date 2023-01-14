@@ -14,6 +14,11 @@ services:
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
       POSTGRES_HOST_AUTH_METHOD: trust
     restart: always
+  cache:
+    container_name: ${APP_NAME}-cache
+    image: redis:${REDIS_VERSION}-alpine
+    ports:
+      - 63791:6379
   app-core:
     container_name: ${APP_NAME}-app-core
     build:
@@ -26,6 +31,7 @@ services:
     environment:
       DOMAIN: http://localhost:8081
       DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+      CACHE_URL: cache:6379
       API_KEY: local
       ENV: ${ENV}
       FIREBASE_SECRET: ${FIREBASE_SECRET}

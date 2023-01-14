@@ -41,11 +41,18 @@ func TestE2EArticleRead(t *testing.T) {
 
 		client := helper.NewClient(t, hc, url)
 
-		req := &articlev1.ReadRequest{
-			Id: "2d82ad0d-124f-438f-b46a-4c97f391e316",
+		articles, err := client.Article.List(context.Background(), connect.NewRequest(&articlev1.ListRequest{
+			MaxPageSize: size,
+		}))
+		if err != nil {
+			t.Fatalf("failed to article share: %s", err)
 		}
 
-		_, err := client.Article.Read(context.Background(), connect.NewRequest(req))
+		req := &articlev1.ReadRequest{
+			Id: articles.Msg.Articles[0].Id,
+		}
+
+		_, err = client.Article.Read(context.Background(), connect.NewRequest(req))
 		if err != nil {
 			t.Fatalf("failed to article share: %s", err)
 		}

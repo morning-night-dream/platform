@@ -7,6 +7,7 @@ import (
 type config struct {
 	Domain              string
 	DSN                 string
+	CacheURL            string
 	NewRelicAppName     string
 	NewRelicLicense     string
 	FirebaseSecret      string
@@ -20,6 +21,7 @@ func init() {
 	Config = config{
 		Domain:              os.Getenv("DOMAIN"),
 		DSN:                 os.Getenv("DATABASE_URL"),
+		CacheURL:            os.Getenv("CACHE_URL"),
 		NewRelicAppName:     os.Getenv("NEWRELIC_APP_NAME"),
 		NewRelicLicense:     os.Getenv("NEWRELIC_LICENSE"),
 		FirebaseSecret:      os.Getenv("FIREBASE_SECRET"),
