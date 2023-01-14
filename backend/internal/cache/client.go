@@ -22,14 +22,19 @@ func NewClient() *Client {
 func (c *Client) Get(ctx context.Context, key string) (model.Auth, error) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
+
 	if val, ok := c.cache[key]; ok {
 		return val, nil
 	}
+
 	return model.Auth{}, errors.New("mis cache")
 }
 
-func (c *Client) Set(ctx context.Context, key string, val model.Auth) {
+func (c *Client) Set(ctx context.Context, key string, val model.Auth) error {
 	c.lock.Lock()
 	defer c.lock.Unlock()
+
 	c.cache[key] = val
+
+	return nil
 }

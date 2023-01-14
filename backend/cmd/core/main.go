@@ -21,11 +21,13 @@ func main() {
 
 	fb := firebase.NewClient(model.Config.FirebaseSecret, model.Config.FirebaseAPIEndpoint, model.Config.FirebaseAPIKey)
 
-	ah := handler.NewArticle(sa, cache, fb)
+	handle := handler.NewHandle(fb, cache)
+
+	ah := handler.NewArticle(sa, handle)
 
 	hh := handler.NewHealth()
 
-	auh := handler.NewAuth(fb, cache)
+	auh := handler.NewAuth(handle)
 
 	srv := server.NewHTTPServer(hh, ah, auh)
 

@@ -10,31 +10,26 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/cache"
 	"github.com/morning-night-dream/platform/internal/database/store"
-	"github.com/morning-night-dream/platform/internal/firebase"
 	"github.com/morning-night-dream/platform/internal/model"
 	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
 	"github.com/pkg/errors"
 )
 
 type Article struct {
-	key      string
-	store    *store.Article
-	cache    *cache.Client
-	firebase *firebase.Client
+	key    string
+	store  *store.Article
+	handle *Handle
 }
 
 func NewArticle(
 	store *store.Article,
-	cache *cache.Client,
-	firebase *firebase.Client,
+	handle *Handle,
 ) *Article {
 	return &Article{
-		key:      os.Getenv("API_KEY"),
-		store:    store,
-		cache:    cache,
-		firebase: firebase,
+		key:    os.Getenv("API_KEY"),
+		store:  store,
+		handle: handle,
 	}
 }
 
@@ -140,17 +135,8 @@ func (a *Article) Read(
 	ctx context.Context,
 	req *connect.Request[articlev1.ReadRequest],
 ) (*connect.Response[articlev1.ReadResponse], error) {
-	cookie, err := GetToken(req.Header())
+	auth, err := a.handle.Authorize(ctx, req.Header())
 	if err != nil {
-		return nil, ErrUnauthorized
-	}
-
-	auth, err := a.cache.Get(ctx, cookie.Value)
-	if err != nil {
-		return nil, ErrUnauthorized
-	}
-
-	if err := a.firebase.VerifyIDToken(ctx, auth.IDToken); err != nil {
 		return nil, ErrUnauthorized
 	}
 

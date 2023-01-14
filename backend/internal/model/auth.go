@@ -11,9 +11,7 @@ type Auth struct {
 	ExpiresIn    int    `json:"expiresIn"`
 }
 
-func Authorize(ctx context.Context) error {
-	return nil
-}
+type uidCtxKey struct{}
 
 func SetUIDCtx(ctx context.Context, uid string) context.Context {
 	return context.WithValue(ctx, uidCtxKey{}, uid)

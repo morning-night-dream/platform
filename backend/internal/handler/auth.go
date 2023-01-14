@@ -6,30 +6,25 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"net/textproto"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/cache"
-	"github.com/morning-night-dream/platform/internal/firebase"
 	"github.com/morning-night-dream/platform/internal/model"
 	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
 type Auth struct {
-	firebase *firebase.Client
-	cache    *cache.Client
+	handle *Handle
 }
 
 const age = 5 * 60
 
-func NewAuth(firebase *firebase.Client, cache *cache.Client) *Auth {
+func NewAuth(handle *Handle) *Auth {
 	return &Auth{
-		firebase: firebase,
-		cache:    cache,
+		handle: handle,
 	}
 }
 
@@ -52,7 +47,7 @@ func (a Auth) SignUp(
 	}
 
 	// firebase に新規登録
-	if err := a.firebase.CreateUser(ctx, uuid.NewString(), email, password); err != nil {
+	if err := a.handle.firebase.CreateUser(ctx, uuid.NewString(), email, password); err != nil {
 		return nil, err
 	}
 
@@ -74,7 +69,7 @@ func (a Auth) SignIn(
 	}
 
 	// firebase にログイン
-	sres, err := a.firebase.Login(ctx, email, password)
+	sres, err := a.handle.firebase.Login(ctx, email, password)
 	if err != nil {
 		log.Printf("fail to sign in caused by %s", err)
 		return nil, ErrUnauthorized
@@ -106,7 +101,9 @@ func (a Auth) SignIn(
 		ExpiresIn:    exp,
 	}
 
-	a.cache.Set(ctx, sessionToken, au)
+	if err := a.handle.cache.Set(ctx, sessionToken, au); err != nil {
+		return nil, err
+	}
 
 	// セッショントークンを返す
 	res := connect.NewResponse(&authv1.SignInResponse{})
@@ -129,32 +126,4 @@ func (a Auth) SignIn(
 	res.Header().Set("Set-Cookie", cookie.String())
 
 	return res, nil
-}
-
-func GetToken(h http.Header) (http.Cookie, error) {
-	lines := h["Cookie"]
-	if len(lines) == 0 {
-		return http.Cookie{}, ErrUnauthorized
-	}
-
-	for _, line := range lines {
-		line = textproto.TrimString(line)
-
-		var part string
-
-		for len(line) > 0 { // continue since we have rest
-			part, line, _ = strings.Cut(line, ";")
-			part = textproto.TrimString(part)
-			if part == "" {
-				continue
-			}
-			name, val, _ := strings.Cut(part, "=")
-			if name != "token" {
-				return http.Cookie{}, ErrUnauthorized
-			}
-			return http.Cookie{Name: name, Value: val}, nil
-		}
-	}
-
-	return http.Cookie{}, ErrUnauthorized
 }

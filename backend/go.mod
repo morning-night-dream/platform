@@ -6,7 +6,6 @@ require (
 	entgo.io/ent v0.11.5
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/bufbuild/connect-go v1.4.1
-	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.7
 	github.com/mattn/go-sqlite3 v1.14.16
