@@ -16,7 +16,7 @@ import (
 	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
-func TestE2EAuthSignUp(t *testing.T) {
+func TestE2EAuthScenario(t *testing.T) {
 	t.Parallel()
 
 	url := helper.GetEndpoint(t)

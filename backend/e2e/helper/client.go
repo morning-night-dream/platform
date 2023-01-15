@@ -41,6 +41,12 @@ func NewClient(t *testing.T, client connect.HTTPClient, url string) *Client {
 	}
 }
 
+func NewPlainClient(t *testing.T, url string) *Client {
+	t.Helper()
+
+	return NewClient(t, http.DefaultClient, url)
+}
+
 func NewClientWithAPIKey(t *testing.T, key string, url string) *Client {
 	t.Helper()
 
