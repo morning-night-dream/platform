@@ -19,6 +19,19 @@ services:
     image: redis:${REDIS_VERSION}-alpine
     ports:
       - 63791:6379
+  firebase:
+    container_name: ${APP_NAME}-firebase
+    build:
+      context: .
+      dockerfile: firebase/Dockerfile
+      args:
+        NODE_VERSION: 18.13.0
+    ports:
+      - 9091:9099
+      - 4001:4000
+    volumes:
+      - ./firebase:/firebase
+    restart: always
   app-core:
     container_name: ${APP_NAME}-app-core
     build:
@@ -42,6 +55,8 @@ services:
     restart: always
     depends_on:
       - db
+      - cache
+      - firebase
   db-migration:
     container_name: ${APP_NAME}-db-migration
     build:
