@@ -31,6 +31,8 @@ type AuthServiceClient interface {
 	SignUp(context.Context, *connect_go.Request[v1.SignUpRequest]) (*connect_go.Response[v1.SignUpResponse], error)
 	// サインイン
 	SignIn(context.Context, *connect_go.Request[v1.SignInRequest]) (*connect_go.Response[v1.SignInResponse], error)
+	// サインアウト
+	SignOut(context.Context, *connect_go.Request[v1.SignOutRequest]) (*connect_go.Response[v1.SignOutResponse], error)
 }
 
 // NewAuthServiceClient constructs a client for the auth.v1.AuthService service. By default, it uses
@@ -53,13 +55,19 @@ func NewAuthServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts
 			baseURL+"/auth.v1.AuthService/SignIn",
 			opts...,
 		),
+		signOut: connect_go.NewClient[v1.SignOutRequest, v1.SignOutResponse](
+			httpClient,
+			baseURL+"/auth.v1.AuthService/SignOut",
+			opts...,
+		),
 	}
 }
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
-	signUp *connect_go.Client[v1.SignUpRequest, v1.SignUpResponse]
-	signIn *connect_go.Client[v1.SignInRequest, v1.SignInResponse]
+	signUp  *connect_go.Client[v1.SignUpRequest, v1.SignUpResponse]
+	signIn  *connect_go.Client[v1.SignInRequest, v1.SignInResponse]
+	signOut *connect_go.Client[v1.SignOutRequest, v1.SignOutResponse]
 }
 
 // SignUp calls auth.v1.AuthService.SignUp.
@@ -72,12 +80,19 @@ func (c *authServiceClient) SignIn(ctx context.Context, req *connect_go.Request[
 	return c.signIn.CallUnary(ctx, req)
 }
 
+// SignOut calls auth.v1.AuthService.SignOut.
+func (c *authServiceClient) SignOut(ctx context.Context, req *connect_go.Request[v1.SignOutRequest]) (*connect_go.Response[v1.SignOutResponse], error) {
+	return c.signOut.CallUnary(ctx, req)
+}
+
 // AuthServiceHandler is an implementation of the auth.v1.AuthService service.
 type AuthServiceHandler interface {
 	// サインアップ
 	SignUp(context.Context, *connect_go.Request[v1.SignUpRequest]) (*connect_go.Response[v1.SignUpResponse], error)
 	// サインイン
 	SignIn(context.Context, *connect_go.Request[v1.SignInRequest]) (*connect_go.Response[v1.SignInResponse], error)
+	// サインアウト
+	SignOut(context.Context, *connect_go.Request[v1.SignOutRequest]) (*connect_go.Response[v1.SignOutResponse], error)
 }
 
 // NewAuthServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -97,6 +112,11 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect_go.HandlerOpt
 		svc.SignIn,
 		opts...,
 	))
+	mux.Handle("/auth.v1.AuthService/SignOut", connect_go.NewUnaryHandler(
+		"/auth.v1.AuthService/SignOut",
+		svc.SignOut,
+		opts...,
+	))
 	return "/auth.v1.AuthService/", mux
 }
 
@@ -109,4 +129,8 @@ func (UnimplementedAuthServiceHandler) SignUp(context.Context, *connect_go.Reque
 
 func (UnimplementedAuthServiceHandler) SignIn(context.Context, *connect_go.Request[v1.SignInRequest]) (*connect_go.Response[v1.SignInResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("auth.v1.AuthService.SignIn is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) SignOut(context.Context, *connect_go.Request[v1.SignOutRequest]) (*connect_go.Response[v1.SignOutResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("auth.v1.AuthService.SignOut is not implemented"))
 }

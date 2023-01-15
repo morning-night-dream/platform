@@ -10,6 +10,8 @@ service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
   // サインイン
   rpc SignIn(SignInRequest) returns (SignInResponse) {}
+  // サインアウト
+  rpc SignOut(SignOutRequest) returns (SignOutResponse) {}
 }
 
 // サインアップリクエスト
@@ -29,3 +31,9 @@ message SignInRequest {
 
 // サインインレスポンス
 message SignInResponse {}
+
+// サインアウトリクエスト
+message SignOutRequest {}
+
+// サインアウトレスポンス
+message SignOutResponse {}

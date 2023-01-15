@@ -28,7 +28,7 @@ func NewAuth(handle *Handle) *Auth {
 	}
 }
 
-func (a Auth) SignUp(
+func (a *Auth) SignUp(
 	ctx context.Context,
 	req *connect.Request[authv1.SignUpRequest],
 ) (*connect.Response[authv1.SignUpResponse], error) {
@@ -54,7 +54,7 @@ func (a Auth) SignUp(
 	return connect.NewResponse(&authv1.SignUpResponse{}), nil
 }
 
-func (a Auth) SignIn(
+func (a *Auth) SignIn(
 	ctx context.Context,
 	req *connect.Request[authv1.SignInRequest],
 ) (*connect.Response[authv1.SignInResponse], error) {
@@ -101,6 +101,11 @@ func (a Auth) SignIn(
 		ExpiresIn:    exp,
 	}
 
+	// token, err := a.handle.firebase.RefreshToken(ctx, sres.RefreshToken)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	if err := a.handle.cache.Set(ctx, sessionToken, au); err != nil {
 		return nil, err
 	}
@@ -122,6 +127,32 @@ func (a Auth) SignIn(
 		Raw:        "",
 		Unparsed:   []string{},
 	}
+
+	res.Header().Set("Set-Cookie", cookie.String())
+
+	return res, nil
+}
+
+func (a *Auth) SignOut(
+	ctx context.Context,
+	req *connect.Request[authv1.SignOutRequest],
+) (*connect.Response[authv1.SignOutResponse], error) {
+	session, err := a.handle.GetSession(req.Header())
+	if err != nil {
+		return nil, err
+	}
+
+	if err := a.handle.cache.Delete(ctx, session); err != nil {
+		return nil, err
+	}
+
+	cookie := http.Cookie{
+		Name:   "token",
+		Value:  "",
+		MaxAge: -1,
+	}
+
+	res := connect.NewResponse(&authv1.SignOutResponse{})
 
 	res.Header().Set("Set-Cookie", cookie.String())
 

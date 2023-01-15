@@ -71,3 +71,31 @@ func (h *Handle) getToken(header http.Header) (http.Cookie, error) {
 
 	return http.Cookie{}, ErrUnauthorized
 }
+
+func (h *Handle) GetSession(header http.Header) (string, error) {
+	lines := header["Cookie"]
+	if len(lines) == 0 {
+		return "", ErrUnauthorized
+	}
+
+	for _, line := range lines {
+		line = textproto.TrimString(line)
+
+		var part string
+
+		for len(line) > 0 { // continue since we have rest
+			part, line, _ = strings.Cut(line, ";")
+			part = textproto.TrimString(part)
+			if part == "" {
+				continue
+			}
+			name, val, _ := strings.Cut(part, "=")
+			if name != "token" {
+				return "", ErrUnauthorized
+			}
+			return val, nil
+		}
+	}
+
+	return "", ErrUnauthorized
+}

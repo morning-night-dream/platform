@@ -11,8 +11,8 @@ import (
 
 type Client struct {
 	// lock  sync.Mutex
-	cache map[string]Cache
-	*redis.Client
+	cache  map[string]Cache
+	client *redis.Client
 }
 
 const ttl = 60 * time.Minute
@@ -31,7 +31,7 @@ func NewClient(url string) *Client {
 
 	return &Client{
 		cache:  make(map[string]Cache),
-		Client: client,
+		client: client,
 	}
 }
 
@@ -43,7 +43,7 @@ func (c *Client) Get(ctx context.Context, key string) (model.Auth, error) {
 	// 	return val.Auth, nil
 	// }
 
-	val, err := c.Client.Get(ctx, key).Result()
+	val, err := c.client.Get(ctx, key).Result()
 	if err != nil {
 		return model.Auth{}, err
 	}
@@ -71,7 +71,7 @@ func (c *Client) Set(ctx context.Context, key string, val model.Auth) error {
 		return err
 	}
 
-	if err := c.Client.Set(ctx, key, string(value), ttl).Err(); err != nil {
+	if err := c.client.Set(ctx, key, string(value), ttl).Err(); err != nil {
 		return err
 	}
 
@@ -84,7 +84,7 @@ func (c *Client) Delete(ctx context.Context, key string) error {
 
 	// delete(c.cache, key)
 
-	if err := c.Client.Del(ctx, key).Err(); err != nil {
+	if err := c.client.Del(ctx, key).Err(); err != nil {
 		return err
 	}
 

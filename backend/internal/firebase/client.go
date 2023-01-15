@@ -150,43 +150,42 @@ type RefreshResponse struct {
 	ProjectID    string `json:"project_id"`
 }
 
-func (f *Client) RefreshToken(ctx context.Context, token string) error {
+func (f *Client) RefreshToken(ctx context.Context, refresh string) (string, error) {
 	// https://firebase.google.com/docs/reference/rest/auth#section-refresh-token
 	url := fmt.Sprintf("%s/v1/token?key=%s", f.api.Endpoint, f.api.APIKey)
 
 	req := RefreshRequest{
 		GrantType:    "refresh_token",
-		RefreshToken: token,
+		RefreshToken: refresh,
 	}
 
-	var buf bytes.Buffer
+	var body bytes.Buffer
 
-	err := json.NewEncoder(&buf).Encode(req)
-	if err != nil {
-		return err
+	if err := json.NewEncoder(&body).Encode(req); err != nil {
+		return "", err
 	}
 
-	res, err := f.api.Post(url, "application/json", &buf)
+	res, err := f.api.Post(url, "application/json", &body)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if res.StatusCode != http.StatusOK {
 		message, err := io.ReadAll(res.Body)
 		if err != nil {
-			message = []byte(fmt.Sprintf("could not laod message caused by %v", err))
+			message = []byte(fmt.Sprintf("could not load message caused by %v", err))
 		}
 
-		return fmt.Errorf("firebase error. status code is %d, message is %v", res.StatusCode, string(message))
+		return "", fmt.Errorf("firebase error. status code is %d, message is %v", res.StatusCode, string(message))
 	}
 
 	var response RefreshResponse
 
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return response.IDToken, nil
 
 }
 
