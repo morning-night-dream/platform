@@ -158,3 +158,76 @@ func (a *Auth) SignOut(
 
 	return res, nil
 }
+
+func (a *Auth) ChangePassword(
+	ctx context.Context,
+	req *connect.Request[authv1.ChangePasswordRequest],
+) (*connect.Response[authv1.ChangePasswordResponse], error) {
+	session, err := a.handle.GetSession(req.Header())
+	if err != nil {
+		return nil, err
+	}
+
+	auth, err := a.handle.cache.Get(ctx, session)
+	if err != nil {
+		return nil, err
+	}
+
+	email := req.Msg.Email
+	if email == "" {
+		return nil, ErrUnauthorized
+	}
+
+	password := req.Msg.OldPassword
+	if password == "" {
+		return nil, ErrUnauthorized
+	}
+
+	if _, err := a.handle.firebase.Login(ctx, email, password); err != nil {
+		log.Printf("fail to sign in caused by %s", err)
+		return nil, ErrUnauthorized
+	}
+
+	if err := a.handle.firebase.ChangePassword(ctx, auth.UserID, req.Msg.NewPassword); err != nil {
+		log.Printf("fail to change password caused by %s", err)
+		return nil, ErrUnauthorized
+	}
+
+	return connect.NewResponse(&authv1.ChangePasswordResponse{}), nil
+}
+
+func (a *Auth) Delete(
+	ctx context.Context,
+	req *connect.Request[authv1.DeleteRequest],
+) (*connect.Response[authv1.DeleteResponse], error) {
+	session, err := a.handle.GetSession(req.Header())
+	if err != nil {
+		return nil, err
+	}
+
+	auth, err := a.handle.cache.Get(ctx, session)
+	if err != nil {
+		return nil, err
+	}
+
+	email := req.Msg.Email
+	if email == "" {
+		return nil, ErrUnauthorized
+	}
+
+	password := req.Msg.Password
+	if password == "" {
+		return nil, ErrUnauthorized
+	}
+
+	if _, err := a.handle.firebase.Login(ctx, email, password); err != nil {
+		log.Printf("fail to sign in caused by %s", err)
+		return nil, ErrUnauthorized
+	}
+
+	if err := a.handle.firebase.DeleteUser(ctx, auth.UserID); err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&authv1.DeleteResponse{}), nil
+}

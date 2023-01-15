@@ -12,6 +12,10 @@ service AuthService {
   rpc SignIn(SignInRequest) returns (SignInResponse) {}
   // サインアウト
   rpc SignOut(SignOutRequest) returns (SignOutResponse) {}
+  // パスワード変更
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {}
+  // 削除
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
 }
 
 // サインアップリクエスト
@@ -37,3 +41,22 @@ message SignOutRequest {}
 
 // サインアウトレスポンス
 message SignOutResponse {}
+
+// パスワード変更リクエスト
+message ChangePasswordRequest {
+  string email = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+// パスワード変更レスポンス
+message ChangePasswordResponse {}
+
+// 削除リクエスト
+message DeleteRequest {
+  string email = 1;
+  string password = 2;
+}
+
+// 削除レスポンス
+message DeleteResponse {}

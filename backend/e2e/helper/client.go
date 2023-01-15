@@ -41,6 +41,26 @@ func NewClient(t *testing.T, client connect.HTTPClient, url string) *Client {
 	}
 }
 
+func NewClientWithAPIKey(t *testing.T, key string, url string) *Client {
+	t.Helper()
+
+	client := &http.Client{
+		Transport: NewAPIKeyTransport(t, key),
+	}
+
+	return NewClient(t, client, url)
+}
+
+func NewClientWithCookie(t *testing.T, cookie string, url string) *Client {
+	t.Helper()
+
+	client := &http.Client{
+		Transport: NewCookieTransport(t, cookie),
+	}
+
+	return NewClient(t, client, url)
+}
+
 type APIKeyTransport struct {
 	t         *testing.T
 	APIKey    string

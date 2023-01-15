@@ -33,6 +33,10 @@ type AuthServiceClient interface {
 	SignIn(context.Context, *connect_go.Request[v1.SignInRequest]) (*connect_go.Response[v1.SignInResponse], error)
 	// サインアウト
 	SignOut(context.Context, *connect_go.Request[v1.SignOutRequest]) (*connect_go.Response[v1.SignOutResponse], error)
+	// パスワード変更
+	ChangePassword(context.Context, *connect_go.Request[v1.ChangePasswordRequest]) (*connect_go.Response[v1.ChangePasswordResponse], error)
+	// 削除
+	Delete(context.Context, *connect_go.Request[v1.DeleteRequest]) (*connect_go.Response[v1.DeleteResponse], error)
 }
 
 // NewAuthServiceClient constructs a client for the auth.v1.AuthService service. By default, it uses
@@ -60,14 +64,26 @@ func NewAuthServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts
 			baseURL+"/auth.v1.AuthService/SignOut",
 			opts...,
 		),
+		changePassword: connect_go.NewClient[v1.ChangePasswordRequest, v1.ChangePasswordResponse](
+			httpClient,
+			baseURL+"/auth.v1.AuthService/ChangePassword",
+			opts...,
+		),
+		delete: connect_go.NewClient[v1.DeleteRequest, v1.DeleteResponse](
+			httpClient,
+			baseURL+"/auth.v1.AuthService/Delete",
+			opts...,
+		),
 	}
 }
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
-	signUp  *connect_go.Client[v1.SignUpRequest, v1.SignUpResponse]
-	signIn  *connect_go.Client[v1.SignInRequest, v1.SignInResponse]
-	signOut *connect_go.Client[v1.SignOutRequest, v1.SignOutResponse]
+	signUp         *connect_go.Client[v1.SignUpRequest, v1.SignUpResponse]
+	signIn         *connect_go.Client[v1.SignInRequest, v1.SignInResponse]
+	signOut        *connect_go.Client[v1.SignOutRequest, v1.SignOutResponse]
+	changePassword *connect_go.Client[v1.ChangePasswordRequest, v1.ChangePasswordResponse]
+	delete         *connect_go.Client[v1.DeleteRequest, v1.DeleteResponse]
 }
 
 // SignUp calls auth.v1.AuthService.SignUp.
@@ -85,6 +101,16 @@ func (c *authServiceClient) SignOut(ctx context.Context, req *connect_go.Request
 	return c.signOut.CallUnary(ctx, req)
 }
 
+// ChangePassword calls auth.v1.AuthService.ChangePassword.
+func (c *authServiceClient) ChangePassword(ctx context.Context, req *connect_go.Request[v1.ChangePasswordRequest]) (*connect_go.Response[v1.ChangePasswordResponse], error) {
+	return c.changePassword.CallUnary(ctx, req)
+}
+
+// Delete calls auth.v1.AuthService.Delete.
+func (c *authServiceClient) Delete(ctx context.Context, req *connect_go.Request[v1.DeleteRequest]) (*connect_go.Response[v1.DeleteResponse], error) {
+	return c.delete.CallUnary(ctx, req)
+}
+
 // AuthServiceHandler is an implementation of the auth.v1.AuthService service.
 type AuthServiceHandler interface {
 	// サインアップ
@@ -93,6 +119,10 @@ type AuthServiceHandler interface {
 	SignIn(context.Context, *connect_go.Request[v1.SignInRequest]) (*connect_go.Response[v1.SignInResponse], error)
 	// サインアウト
 	SignOut(context.Context, *connect_go.Request[v1.SignOutRequest]) (*connect_go.Response[v1.SignOutResponse], error)
+	// パスワード変更
+	ChangePassword(context.Context, *connect_go.Request[v1.ChangePasswordRequest]) (*connect_go.Response[v1.ChangePasswordResponse], error)
+	// 削除
+	Delete(context.Context, *connect_go.Request[v1.DeleteRequest]) (*connect_go.Response[v1.DeleteResponse], error)
 }
 
 // NewAuthServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -117,6 +147,16 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect_go.HandlerOpt
 		svc.SignOut,
 		opts...,
 	))
+	mux.Handle("/auth.v1.AuthService/ChangePassword", connect_go.NewUnaryHandler(
+		"/auth.v1.AuthService/ChangePassword",
+		svc.ChangePassword,
+		opts...,
+	))
+	mux.Handle("/auth.v1.AuthService/Delete", connect_go.NewUnaryHandler(
+		"/auth.v1.AuthService/Delete",
+		svc.Delete,
+		opts...,
+	))
 	return "/auth.v1.AuthService/", mux
 }
 
@@ -133,4 +173,12 @@ func (UnimplementedAuthServiceHandler) SignIn(context.Context, *connect_go.Reque
 
 func (UnimplementedAuthServiceHandler) SignOut(context.Context, *connect_go.Request[v1.SignOutRequest]) (*connect_go.Response[v1.SignOutResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("auth.v1.AuthService.SignOut is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) ChangePassword(context.Context, *connect_go.Request[v1.ChangePasswordRequest]) (*connect_go.Response[v1.ChangePasswordResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("auth.v1.AuthService.ChangePassword is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) Delete(context.Context, *connect_go.Request[v1.DeleteRequest]) (*connect_go.Response[v1.DeleteResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("auth.v1.AuthService.Delete is not implemented"))
 }
