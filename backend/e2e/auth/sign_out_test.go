@@ -5,8 +5,8 @@ package article_test
 
 import (
 	"context"
-	"log"
 	"net/http"
+	"reflect"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
@@ -47,6 +47,8 @@ func TestE2EAuthSignOut(t *testing.T) {
 			t.Fatalf("failed to auth sign out: %s", err)
 		}
 
-		log.Println(res.Header().Get("Set-Cookie"))
+		if !reflect.DeepEqual(res.Header().Get("Set-Cookie"), "token=; Max-Age=0") {
+			t.Errorf("cookie = %v, want %v", res.Header().Get("Set-Cookie"), "token=; Max-Age=0")
+		}
 	})
 }

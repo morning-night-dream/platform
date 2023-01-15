@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v9"
+	"github.com/morning-night-dream/platform/internal/errors"
 	"github.com/morning-night-dream/platform/internal/model"
 )
 
@@ -15,7 +16,8 @@ type Client struct {
 	client *redis.Client
 }
 
-const ttl = 60 * time.Minute
+// キャッシュへの保存期間は1週間　TODO: 環境変数設定
+const ttl = 7 * 24 * time.Hour
 
 type Cache struct {
 	model.Auth
@@ -45,13 +47,13 @@ func (c *Client) Get(ctx context.Context, key string) (model.Auth, error) {
 
 	val, err := c.client.Get(ctx, key).Result()
 	if err != nil {
-		return model.Auth{}, err
+		return model.Auth{}, errors.NewNotFoundError("mis cache", err)
 	}
 
 	var value model.Auth
 
 	if err := json.Unmarshal([]byte(val), &value); err != nil {
-		return model.Auth{}, err
+		return model.Auth{}, errors.NewValidationError("failed to unmarshal json", err)
 	}
 
 	return value, nil
