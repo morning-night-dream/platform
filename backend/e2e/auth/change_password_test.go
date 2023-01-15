@@ -56,4 +56,86 @@ func TestE2EAuthChangePassword(t *testing.T) {
 			t.Error("success to sign in")
 		}
 	})
+
+	t.Run("元のパスワードが異なるためパスワード変更ができない", func(t *testing.T) {
+		t.Parallel()
+
+		email := fmt.Sprintf("%s@example.com", uuid.NewString())
+
+		password := uuid.NewString()
+
+		newPassword := uuid.NewString()
+
+		user := helper.NewUser(t, email, password, url)
+
+		defer user.Delete(t)
+
+		// パスワード変更
+		req := &authv1.ChangePasswordRequest{
+			Email:       user.EMail,
+			OldPassword: "password",
+			NewPassword: newPassword,
+		}
+
+		if _, err := user.Client.Auth.ChangePassword(context.Background(), connect.NewRequest(req)); err == nil {
+			t.Errorf("success to change password: %s", err)
+		}
+	})
+
+	t.Run("元のメアドが異なるためパスワード変更ができない", func(t *testing.T) {
+		t.Parallel()
+
+		email := fmt.Sprintf("%s@example.com", uuid.NewString())
+
+		password := uuid.NewString()
+
+		newPassword := uuid.NewString()
+
+		user := helper.NewUser(t, email, password, url)
+
+		defer user.Delete(t)
+
+		// パスワード変更
+		req := &authv1.ChangePasswordRequest{
+			Email:       "test@example.com",
+			OldPassword: user.Password,
+			NewPassword: newPassword,
+		}
+
+		if _, err := user.Client.Auth.ChangePassword(context.Background(), connect.NewRequest(req)); err == nil {
+			t.Errorf("success to change password: %s", err)
+		}
+	})
+
+	t.Run("Cookieがないためパスワード変更ができない", func(t *testing.T) {
+		t.Parallel()
+
+		email := fmt.Sprintf("%s@example.com", uuid.NewString())
+
+		password := uuid.NewString()
+
+		newPassword := uuid.NewString()
+
+		user := helper.NewUser(t, email, password, url)
+
+		tmpClient := user.Client
+
+		defer func() {
+			user.Client = tmpClient
+			user.Delete(t)
+		}()
+
+		user.Client = helper.NewPlainClient(t, url)
+
+		// パスワード変更
+		req := &authv1.ChangePasswordRequest{
+			Email:       user.EMail,
+			OldPassword: user.Password,
+			NewPassword: newPassword,
+		}
+
+		if _, err := user.Client.Auth.ChangePassword(context.Background(), connect.NewRequest(req)); err == nil {
+			t.Errorf("success to change password: %s", err)
+		}
+	})
 }
