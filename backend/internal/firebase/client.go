@@ -125,6 +125,14 @@ func (f *Client) Login(ctx context.Context, email, password string) (SignInRespo
 		return SignInResponse{}, err
 	}
 
+	// 試しにfirebaseのセッショントークンを作ってみたコード
+	// cookie, err := f.admin.SessionCookie(ctx, response.IDToken, time.Hour*24*5)
+	// if err != nil {
+	// 	return SignInResponse{}, err
+	// }
+
+	// log.Printf("session cookie: %s", cookie)
+
 	return response, nil
 }
 

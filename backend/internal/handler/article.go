@@ -10,26 +10,26 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/database/store"
+	"github.com/morning-night-dream/platform/internal/database"
 	"github.com/morning-night-dream/platform/internal/model"
 	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
 	"github.com/pkg/errors"
 )
 
 type Article struct {
-	key    string
-	store  *store.Article
-	handle *Handle
+	key     string
+	article *database.Article
+	handle  *Handle
 }
 
 func NewArticle(
-	store *store.Article,
+	article *database.Article,
 	handle *Handle,
 ) *Article {
 	return &Article{
-		key:    os.Getenv("API_KEY"),
-		store:  store,
-		handle: handle,
+		key:     os.Getenv("API_KEY"),
+		article: article,
+		handle:  handle,
 	}
 }
 
@@ -48,7 +48,7 @@ func (a *Article) Share(
 
 	id := uuid.NewString()
 
-	if err := a.store.Save(ctx, model.Article{
+	if err := a.article.Save(ctx, model.Article{
 		ID:          id,
 		URL:         u.String(),
 		Title:       req.Msg.Title,
@@ -89,7 +89,7 @@ func (a *Article) List(
 		offset = 0
 	}
 
-	items, err := a.store.FindAll(ctx, limit, offset)
+	items, err := a.article.FindAll(ctx, limit, offset)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
@@ -124,7 +124,7 @@ func (a *Article) Delete(
 	ctx context.Context,
 	req *connect.Request[articlev1.DeleteRequest],
 ) (*connect.Response[articlev1.DeleteResponse], error) {
-	if err := a.store.LogicalDelete(ctx, req.Msg.Id); err != nil {
+	if err := a.article.LogicalDelete(ctx, req.Msg.Id); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 
@@ -140,7 +140,7 @@ func (a *Article) Read(
 		return nil, ErrUnauthorized
 	}
 
-	if err := a.store.SaveRead(ctx, req.Msg.Id, auth.UserID); err != nil {
+	if err := a.article.SaveRead(ctx, req.Msg.Id, auth.UserID); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 
@@ -151,7 +151,7 @@ func (a *Article) AddTag(
 	ctx context.Context,
 	req *connect.Request[articlev1.AddTagRequest],
 ) (*connect.Response[articlev1.AddTagResponse], error) {
-	item, err := a.store.Find(ctx, req.Msg.Id)
+	item, err := a.article.Find(ctx, req.Msg.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
@@ -169,7 +169,7 @@ func (a *Article) AddTag(
 		tags = append(tags, i)
 	}
 
-	if err := a.store.Save(ctx, item); err != nil {
+	if err := a.article.Save(ctx, item); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 
@@ -182,7 +182,7 @@ func (a *Article) ListTag(
 	ctx context.Context,
 	req *connect.Request[articlev1.ListTagRequest],
 ) (*connect.Response[articlev1.ListTagResponse], error) {
-	tags, err := a.store.FindAllTag(ctx)
+	tags, err := a.article.FindAllTag(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}

@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/morning-night-dream/platform/internal/cache"
 	"github.com/morning-night-dream/platform/internal/database"
-	"github.com/morning-night-dream/platform/internal/database/store"
 	"github.com/morning-night-dream/platform/internal/firebase"
 	"github.com/morning-night-dream/platform/internal/handler"
 	"github.com/morning-night-dream/platform/internal/model"
@@ -15,13 +14,13 @@ func main() {
 
 	cache := cache.NewClient(model.Config.CacheURL)
 
-	sa := store.NewArticle(db)
+	da := database.NewArticle(db)
 
 	fb := firebase.NewClient(model.Config.FirebaseSecret, model.Config.FirebaseAPIEndpoint, model.Config.FirebaseAPIKey)
 
 	handle := handler.NewHandle(fb, cache)
 
-	ah := handler.NewArticle(sa, handle)
+	ah := handler.NewArticle(da, handle)
 
 	hh := handler.NewHealth()
 
