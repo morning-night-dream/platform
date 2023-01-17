@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 
-	firebase "firebase.google.com/go"
-	"firebase.google.com/go/auth"
+	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/auth"
+	"github.com/morning-night-dream/platform/pkg/log"
 	"google.golang.org/api/option"
 )
 
@@ -31,20 +31,20 @@ func NewClient(secret string, endpoint string, key string) *Client {
 
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatalf("error initializing app: %v", err)
+		log.Log().Fatal("error initializing app", log.ErrorField(err))
 	}
 
 	admin, err := app.Auth(context.Background())
 	if err != nil {
-		log.Fatalf("error create auth client: %v", err)
+		log.Log().Fatal("error create auth client", log.ErrorField(err))
 	}
 
 	if endpoint == "" {
-		log.Fatalf("error firebase api endpoint is empty")
+		log.Log().Fatal("error firebase api endpoint is empty")
 	}
 
 	if key == "" {
-		log.Fatalf("error firebase api key is empty")
+		log.Log().Fatal("error firebase api key is empty")
 	}
 
 	api := &APIRestClient{
@@ -67,8 +67,9 @@ func (c *Client) CreateUser(ctx context.Context, userID, email, password string)
 		Password(password).
 		Disabled(false)
 
-	_, err := c.admin.CreateUser(ctx, params)
-	if err != nil {
+	if _, err := c.admin.CreateUser(ctx, params); err != nil {
+		log.GetLogCtx(ctx).Warn("faile to create user", log.ErrorField(err))
+
 		return err
 	}
 
@@ -102,17 +103,23 @@ func (f *Client) Login(ctx context.Context, email, password string) (SignInRespo
 
 	err := json.NewEncoder(&buf).Encode(req)
 	if err != nil {
+		log.GetLogCtx(ctx).Warn("failed to encode json", log.ErrorField(err))
+
 		return SignInResponse{}, err
 	}
 
 	res, err := f.api.Post(url, "application/json", &buf)
 	if err != nil {
+		log.GetLogCtx(ctx).Warn("failed to post "+url, log.ErrorField(err))
+
 		return SignInResponse{}, err
 	}
 
 	if res.StatusCode != http.StatusOK {
 		message, err := io.ReadAll(res.Body)
 		if err != nil {
+			log.GetLogCtx(ctx).Warn("faile to read body", log.ErrorField(err))
+
 			message = []byte(fmt.Sprintf("could not laod message caused by %v", err))
 		}
 
@@ -122,6 +129,8 @@ func (f *Client) Login(ctx context.Context, email, password string) (SignInRespo
 	var response SignInResponse
 
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		log.GetLogCtx(ctx).Warn("failed to decode json", log.ErrorField(err))
+
 		return SignInResponse{}, err
 	}
 

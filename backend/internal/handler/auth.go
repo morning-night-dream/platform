@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,6 +12,7 @@ import (
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/pkg/log"
 	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
@@ -34,14 +34,14 @@ func (a *Auth) SignUp(
 ) (*connect.Response[authv1.SignUpResponse], error) {
 	email := req.Msg.Email
 	if email == "" {
-		log.Printf("fail to sign up caused by invalid email %s", email)
+		// log.Printf("fail to sign up caused by invalid email %s", email)
 
 		return nil, ErrInvalidArgument
 	}
 
 	password := req.Msg.Password
 	if password == "" {
-		log.Printf("fail to sign up caused by invalid password %s", password)
+		// log.Printf("fail to sign up caused by invalid password %s", password)
 
 		return nil, ErrInvalidArgument
 	}
@@ -71,7 +71,8 @@ func (a *Auth) SignIn(
 	// firebase にログイン
 	sres, err := a.handle.firebase.Login(ctx, email, password)
 	if err != nil {
-		log.Printf("fail to sign in caused by %s", err)
+		log.GetLogCtx(ctx).Warn("failed to sign in", log.ErrorField(err))
+
 		return nil, ErrUnauthorized
 	}
 
@@ -82,11 +83,22 @@ func (a *Auth) SignIn(
 
 	strs := strings.Split(sres.IDToken, ".")
 
-	payload, _ := base64.StdEncoding.DecodeString(strs[1])
+	tmpPayload, err := base64.RawStdEncoding.DecodeString(strs[1])
+	if err != nil {
+		log.GetLogCtx(ctx).Warn("failed to decode", log.ErrorField(err))
 
-	var mapData map[string]interface{}
+		return nil, err
+	}
 
-	if err := json.Unmarshal(payload, &mapData); err != nil {
+	type Payload struct {
+		UserID string `json:"user_id"`
+	}
+
+	var payload Payload
+
+	if err := json.Unmarshal(tmpPayload, &payload); err != nil {
+		log.GetLogCtx(ctx).Warn("failed to unmarshal json "+string(tmpPayload), log.ErrorField(err))
+
 		return nil, err
 	}
 
@@ -94,7 +106,7 @@ func (a *Auth) SignIn(
 
 	au := model.Auth{
 		ID:           sessionToken,
-		UserID:       mapData["user_id"].(string),
+		UserID:       payload.UserID,
 		IDToken:      sres.IDToken,
 		RefreshToken: sres.RefreshToken,
 		SessionToken: sessionToken,
@@ -184,12 +196,12 @@ func (a *Auth) ChangePassword(
 	}
 
 	if _, err := a.handle.firebase.Login(ctx, email, password); err != nil {
-		log.Printf("fail to sign in caused by %s", err)
+		// log.Printf("fail to sign in caused by %s", err)
 		return nil, ErrUnauthorized
 	}
 
 	if err := a.handle.firebase.ChangePassword(ctx, auth.UserID, req.Msg.NewPassword); err != nil {
-		log.Printf("fail to change password caused by %s", err)
+		// log.Printf("fail to change password caused by %s", err)
 		return nil, ErrUnauthorized
 	}
 
@@ -221,7 +233,7 @@ func (a *Auth) Delete(
 	}
 
 	if _, err := a.handle.firebase.Login(ctx, email, password); err != nil {
-		log.Printf("fail to sign in caused by %s", err)
+		// log.Printf("fail to sign in caused by %s", err)
 		return nil, ErrUnauthorized
 	}
 

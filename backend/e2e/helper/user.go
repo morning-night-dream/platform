@@ -2,10 +2,12 @@ package helper
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
+	"github.com/google/uuid"
 	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
@@ -18,8 +20,6 @@ type User struct {
 
 func NewUser(
 	t *testing.T,
-	email string,
-	password string,
 	url string,
 ) User {
 	t.Helper()
@@ -27,6 +27,10 @@ func NewUser(
 	ctx := context.Background()
 
 	client := NewClient(t, http.DefaultClient, url)
+
+	email := fmt.Sprintf("%s@example.com", uuid.NewString())
+
+	password := uuid.NewString()
 
 	sureq := &authv1.SignUpRequest{
 		Email:    email,

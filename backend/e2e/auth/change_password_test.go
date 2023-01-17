@@ -5,7 +5,6 @@ package auth_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
@@ -22,13 +21,9 @@ func TestE2EAuthChangePassword(t *testing.T) {
 	t.Run("パスワード変更ができる", func(t *testing.T) {
 		t.Parallel()
 
-		email := fmt.Sprintf("%s@example.com", uuid.NewString())
-
-		password := uuid.NewString()
-
 		newPassword := uuid.NewString()
 
-		user := helper.NewUser(t, email, password, url)
+		user := helper.NewUser(t, url)
 
 		defer func() {
 			user.Password = newPassword
@@ -60,13 +55,9 @@ func TestE2EAuthChangePassword(t *testing.T) {
 	t.Run("元のパスワードが異なるためパスワード変更ができない", func(t *testing.T) {
 		t.Parallel()
 
-		email := fmt.Sprintf("%s@example.com", uuid.NewString())
-
-		password := uuid.NewString()
-
 		newPassword := uuid.NewString()
 
-		user := helper.NewUser(t, email, password, url)
+		user := helper.NewUser(t, url)
 
 		defer user.Delete(t)
 
@@ -85,13 +76,9 @@ func TestE2EAuthChangePassword(t *testing.T) {
 	t.Run("元のメアドが異なるためパスワード変更ができない", func(t *testing.T) {
 		t.Parallel()
 
-		email := fmt.Sprintf("%s@example.com", uuid.NewString())
-
-		password := uuid.NewString()
-
 		newPassword := uuid.NewString()
 
-		user := helper.NewUser(t, email, password, url)
+		user := helper.NewUser(t, url)
 
 		defer user.Delete(t)
 
@@ -110,13 +97,9 @@ func TestE2EAuthChangePassword(t *testing.T) {
 	t.Run("Cookieがないためパスワード変更ができない", func(t *testing.T) {
 		t.Parallel()
 
-		email := fmt.Sprintf("%s@example.com", uuid.NewString())
-
-		password := uuid.NewString()
-
 		newPassword := uuid.NewString()
 
-		user := helper.NewUser(t, email, password, url)
+		user := helper.NewUser(t, url)
 
 		tmpClient := user.Client
 

@@ -22,11 +22,17 @@ func TestE2EAuthSignIn(t *testing.T) {
 	t.Run("サインインできる", func(t *testing.T) {
 		t.Parallel()
 
+		user := helper.NewUser(t, url)
+
+		defer func() {
+			user.Delete(t)
+		}()
+
 		client := helper.NewClient(t, http.DefaultClient, url)
 
 		req := &authv1.SignInRequest{
-			Email:    helper.GetEMail(t),
-			Password: helper.GetPassword(t),
+			Email:    user.EMail,
+			Password: user.Password,
 		}
 
 		res, err := client.Auth.SignIn(context.Background(), connect.NewRequest(req))

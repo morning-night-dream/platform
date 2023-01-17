@@ -26,11 +26,17 @@ func TestE2EArticleRead(t *testing.T) {
 	t.Run("記事が既読できる", func(t *testing.T) {
 		t.Parallel()
 
+		user := helper.NewUser(t, url)
+
+		defer func() {
+			user.Delete(t)
+		}()
+
 		ac := helper.NewClient(t, http.DefaultClient, url)
 
 		sreq := &authv1.SignInRequest{
-			Email:    helper.GetEMail(t),
-			Password: helper.GetPassword(t),
+			Email:    user.EMail,
+			Password: user.Password,
 		}
 
 		sres, _ := ac.Auth.SignIn(context.Background(), connect.NewRequest(sreq))

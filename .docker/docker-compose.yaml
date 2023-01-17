@@ -47,9 +47,10 @@ services:
       CACHE_URL: cache:6379
       API_KEY: local
       ENV: ${ENV}
-      FIREBASE_SECRET: ${FIREBASE_SECRET}
-      FIREBASE_API_ENDPOINT: ${FIREBASE_API_ENDPOINT}
-      FIREBASE_API_KEY: ${FIREBASE_API_KEY}
+      FIREBASE_SECRET: '{"type": "service_account","project_id": "emulator"}'
+      FIREBASE_API_ENDPOINT: http://firebase:9099/identitytoolkit.googleapis.com
+      FIREBASE_API_KEY: emulator
+      FIREBASE_AUTH_EMULATOR_HOST: firebase:9099
     volumes:
       - ../backend:/app
     restart: always
