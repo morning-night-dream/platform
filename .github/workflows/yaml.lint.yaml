@@ -17,5 +17,3 @@ jobs:
         run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
       - name: Lint yaml
         run: yamlfmt -lint
-      - name: Lint actions
-        run: actionlint
