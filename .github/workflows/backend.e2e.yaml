@@ -51,9 +51,7 @@ jobs:
           npm install -g firebase-tools
           firebase emulators:start --project=emulator &
           echo FIREBASE_PID=$! >> $GITHUB_ENV
-          while [[ $(curl --silent http://localhost:9091 | jq .authEmulator.ready) != "true" ]]; do
-            sleep 1
-          done
+          sleep 30
       - name: Go run core
         working-directory: ./backend
         env:
@@ -66,9 +64,7 @@ jobs:
         run: |
           go run cmd/core/main.go &
           echo PID=$! >> $GITHUB_ENV
-          while [[ $(curl --silent http://localhost:8081) != "404 page not found" ]]; do
-            sleep 1
-          done
+          dleep 30
       - name: Go test e2e
         working-directory: ./backend
         env:
