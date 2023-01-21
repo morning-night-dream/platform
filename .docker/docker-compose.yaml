@@ -1,7 +1,7 @@
 version: "3.8"
 services:
-  db:
-    container_name: ${APP_NAME}-db
+  postgres:
+    container_name: ${APP_NAME}-postgres
     image: postgres:${POSTGRES_VERSION}-alpine
     ports:
       - 54321:5432
@@ -14,8 +14,8 @@ services:
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
       POSTGRES_HOST_AUTH_METHOD: trust
     restart: always
-  cache:
-    container_name: ${APP_NAME}-cache
+  redis:
+    container_name: ${APP_NAME}-redis
     image: redis:${REDIS_VERSION}-alpine
     ports:
       - 63791:6379
@@ -31,18 +31,18 @@ services:
     volumes:
       - ./firebase:/firebase
     restart: always
-  firestore:
-    container_name: ${APP_NAME}-firestore
-    build:
-      context: .
-      dockerfile: firestore/Dockerfile
-      args:
-        NODE_VERSION: 18.13.0
-    ports:
-      - 9100:8080
-    volumes:
-      - ./firestore:/firestore
-    restart: always
+  # firestore:
+  #   container_name: ${APP_NAME}-firestore
+  #   build:
+  #     context: .
+  #     dockerfile: firestore/Dockerfile
+  #     args:
+  #       NODE_VERSION: 18.13.0
+  #   ports:
+  #     - 9100:8080
+  #   volumes:
+  #     - ./firestore:/firestore
+  #   restart: always
   app-core:
     container_name: ${APP_NAME}-app-core
     build:
@@ -54,8 +54,8 @@ services:
       - 8081:8080
     environment:
       DOMAIN: http://localhost:8081
-      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
-      CACHE_URL: cache:6379
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+      REDIS_URL: redis:6379
       API_KEY: local
       ENV: ${ENV}
       FIREBASE_SECRET: '{"type": "service_account","project_id": "emulator"}'
