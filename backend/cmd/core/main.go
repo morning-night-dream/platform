@@ -12,7 +12,7 @@ import (
 func main() {
 	db := database.NewClient(model.Config.DSN)
 
-	cache := cache.NewClient(model.Config.CacheURL)
+	cache := cache.NewClient(model.Config.RedisURL)
 
 	da := database.NewArticle(db)
 
