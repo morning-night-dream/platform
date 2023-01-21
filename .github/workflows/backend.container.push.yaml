@@ -1,17 +1,11 @@
 name: backend container push
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/backend.container.push.yaml
-      - api/**/*.proto
-      - backend/**/*.go
-      - backend/go.mod
-      - backend/go.sum
+  schedule:
+    # 金曜24時(JST)
+    - cron: '0 15 * * 5'
 jobs:
   container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       image_name: ${{ steps.build-and-push.outputs.image_name }}
       image_tag: ${{ steps.build-and-push.outputs.image_tag }}
@@ -41,9 +35,9 @@ jobs:
           KO_DOCKER_REPO=${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME} \
           SOURCE_DATE_EPOCH=$(date +%s) \
           ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./ --platform=linux/amd64
-  mr:
+  pr:
     needs: container
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       MANIFEST_REPO_NAME: platform-manifest
       DOCKER_REPO_NAME: morningnightdream
@@ -80,7 +74,7 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "update core manifest"
-          git push --set-upstream origin ${{ env.BRANCH_NAME }}}}
+          git push --set-upstream origin ${{ env.BRANCH_NAME }}
         working-directory: ${{ env.MANIFEST_REPO_NAME }}
       - name: Create release pr
         run: |

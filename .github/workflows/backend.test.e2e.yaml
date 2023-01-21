@@ -1,15 +1,15 @@
-name: e2e
+name: backend e2e
 on:
   pull_request:
     paths:
-      - .github/workflows/backend.e2e.yaml
+      - .github/workflows/backend.test.e2e.yaml
       - api/**/*.proto
       - backend/**/*.go
       - backend/go.mod
       - backend/go.sum
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
         image: postgres:14.5
