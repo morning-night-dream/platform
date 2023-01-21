@@ -28,9 +28,20 @@ services:
         NODE_VERSION: 18.13.0
     ports:
       - 9091:9099
-      - 4001:4000
     volumes:
       - ./firebase:/firebase
+    restart: always
+  firestore:
+    container_name: ${APP_NAME}-firestore
+    build:
+      context: .
+      dockerfile: firestore/Dockerfile
+      args:
+        NODE_VERSION: 18.13.0
+    ports:
+      - 9100:8080
+    volumes:
+      - ./firestore:/firestore
     restart: always
   app-core:
     container_name: ${APP_NAME}-app-core
