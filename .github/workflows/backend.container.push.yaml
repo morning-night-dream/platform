@@ -5,7 +5,7 @@ on:
     - cron: '0 15 * * 5'
 jobs:
   container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       image_name: ${{ steps.build-and-push.outputs.image_name }}
       image_tag: ${{ steps.build-and-push.outputs.image_tag }}
@@ -37,7 +37,7 @@ jobs:
           ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./ --platform=linux/amd64
   pr:
     needs: container
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       MANIFEST_REPO_NAME: platform-manifest
       DOCKER_REPO_NAME: morningnightdream
