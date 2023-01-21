@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   postgres:
     container_name: ${APP_NAME}-postgres
@@ -66,8 +65,8 @@ services:
       - ../backend:/app
     restart: always
     depends_on:
-      - db
-      - cache
+      - postgres
+      - redis
       - firebase
   db-migration:
     container_name: ${APP_NAME}-db-migration
@@ -77,8 +76,8 @@ services:
       args:
         GOLANG_VERSION: ${GOLANG_VERSION}
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
     volumes:
       - ../backend:/app
     depends_on:
-      - db
+      - postgres

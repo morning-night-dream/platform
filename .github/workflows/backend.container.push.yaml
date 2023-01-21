@@ -29,17 +29,35 @@ jobs:
           IMAGE_NAME=platform
           echo "image_name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
 
-          IMAGE_TAG=v`date +%Y%m%d%H%M%S`
+          IMAGE_TAG=`date +%Y-%m-%d-%H-%M-%S`
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
           KO_DOCKER_REPO=${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME} \
           SOURCE_DATE_EPOCH=$(date +%s) \
           ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./ --platform=linux/amd64
+  tag:
+    needs: container
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.MY_GITHUB_APP_ID }}
+          private_key: ${{ secrets.MY_GITHUB_APP_PRIVATE_KEY }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+      - name: Tag
+        run: |
+          git tag ${{ needs.container.outputs.image_tag }}
+          git push origin ${{ needs.container.outputs.image_tag }}
   pr:
     needs: container
     runs-on: ubuntu-22.04
     env:
-      MANIFEST_REPO_NAME: platform-manifest
+      MANIFEST_REPO_NAME: platform-infra
       DOCKER_REPO_NAME: morningnightdream
       BRANCH_NAME: release/${{ needs.container.outputs.image_tag }}
     steps:
@@ -59,8 +77,8 @@ jobs:
         run: sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/bin/yq
       - name: checkout branch
         run: |
-          git branch ${{ env.BRANCH_NAME }}}}
-          git checkout ${{ env.BRANCH_NAME }}}}
+          git branch ${{ env.BRANCH_NAME }}
+          git checkout ${{ env.BRANCH_NAME }}
         working-directory: ${{ env.MANIFEST_REPO_NAME }}
       - name: Update image tag
         run: |

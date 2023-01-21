@@ -25,11 +25,23 @@ type Cache struct {
 }
 
 func NewClient(url string) *Client {
-	client := redis.NewClient(&redis.Options{
-		Addr:     url,
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
+	var opt *redis.Options
+
+	if model.Env.IsProd() {
+		var err error
+		opt, err = redis.ParseURL(url)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		opt = &redis.Options{
+			Addr:     url,
+			Password: "", // no password set
+			DB:       0,  // use default DB
+		}
+	}
+
+	client := redis.NewClient(opt)
 
 	return &Client{
 		cache:  make(map[string]Cache),

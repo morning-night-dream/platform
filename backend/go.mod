@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	entgo.io/ent v0.11.5
+	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.10.0
 	github.com/bufbuild/connect-go v1.4.1
 	github.com/go-redis/redis/v9 v9.0.0-rc.2
@@ -29,7 +30,6 @@ require (
 	cloud.google.com/go/iam v0.8.0 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
 	cloud.google.com/go/storage v1.27.0 // indirect
-	firebase.google.com/go v3.13.0+incompatible // indirect
 	github.com/MicahParks/keyfunc v1.5.1 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
