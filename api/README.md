@@ -3,21 +3,25 @@
 
 ## Table of Contents
 
-- [api/proto/auth/v1/auth.proto](#api_proto_auth_v1_auth-proto)
-    - [RefreshRequest](#auth-v1-RefreshRequest)
-    - [RefreshResponse](#auth-v1-RefreshResponse)
-    - [SignInRequest](#auth-v1-SignInRequest)
-    - [SignInResponse](#auth-v1-SignInResponse)
-    - [SignUpRequest](#auth-v1-SignUpRequest)
-    - [SignUpResponse](#auth-v1-SignUpResponse)
-  
-    - [AuthService](#auth-v1-AuthService)
-  
 - [api/proto/health/v1/health.proto](#api_proto_health_v1_health-proto)
     - [CheckRequest](#health-v1-CheckRequest)
     - [CheckResponse](#health-v1-CheckResponse)
   
     - [HealthService](#health-v1-HealthService)
+  
+- [api/proto/auth/v1/auth.proto](#api_proto_auth_v1_auth-proto)
+    - [ChangePasswordRequest](#auth-v1-ChangePasswordRequest)
+    - [ChangePasswordResponse](#auth-v1-ChangePasswordResponse)
+    - [DeleteRequest](#auth-v1-DeleteRequest)
+    - [DeleteResponse](#auth-v1-DeleteResponse)
+    - [SignInRequest](#auth-v1-SignInRequest)
+    - [SignInResponse](#auth-v1-SignInResponse)
+    - [SignOutRequest](#auth-v1-SignOutRequest)
+    - [SignOutResponse](#auth-v1-SignOutResponse)
+    - [SignUpRequest](#auth-v1-SignUpRequest)
+    - [SignUpResponse](#auth-v1-SignUpResponse)
+  
+    - [AuthService](#auth-v1-AuthService)
   
 - [api/proto/article/v1/article.proto](#api_proto_article_v1_article-proto)
     - [AddTagRequest](#article-v1-AddTagRequest)
@@ -37,124 +41,6 @@
     - [ArticleService](#article-v1-ArticleService)
   
 - [Scalar Value Types](#scalar-value-types)
-
-
-
-<a name="api_proto_auth_v1_auth-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## api/proto/auth/v1/auth.proto
-
-
-
-<a name="auth-v1-RefreshRequest"></a>
-
-### RefreshRequest
-リフレッシュリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| refresh_token | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-RefreshResponse"></a>
-
-### RefreshResponse
-リフレッシュレスポンス
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id_token | [string](#string) |  |  |
-| refresh_token | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignInRequest"></a>
-
-### SignInRequest
-サインインリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| login_id | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignInResponse"></a>
-
-### SignInResponse
-サインインレスポンス
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id_token | [string](#string) |  |  |
-| refresh_token | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignUpRequest"></a>
-
-### SignUpRequest
-サインアップリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| email | [string](#string) |  |  |
-| login_id | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignUpResponse"></a>
-
-### SignUpResponse
-サインアップレスポンス
-
-
-
-
-
- 
-
- 
-
- 
-
-
-<a name="auth-v1-AuthService"></a>
-
-### AuthService
-認証サービス
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
-| SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
-| Refresh | [RefreshRequest](#auth-v1-RefreshRequest) | [RefreshResponse](#auth-v1-RefreshResponse) | リフレッシュ Need Authorization Header |
-
- 
 
 
 
@@ -199,6 +85,161 @@
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Check | [CheckRequest](#health-v1-CheckRequest) | [CheckResponse](#health-v1-CheckResponse) | チェック |
+
+ 
+
+
+
+<a name="api_proto_auth_v1_auth-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## api/proto/auth/v1/auth.proto
+
+
+
+<a name="auth-v1-ChangePasswordRequest"></a>
+
+### ChangePasswordRequest
+パスワード変更リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| old_password | [string](#string) |  |  |
+| new_password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-ChangePasswordResponse"></a>
+
+### ChangePasswordResponse
+パスワード変更レスポンス
+
+
+
+
+
+
+<a name="auth-v1-DeleteRequest"></a>
+
+### DeleteRequest
+削除リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-DeleteResponse"></a>
+
+### DeleteResponse
+削除レスポンス
+
+
+
+
+
+
+<a name="auth-v1-SignInRequest"></a>
+
+### SignInRequest
+サインインリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignInResponse"></a>
+
+### SignInResponse
+サインインレスポンス
+
+
+
+
+
+
+<a name="auth-v1-SignOutRequest"></a>
+
+### SignOutRequest
+サインアウトリクエスト
+
+
+
+
+
+
+<a name="auth-v1-SignOutResponse"></a>
+
+### SignOutResponse
+サインアウトレスポンス
+
+
+
+
+
+
+<a name="auth-v1-SignUpRequest"></a>
+
+### SignUpRequest
+サインアップリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignUpResponse"></a>
+
+### SignUpResponse
+サインアップレスポンス
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="auth-v1-AuthService"></a>
+
+### AuthService
+認証サービス
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
+| SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
+| SignOut | [SignOutRequest](#auth-v1-SignOutRequest) | [SignOutResponse](#auth-v1-SignOutResponse) | サインアウト |
+| ChangePassword | [ChangePasswordRequest](#auth-v1-ChangePasswordRequest) | [ChangePasswordResponse](#auth-v1-ChangePasswordResponse) | パスワード変更 |
+| Delete | [DeleteRequest](#auth-v1-DeleteRequest) | [DeleteResponse](#auth-v1-DeleteResponse) | 削除 |
 
  
 
