@@ -5,3 +5,4 @@ registries:
     ref: v3.103.0 # renovate: depName=aquaproj/aqua-registry
 packages:
   - name: google/yamlfmt@v0.6.0
+  - name: rhysd/actionlint@v1.6.22

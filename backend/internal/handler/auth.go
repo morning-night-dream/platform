@@ -4,75 +4,62 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"log"
+	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bufbuild/connect-go"
-	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/database/store"
 	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/pkg/log"
 	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
 type Auth struct {
-	store store.Auth
+	handle *Handle
 }
 
-func NewAuth(store store.Auth) *Auth {
+const age = 5 * 60
+
+func NewAuth(handle *Handle) *Auth {
 	return &Auth{
-		store: store,
+		handle: handle,
 	}
 }
 
-func (a Auth) SignUp(
+func (a *Auth) SignUp(
 	ctx context.Context,
 	req *connect.Request[authv1.SignUpRequest],
 ) (*connect.Response[authv1.SignUpResponse], error) {
 	email := req.Msg.Email
 	if email == "" {
-		log.Printf("fail to sign up caused by invalid email %s", email)
+		// log.Printf("fail to sign up caused by invalid email %s", email)
 
 		return nil, ErrInvalidArgument
 	}
 
 	password := req.Msg.Password
 	if password == "" {
-		log.Printf("fail to sign up caused by invalid password %s", password)
+		// log.Printf("fail to sign up caused by invalid password %s", password)
 
 		return nil, ErrInvalidArgument
 	}
 
-	loginID := req.Msg.LoginId
-	if loginID == "" {
-		log.Printf("fail to sign up caused by invalid loginId %s", loginID)
-
-		return nil, ErrInvalidArgument
-	}
-
-	auth := model.Auth{
-		UserID:   uuid.NewString(),
-		Email:    email,
-		Password: password,
-		LoginID:  loginID,
-	}
-
-	err := a.store.Save(ctx, auth)
-	if err != nil {
-		log.Printf("fail to sign up caused by %v", err)
-
-		return nil, ErrInternal
+	// firebase に新規登録
+	if err := a.handle.firebase.CreateUser(ctx, uuid.NewString(), email, password); err != nil {
+		return nil, err
 	}
 
 	return connect.NewResponse(&authv1.SignUpResponse{}), nil
 }
 
-func (a Auth) SignIn(
+func (a *Auth) SignIn(
 	ctx context.Context,
 	req *connect.Request[authv1.SignInRequest],
 ) (*connect.Response[authv1.SignInResponse], error) {
-	loginID := req.Msg.LoginId
-	if loginID == "" {
+	email := req.Msg.Email
+	if email == "" {
 		return nil, ErrUnauthorized
 	}
 
@@ -81,84 +68,178 @@ func (a Auth) SignIn(
 		return nil, ErrUnauthorized
 	}
 
-	auth, err := a.store.FindFromIDPass(ctx, loginID, password)
+	// firebase にログイン
+	sres, err := a.handle.firebase.Login(ctx, email, password)
 	if err != nil {
-		log.Printf("fail to sign in caused by %v", err)
+		log.GetLogCtx(ctx).Warn("failed to sign in", log.ErrorField(err))
 
 		return nil, ErrUnauthorized
 	}
 
-	tokenPair, err := model.GenerateToken(auth.UserID)
+	// アクセストークンからセッショントークンを取得 -> 現状はおれおれセッショントークンで対応するので不要
+
+	// アクセストークン/リフレッシュトークン/セッショントークンを紐づけてキャッシュに保存
+	exp, _ := strconv.Atoi(sres.ExpiresIn)
+
+	strs := strings.Split(sres.IDToken, ".")
+
+	tmpPayload, err := base64.RawStdEncoding.DecodeString(strs[1])
 	if err != nil {
-		log.Printf("fail to sign in caused by %v", err)
+		log.GetLogCtx(ctx).Warn("failed to decode", log.ErrorField(err))
 
-		return nil, ErrUnauthorized
+		return nil, err
 	}
 
-	res := &authv1.SignInResponse{
-		IdToken:      tokenPair.IDToken.String(),
-		RefreshToken: tokenPair.RefreshToken.String(),
+	type Payload struct {
+		UserID string `json:"user_id"`
 	}
 
-	return connect.NewResponse(res), nil
+	var payload Payload
+
+	if err := json.Unmarshal(tmpPayload, &payload); err != nil {
+		log.GetLogCtx(ctx).Warn("failed to unmarshal json "+string(tmpPayload), log.ErrorField(err))
+
+		return nil, err
+	}
+
+	sessionToken := uuid.NewString()
+
+	au := model.Auth{
+		ID:           sessionToken,
+		UserID:       payload.UserID,
+		IDToken:      sres.IDToken,
+		RefreshToken: sres.RefreshToken,
+		SessionToken: sessionToken,
+		ExpiresIn:    exp,
+	}
+
+	// token, err := a.handle.firebase.RefreshToken(ctx, sres.RefreshToken)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	if err := a.handle.cache.Set(ctx, sessionToken, au); err != nil {
+		return nil, err
+	}
+
+	// セッショントークンを返す
+	res := connect.NewResponse(&authv1.SignInResponse{})
+
+	cookie := http.Cookie{
+		Name:       "token",
+		Value:      sessionToken,
+		Path:       "",
+		Domain:     "",
+		Expires:    time.Now().Add(60 * time.Minute),
+		RawExpires: "",
+		MaxAge:     age,
+		Secure:     true,
+		HttpOnly:   true,
+		SameSite:   0,
+		Raw:        "",
+		Unparsed:   []string{},
+	}
+
+	res.Header().Set("Set-Cookie", cookie.String())
+
+	return res, nil
 }
 
-func (a Auth) Refresh(
+func (a *Auth) SignOut(
 	ctx context.Context,
-	req *connect.Request[authv1.RefreshRequest],
-) (*connect.Response[authv1.RefreshResponse], error) {
-	idTokenString := req.Header().Get("Authorization")
-
-	payload := strings.Split(idTokenString, ".")[1]
-
-	decode, err := base64.RawURLEncoding.DecodeString(payload)
+	req *connect.Request[authv1.SignOutRequest],
+) (*connect.Response[authv1.SignOutResponse], error) {
+	session, err := a.handle.GetSession(req.Header())
 	if err != nil {
-		log.Printf("fail to refresh caused by %v", err)
-
-		return nil, ErrUnauthorized
+		return nil, err
 	}
 
-	var p struct {
-		UID string `json:"uid"`
+	if err := a.handle.cache.Delete(ctx, session); err != nil {
+		return nil, err
 	}
 
-	if err := json.Unmarshal(decode, &p); err != nil {
-		log.Printf("fail to refresh caused by %v", err)
-
-		return nil, ErrUnauthorized
+	cookie := http.Cookie{
+		Name:   "token",
+		Value:  "",
+		MaxAge: -1,
 	}
 
-	refreshToken, err := model.CreateTokenFrom(req.Msg.RefreshToken)
+	res := connect.NewResponse(&authv1.SignOutResponse{})
+
+	res.Header().Set("Set-Cookie", cookie.String())
+
+	return res, nil
+}
+
+func (a *Auth) ChangePassword(
+	ctx context.Context,
+	req *connect.Request[authv1.ChangePasswordRequest],
+) (*connect.Response[authv1.ChangePasswordResponse], error) {
+	session, err := a.handle.GetSession(req.Header())
 	if err != nil {
-		log.Printf("fail to refresh caused by %v", err)
-
-		return nil, ErrUnauthorized
+		return nil, err
 	}
 
-	claims, ok := refreshToken.Claims.(jwt.MapClaims)
-	if ok && !refreshToken.Valid {
-		log.Printf("fail to refresh caused by invalid refresh token")
-
-		return nil, ErrUnauthorized
-	}
-
-	if sub, _ := claims["sub"].(string); sub != p.UID {
-		log.Printf("fail to refresh caused by invalid uid")
-
-		return nil, ErrUnauthorized
-	}
-
-	tokenPair, err := model.GenerateToken(p.UID)
+	auth, err := a.handle.cache.Get(ctx, session)
 	if err != nil {
-		log.Printf("fail to refresh caused by %v", err)
+		return nil, err
+	}
 
+	email := req.Msg.Email
+	if email == "" {
 		return nil, ErrUnauthorized
 	}
 
-	res := &authv1.RefreshResponse{
-		IdToken:      tokenPair.IDToken.String(),
-		RefreshToken: tokenPair.RefreshToken.String(),
+	password := req.Msg.OldPassword
+	if password == "" {
+		return nil, ErrUnauthorized
 	}
 
-	return connect.NewResponse(res), nil
+	if _, err := a.handle.firebase.Login(ctx, email, password); err != nil {
+		// log.Printf("fail to sign in caused by %s", err)
+		return nil, ErrUnauthorized
+	}
+
+	if err := a.handle.firebase.ChangePassword(ctx, auth.UserID, req.Msg.NewPassword); err != nil {
+		// log.Printf("fail to change password caused by %s", err)
+		return nil, ErrUnauthorized
+	}
+
+	return connect.NewResponse(&authv1.ChangePasswordResponse{}), nil
+}
+
+func (a *Auth) Delete(
+	ctx context.Context,
+	req *connect.Request[authv1.DeleteRequest],
+) (*connect.Response[authv1.DeleteResponse], error) {
+	session, err := a.handle.GetSession(req.Header())
+	if err != nil {
+		return nil, err
+	}
+
+	auth, err := a.handle.cache.Get(ctx, session)
+	if err != nil {
+		return nil, err
+	}
+
+	email := req.Msg.Email
+	if email == "" {
+		return nil, ErrUnauthorized
+	}
+
+	password := req.Msg.Password
+	if password == "" {
+		return nil, ErrUnauthorized
+	}
+
+	if _, err := a.handle.firebase.Login(ctx, email, password); err != nil {
+		// log.Printf("fail to sign in caused by %s", err)
+		return nil, ErrUnauthorized
+	}
+
+	if err := a.handle.firebase.DeleteUser(ctx, auth.UserID); err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&authv1.DeleteResponse{}), nil
 }

@@ -15,5 +15,5 @@ jobs:
           aqua_version: v1.25.0
       - name: Set up tool
         run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
-      - name: Yaml format lint
+      - name: Lint yaml
         run: yamlfmt -lint

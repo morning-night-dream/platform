@@ -1,3 +1,6 @@
+include .secret.env
+export
+
 export
 DATABASE_URL := postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable
 ENDPOINT := http://localhost:8081
@@ -38,7 +41,7 @@ test:
 
 .PHONY: e2e
 e2e:
-	@go test ./e2e/... -tags e2e
+	@go test -v ./e2e/... -tags e2e -count=1
 
 .PHONY: gen
 gen:

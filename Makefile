@@ -12,4 +12,4 @@ fmt:
 
 .PHONY: lint
 lint:
-	@yamlfmt -lint
+	@yamlfmt -lint && actionlint

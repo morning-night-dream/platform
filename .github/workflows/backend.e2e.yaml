@@ -21,9 +21,19 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7.0.7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.13.0
       - name: Set up go
         uses: actions/setup-go@v3
         with:
@@ -35,15 +45,26 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
         run: go run cmd/migrate/main.go
+      - name: Run firebase authentication
+        working-directory: ./.docker/firebase
+        run: |
+          npm install -g firebase-tools
+          firebase emulators:start --project=emulator &
+          echo FIREBASE_PID=$! >> $GITHUB_ENV
+          sleep 30
       - name: Go run core
         working-directory: ./backend
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
           API_KEY: e2e
+          FIREBASE_SECRET: '{"type": "service_account","project_id": "emulator"}'
+          FIREBASE_API_ENDPOINT: http://localhost:9099/identitytoolkit.googleapis.com
+          FIREBASE_API_KEY: emulator
+          FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
         run: |
           go run cmd/core/main.go &
           echo PID=$! >> $GITHUB_ENV
-          sleep 10
+          sleep 30
       - name: Go test e2e
         working-directory: ./backend
         env:
@@ -53,4 +74,6 @@ jobs:
         run: go test ./e2e/... -tags e2e
       - name: Shutdown
         if: always()
-        run: kill ${{ env.PID }}
+        run: |
+          kill ${{ env.PID }}
+          kill ${{ env.FIREBASE_PID }}
