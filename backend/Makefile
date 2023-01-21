@@ -1,6 +1,3 @@
-include .secret.env
-export
-
 export
 DATABASE_URL := postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable
 ENDPOINT := http://localhost:8081
