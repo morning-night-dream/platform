@@ -43,6 +43,10 @@ func NewClient(url string) *Client {
 
 	client := redis.NewClient(opt)
 
+	if err := client.Ping(context.Background()).Err(); err != nil {
+		panic(err)
+	}
+
 	return &Client{
 		cache:  make(map[string]Cache),
 		client: client,

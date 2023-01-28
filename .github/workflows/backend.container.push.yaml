@@ -1,5 +1,6 @@
 name: backend container push
 on:
+  workflow_dispatch:
   schedule:
     # 金曜24時(JST)
     - cron: '0 15 * * 5'
