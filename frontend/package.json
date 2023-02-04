@@ -7,16 +7,18 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "xo": "xo --fix"
+        "xo": "xo --fix",
+        "setup": "echo VITE_SERVICE_ENDPOINT=http://localhost:8082 > .env.local"
     },
     "dependencies": {
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
         "@chakra-ui/icons": "^1.1.7",
         "@chakra-ui/react": "^1.8.8",
         "@emotion/react": "^11",
         "@emotion/styled": "^11",
-        "framer-motion": "^5"
+        "framer-motion": "^5",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "swr": "^2.0.3"
     },
     "devDependencies": {
         "@types/react": "^18.0.17",
@@ -40,7 +42,8 @@
             "n/file-extension-in-import": "off"
         },
         "ignores": [
-            "src/vite-env.d.ts"
+            "src/vite-env.d.ts",
+            "src/api/**"
         ],
         "prettier": true
     }

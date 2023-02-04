@@ -1,5 +1,8 @@
 name: backend container push
 on:
+  # pull_request:
+  #   paths:
+  #     - .github/workflows/backend.container.push.yaml
   workflow_dispatch:
   schedule:
     # 金曜24時(JST)
@@ -8,11 +11,16 @@ jobs:
   container:
     runs-on: ubuntu-22.04
     outputs:
-      image_name: ${{ steps.build-and-push.outputs.image_name }}
-      image_tag: ${{ steps.build-and-push.outputs.image_tag }}
+      tag: ${{ steps.create-tag.outputs.tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Create tag
+        id: create-tag
+        run: |
+          TAG=`date +%Y-%m-%d-%H-%M-%S`
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
       - name: Set up go
         uses: actions/setup-go@v3
         with:
@@ -23,19 +31,20 @@ jobs:
         run: go install github.com/google/ko@latest
       - name: Docker login
         run: ko login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }} index.docker.io
-      - name: Container build and push
-        id: build-and-push
-        working-directory: ./backend/cmd/core
+      - name: Build and push app gateway container
+        working-directory: ./backend/cmd/appgateway
         run: |
-          IMAGE_NAME=platform
-          echo "image_name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
-
-          IMAGE_TAG=`date +%Y-%m-%d-%H-%M-%S`
-          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
-
+          IMAGE_NAME=platform-app-gateway
           KO_DOCKER_REPO=${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME} \
           SOURCE_DATE_EPOCH=$(date +%s) \
-          ko build --sbom=none --bare --tags=${IMAGE_TAG},latest ./ --platform=linux/amd64
+          ko build --sbom=none --bare --tags=${TAG},latest ./ --platform=linux/amd64
+      - name: Build and push app core container
+        working-directory: ./backend/cmd/appcore
+        run: |
+          IMAGE_NAME=platform-app-core
+          KO_DOCKER_REPO=${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME} \
+          SOURCE_DATE_EPOCH=$(date +%s) \
+          ko build --sbom=none --bare --tags=${TAG},latest ./ --platform=linux/amd64
   tag:
     needs: container
     runs-on: ubuntu-22.04
@@ -52,15 +61,15 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Tag
         run: |
-          git tag ${{ needs.container.outputs.image_tag }}
-          git push origin ${{ needs.container.outputs.image_tag }}
+          git tag ${{ needs.container.outputs.tag }}
+          git push origin ${{ needs.container.outputs.tag }}
   pr:
     needs: container
     runs-on: ubuntu-22.04
     env:
       MANIFEST_REPO_NAME: platform-infra
       DOCKER_REPO_NAME: morningnightdream
-      BRANCH_NAME: release/${{ needs.container.outputs.image_tag }}
+      BRANCH_NAME: release/${{ needs.container.outputs.tag }}
     steps:
       - name: Generate token
         id: generate_token
@@ -83,8 +92,8 @@ jobs:
         working-directory: ${{ env.MANIFEST_REPO_NAME }}
       - name: Update image tag
         run: |
-          export IMAGE_TAG=${{ needs.container.outputs.image_tag }}
-          yq '.image.tag=env(IMAGE_TAG)' values.yaml > tmp.yml && mv tmp.yml values.yaml
+          export TAG=${{ needs.container.outputs.tag }}
+          yq '.image.tag=env(TAG)' values.yaml > tmp.yml && mv tmp.yml values.yaml
         working-directory: ${{ env.MANIFEST_REPO_NAME }}/k8s/env/prod
       - name: Git push
         run: |
@@ -98,5 +107,5 @@ jobs:
       - name: Create release pr
         run: |
           export GH_TOKEN=${{ steps.generate_token.outputs.token }}
-          gh pr create --base main --title "Release ${{ needs.container.outputs.image_name }} ${{ needs.container.outputs.image_tag }}" -b ""
+          gh pr create --base main --title "Release ${{ needs.container.outputs.tag }}" -b ""
         working-directory: ${{ env.MANIFEST_REPO_NAME }}
