@@ -62,7 +62,7 @@ jobs:
           FIREBASE_API_KEY: emulator
           FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
         run: |
-          go run cmd/core/main.go &
+          go run cmd/appcore/main.go &
           echo PID=$! >> $GITHUB_ENV
           sleep 30
       - name: Go test e2e

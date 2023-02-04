@@ -1,8 +1,8 @@
 name: backend container push
 on:
-  # pull_request:
-  #   paths:
-  #     - .github/workflows/backend.container.push.yaml
+  pull_request:
+    paths:
+      - .github/workflows/backend.container.push.yaml
   workflow_dispatch:
   schedule:
     # 金曜24時(JST)
@@ -19,6 +19,7 @@ jobs:
         id: create-tag
         run: |
           TAG=`date +%Y-%m-%d-%H-%M-%S`
+          echo "TAG=${TAG}" >> $GITHUB_ENV
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
       - name: Set up go
         uses: actions/setup-go@v3
