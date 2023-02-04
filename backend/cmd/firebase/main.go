@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/firebase"
+	"github.com/morning-night-dream/platform/internal/driver/firebase"
 )
 
 func main() {

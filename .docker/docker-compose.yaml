@@ -18,35 +18,24 @@ services:
     image: redis:${REDIS_VERSION}-alpine
     ports:
       - 63791:6379
+    restart: always
   firebase:
     container_name: ${APP_NAME}-firebase
     build:
       context: .
       dockerfile: firebase/Dockerfile
       args:
-        NODE_VERSION: 18.13.0
+        NODE_VERSION: ${NODE_VERSION}
     ports:
       - 9091:9099
     volumes:
       - ./firebase:/firebase
     restart: always
-  # firestore:
-  #   container_name: ${APP_NAME}-firestore
-  #   build:
-  #     context: .
-  #     dockerfile: firestore/Dockerfile
-  #     args:
-  #       NODE_VERSION: 18.13.0
-  #   ports:
-  #     - 9100:8080
-  #   volumes:
-  #     - ./firestore:/firestore
-  #   restart: always
   app-core:
     container_name: ${APP_NAME}-app-core
     build:
       context: .
-      dockerfile: core/Dockerfile
+      dockerfile: appcore/Dockerfile
       args:
         GOLANG_VERSION: ${GOLANG_VERSION}
     ports:
@@ -62,12 +51,46 @@ services:
       FIREBASE_API_KEY: emulator
       FIREBASE_AUTH_EMULATOR_HOST: firebase:9099
     volumes:
+      - ./appcore/go/pkg:/go/pkg
       - ../backend:/app
     restart: always
     depends_on:
       - postgres
       - redis
       - firebase
+  app-gateway:
+    container_name: ${APP_NAME}-app-gateway
+    build:
+      context: .
+      dockerfile: appgateway/Dockerfile
+      args:
+        GOLANG_VERSION: ${GOLANG_VERSION}
+    ports:
+      - 8082:8080
+    environment:
+      APP_CORE_URL: http://app-core:8080
+    volumes:
+      - ./appgateway/go/pkg:/go/pkg
+      - ../backend:/app
+    restart: always
+    depends_on:
+      - app-core
+  web:
+    container_name: ${APP_NAME}-web
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+    ports:
+      - 3001:5173
+    environment:
+      VITE_SERVICE_ENDPOINT: http://localhost:8082
+    volumes:
+      - ../frontend:/app
+    restart: always
+    depends_on:
+      - app-gateway
   db-migration:
     container_name: ${APP_NAME}-db-migration
     build:
@@ -79,5 +102,18 @@ services:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
     volumes:
       - ../backend:/app
+    restart: always
     depends_on:
       - postgres
+  # firestore:
+  #   container_name: ${APP_NAME}-firestore
+  #   build:
+  #     context: .
+  #     dockerfile: firestore/Dockerfile
+  #     args:
+  #       NODE_VERSION: 18.13.0
+  #   ports:
+  #     - 9100:8080
+  #   volumes:
+  #     - ./firestore:/firestore
+  #   restart: always
