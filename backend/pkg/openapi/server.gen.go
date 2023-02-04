@@ -39,16 +39,9 @@ func (siw *ServerInterfaceWrapper) V1ListArticles(w http.ResponseWriter, r *http
 	// Parameter object where we will unmarshal all parameters from the context
 	var params V1ListArticlesParams
 
-	// ------------- Required query parameter "pageToken" -------------
+	// ------------- Optional query parameter "pageToken" -------------
 
-	if paramValue := r.URL.Query().Get("pageToken"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "pageToken"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "pageToken", r.URL.Query(), &params.PageToken)
+	err = runtime.BindQueryParameter("form", true, false, "pageToken", r.URL.Query(), &params.PageToken)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageToken", Err: err})
 		return

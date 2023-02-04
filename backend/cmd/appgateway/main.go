@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	c, err := client.New().Of(config.Config.AppCoreURL)
+	c, err := client.New().Of(config.Gateway.AppCoreURL)
 	if err != nil {
 		panic(err)
 	}

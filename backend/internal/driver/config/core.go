@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-type config struct {
+type core struct {
 	Domain              string
 	DSN                 string
 	RedisURL            string
@@ -13,13 +13,12 @@ type config struct {
 	FirebaseSecret      string
 	FirebaseAPIEndpoint string
 	FirebaseAPIKey      string
-	AppCoreURL          string
 }
 
-var Config config
+var Core core
 
 func init() {
-	Config = config{
+	Core = core{
 		Domain:              os.Getenv("DOMAIN"),
 		DSN:                 os.Getenv("DATABASE_URL"),
 		RedisURL:            os.Getenv("REDIS_URL"),
@@ -28,6 +27,5 @@ func init() {
 		FirebaseSecret:      os.Getenv("FIREBASE_SECRET"),
 		FirebaseAPIEndpoint: os.Getenv("FIREBASE_API_ENDPOINT"),
 		FirebaseAPIKey:      os.Getenv("FIREBASE_API_KEY"),
-		AppCoreURL:          os.Getenv("APP_CORE_URL"),
 	}
 }

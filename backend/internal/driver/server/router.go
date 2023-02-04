@@ -29,8 +29,8 @@ func NewRoute(path string, handler http.Handler) Route {
 
 func NewRouter(routes ...Route) *Router {
 	app, _ := newrelic.NewApplication(
-		newrelic.ConfigAppName(config.Config.NewRelicAppName),
-		newrelic.ConfigLicense(config.Config.NewRelicLicense),
+		newrelic.ConfigAppName(config.Core.NewRelicAppName),
+		newrelic.ConfigLicense(config.Core.NewRelicLicense),
 		newrelic.ConfigAppLogForwardingEnabled(true),
 		func(c *newrelic.Config) {
 			c.Logger = nrzap.Transform(log.Log())

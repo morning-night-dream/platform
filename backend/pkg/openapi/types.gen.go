@@ -39,7 +39,7 @@ type ListArticleResponse struct {
 // V1ListArticlesParams defines parameters for V1ListArticles.
 type V1ListArticlesParams struct {
 	// PageToken トークン
-	PageToken string `form:"pageToken" json:"pageToken"`
+	PageToken *string `form:"pageToken,omitempty" json:"pageToken,omitempty"`
 
 	// MaxPageSize ページサイズ
 	MaxPageSize int `form:"maxPageSize" json:"maxPageSize"`

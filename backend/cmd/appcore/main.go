@@ -11,13 +11,13 @@ import (
 )
 
 func main() {
-	db := database.NewClient(config.Config.DSN)
+	db := database.NewClient(config.Core.DSN)
 
-	cache := redis.NewClient(config.Config.RedisURL)
+	cache := redis.NewClient(config.Core.RedisURL)
 
 	da := gateway.NewArticle(db)
 
-	fb := firebase.NewClient(config.Config.FirebaseSecret, config.Config.FirebaseAPIEndpoint, config.Config.FirebaseAPIKey)
+	fb := firebase.NewClient(config.Core.FirebaseSecret, config.Core.FirebaseAPIEndpoint, config.Core.FirebaseAPIKey)
 
 	handle := handler.NewHandle(fb, cache)
 
