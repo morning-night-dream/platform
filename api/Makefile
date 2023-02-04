@@ -19,7 +19,8 @@ backend:
 
 .PHONY: frontend
 frontend:
-	@buf generate --template buf.frontend.gen.yaml
+	@docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/openapi.yaml -g typescript-fetch -o /local/api
+	@rm -r ../frontend/src/api && mv api ../frontend/src/api
 
 .PHONY: doc
 doc:
