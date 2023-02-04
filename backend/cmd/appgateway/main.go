@@ -17,7 +17,11 @@ func main() {
 
 	ctr := controller.New(c)
 
-	handler := openapi.HandlerFromMuxWithBaseURL(ctr, chi.NewRouter(), "/api")
+	handler := openapi.HandlerWithOptions(ctr, openapi.ChiServerOptions{
+		BaseURL:     "/api",
+		BaseRouter:  chi.NewRouter(),
+		Middlewares: []openapi.MiddlewareFunc{server.Middleware},
+	})
 
 	srv := server.NewHTTPServer(handler)
 
