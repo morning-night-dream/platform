@@ -15,9 +15,9 @@ func SetLogCtx(ctx context.Context) context.Context {
 	// -> errorはにぎりつぶしても問題ない
 	logger, _ := zap.NewProduction()
 
-	rid := uuid.NewString()
+	tid := uuid.NewString()
 
-	log := logger.With(zap.String("rid", rid))
+	log := logger.With(zap.String("tid", tid))
 
 	return context.WithValue(ctx, key{}, log)
 }
