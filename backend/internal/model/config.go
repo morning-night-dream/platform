@@ -13,6 +13,7 @@ type config struct {
 	FirebaseSecret      string
 	FirebaseAPIEndpoint string
 	FirebaseAPIKey      string
+	AppCoreURL          string
 }
 
 var Config config
@@ -27,5 +28,6 @@ func init() {
 		FirebaseSecret:      os.Getenv("FIREBASE_SECRET"),
 		FirebaseAPIEndpoint: os.Getenv("FIREBASE_API_ENDPOINT"),
 		FirebaseAPIKey:      os.Getenv("FIREBASE_API_KEY"),
+		AppCoreURL:          os.Getenv("APP_CORE_URL"),
 	}
 }

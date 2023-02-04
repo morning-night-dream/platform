@@ -26,7 +26,9 @@ func main() {
 
 	auh := handler.NewAuth(handle)
 
-	srv := server.NewHTTPServer(hh, ah, auh)
+	ch := server.NewConnectHandler(hh, ah, auh)
+
+	srv := server.NewHTTPServer(ch)
 
 	srv.Run()
 }

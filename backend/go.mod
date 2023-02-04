@@ -7,6 +7,8 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.10.0
 	github.com/bufbuild/connect-go v1.4.1
+	github.com/deepmap/oapi-codegen v1.12.4
+	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-redis/redis/v9 v9.0.0-rc.2
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.7
@@ -32,6 +34,7 @@ require (
 	cloud.google.com/go/storage v1.27.0 // indirect
 	github.com/MicahParks/keyfunc v1.5.1 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
+	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect

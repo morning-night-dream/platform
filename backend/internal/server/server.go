@@ -11,14 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bufbuild/connect-go"
-	"github.com/morning-night-dream/platform/internal/handler"
 	"github.com/morning-night-dream/platform/internal/model"
-	"github.com/morning-night-dream/platform/pkg/proto/article/v1/articlev1connect"
-	"github.com/morning-night-dream/platform/pkg/proto/auth/v1/authv1connect"
-	"github.com/morning-night-dream/platform/pkg/proto/health/v1/healthv1connect"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
 const (
@@ -31,18 +24,8 @@ type HTTPServer struct {
 }
 
 func NewHTTPServer(
-	health *handler.Health,
-	article *handler.Article,
-	auth *handler.Auth,
+	handler http.Handler,
 ) *HTTPServer {
-	interceptor := connect.WithInterceptors(NewInterceptor())
-
-	mux := NewRouter(
-		NewRoute(healthv1connect.NewHealthServiceHandler(health, interceptor)),
-		NewRoute(articlev1connect.NewArticleServiceHandler(article, interceptor)),
-		NewRoute(authv1connect.NewAuthServiceHandler(auth, interceptor)),
-	).Mux()
-
 	port := os.Getenv("PORT")
 
 	if port == "" {
@@ -51,7 +34,7 @@ func NewHTTPServer(
 
 	s := &http.Server{
 		Addr:              fmt.Sprintf(":%s", port),
-		Handler:           h2c.NewHandler(mux, &http2.Server{}),
+		Handler:           handler,
 		ReadHeaderTimeout: readHeaderTimeout,
 	}
 
