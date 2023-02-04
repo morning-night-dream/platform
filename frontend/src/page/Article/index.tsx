@@ -25,8 +25,8 @@ export function Article() {
                                     <GridItem key={article.id} colSpan={1}>
                                         <ArticleCard
                                             thumbnailURL={article.thumbnail}
-                                            url={article.url ?? ""}
-                                            title={article.title ?? ""}
+                                            url={article.url ?? ''}
+                                            title={article.title ?? ''}
                                         />
                                     </GridItem>
                                 );
