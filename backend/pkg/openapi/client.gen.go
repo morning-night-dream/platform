@@ -258,7 +258,7 @@ type ClientWithResponsesInterface interface {
 type V1ListArticlesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]ListArticleResponse
+	JSON200      *ListArticleResponse
 }
 
 // Status returns HTTPResponse.Status
@@ -331,7 +331,7 @@ func ParseV1ListArticlesResponse(rsp *http.Response) (*V1ListArticlesResponse, e
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []ListArticleResponse
+		var dest ListArticleResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

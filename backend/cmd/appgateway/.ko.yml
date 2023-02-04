@@ -1,5 +1,5 @@
 builds:
-  - id: platform-app-core
+  - id: platform-app-gateway
     dir: .
     main: ./
     env:
