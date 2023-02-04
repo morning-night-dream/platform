@@ -15,6 +15,7 @@ backend:
 	@buf generate --template buf.backend.gen.yaml
 	@oapi-codegen -generate types -package openapi openapi.yaml > ../backend/pkg/openapi/types.gen.go
 	@oapi-codegen -generate chi-server -package openapi openapi.yaml > ../backend/pkg/openapi/server.gen.go
+	@oapi-codegen -generate client -package openapi openapi.yaml > ../backend/pkg/openapi/client.gen.go
 
 .PHONY: frontend
 frontend:
