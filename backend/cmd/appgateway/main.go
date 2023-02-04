@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/morning-night-dream/platform/internal/client"
-	"github.com/morning-night-dream/platform/internal/controller"
-	"github.com/morning-night-dream/platform/internal/model"
-	"github.com/morning-night-dream/platform/internal/server"
+	"github.com/morning-night-dream/platform/internal/adapter/controller"
+	"github.com/morning-night-dream/platform/internal/driver/client"
+	"github.com/morning-night-dream/platform/internal/driver/config"
+	"github.com/morning-night-dream/platform/internal/driver/server"
 	"github.com/morning-night-dream/platform/pkg/openapi"
 )
 
 func main() {
-	c, err := client.New().Of(model.Config.AppCoreURL)
+	c, err := client.New().Of(config.Config.AppCoreURL)
 	if err != nil {
 		panic(err)
 	}

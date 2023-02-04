@@ -1,4 +1,4 @@
-package database
+package gateway
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/internal/domain/model"
 	"github.com/morning-night-dream/platform/pkg/ent"
 	"github.com/morning-night-dream/platform/pkg/ent/article"
 	"github.com/morning-night-dream/platform/pkg/ent/articletag"

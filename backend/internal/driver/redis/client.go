@@ -1,4 +1,4 @@
-package cache
+package redis
 
 import (
 	"context"
@@ -6,8 +6,9 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v9"
-	"github.com/morning-night-dream/platform/internal/errors"
-	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/internal/domain/errors"
+	"github.com/morning-night-dream/platform/internal/domain/model"
+	"github.com/morning-night-dream/platform/internal/driver/env"
 )
 
 type Client struct {
@@ -27,7 +28,7 @@ type Cache struct {
 func NewClient(url string) *Client {
 	var opt *redis.Options
 
-	if model.Env.IsProd() {
+	if env.Env.IsProd() {
 		var err error
 		opt, err = redis.ParseURL(url)
 		if err != nil {

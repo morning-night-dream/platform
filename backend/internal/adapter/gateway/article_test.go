@@ -1,4 +1,4 @@
-package database_test
+package gateway_test
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/morning-night-dream/platform/internal/database"
-	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/internal/adapter/gateway"
+	"github.com/morning-night-dream/platform/internal/domain/model"
 	"github.com/morning-night-dream/platform/pkg/ent"
 	"github.com/morning-night-dream/platform/pkg/ent/enttest"
 	"github.com/morning-night-dream/platform/pkg/ent/migrate"
@@ -31,7 +31,7 @@ func TestArticleSave(t *testing.T) {
 
 		db := enttest.Open(t, "sqlite3", dsn, opts...)
 
-		sa := database.NewArticle(db)
+		sa := gateway.NewArticle(db)
 
 		ctx := context.Background()
 
@@ -87,7 +87,7 @@ func TestArticleSave(t *testing.T) {
 
 		db := enttest.Open(t, "sqlite3", dsn, opts...)
 
-		sa := database.NewArticle(db)
+		sa := gateway.NewArticle(db)
 
 		ctx := context.Background()
 
@@ -128,7 +128,7 @@ func TestArticleSave(t *testing.T) {
 
 		db := enttest.Open(t, "sqlite3", dsn, opts...)
 
-		sa := database.NewArticle(db)
+		sa := gateway.NewArticle(db)
 
 		ctx := context.Background()
 
@@ -180,7 +180,7 @@ func TestArticleSave(t *testing.T) {
 
 		db := enttest.Open(t, "sqlite3", dsn, opts...)
 
-		sa := database.NewArticle(db)
+		sa := gateway.NewArticle(db)
 
 		ctx := context.Background()
 

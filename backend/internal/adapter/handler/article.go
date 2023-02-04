@@ -10,20 +10,20 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/internal/database"
-	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/internal/adapter/gateway"
+	"github.com/morning-night-dream/platform/internal/domain/model"
 	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
 	"github.com/pkg/errors"
 )
 
 type Article struct {
 	key     string
-	article *database.Article
+	article *gateway.Article
 	handle  *Handle
 }
 
 func NewArticle(
-	article *database.Article,
+	article *gateway.Article,
 	handle *Handle,
 ) *Article {
 	return &Article{

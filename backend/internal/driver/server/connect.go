@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
-	"github.com/morning-night-dream/platform/internal/handler"
+	"github.com/morning-night-dream/platform/internal/adapter/handler"
 	"github.com/morning-night-dream/platform/pkg/proto/article/v1/articlev1connect"
 	"github.com/morning-night-dream/platform/pkg/proto/auth/v1/authv1connect"
 	"github.com/morning-night-dream/platform/pkg/proto/health/v1/healthv1connect"

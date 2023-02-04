@@ -1,22 +1,23 @@
 package main
 
 import (
-	"github.com/morning-night-dream/platform/internal/cache"
-	"github.com/morning-night-dream/platform/internal/database"
-	"github.com/morning-night-dream/platform/internal/firebase"
-	"github.com/morning-night-dream/platform/internal/handler"
-	"github.com/morning-night-dream/platform/internal/model"
-	"github.com/morning-night-dream/platform/internal/server"
+	"github.com/morning-night-dream/platform/internal/adapter/gateway"
+	"github.com/morning-night-dream/platform/internal/adapter/handler"
+	"github.com/morning-night-dream/platform/internal/driver/config"
+	"github.com/morning-night-dream/platform/internal/driver/database"
+	"github.com/morning-night-dream/platform/internal/driver/firebase"
+	"github.com/morning-night-dream/platform/internal/driver/redis"
+	"github.com/morning-night-dream/platform/internal/driver/server"
 )
 
 func main() {
-	db := database.NewClient(model.Config.DSN)
+	db := database.NewClient(config.Config.DSN)
 
-	cache := cache.NewClient(model.Config.RedisURL)
+	cache := redis.NewClient(config.Config.RedisURL)
 
-	da := database.NewArticle(db)
+	da := gateway.NewArticle(db)
 
-	fb := firebase.NewClient(model.Config.FirebaseSecret, model.Config.FirebaseAPIEndpoint, model.Config.FirebaseAPIKey)
+	fb := firebase.NewClient(config.Config.FirebaseSecret, config.Config.FirebaseAPIEndpoint, config.Config.FirebaseAPIKey)
 
 	handle := handler.NewHandle(fb, cache)
 

@@ -3,7 +3,8 @@ package server
 import (
 	"net/http"
 
-	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/internal/driver/config"
+	"github.com/morning-night-dream/platform/internal/driver/env"
 	"github.com/morning-night-dream/platform/pkg/log"
 	"github.com/newrelic/go-agent/v3/integrations/nrzap"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -28,8 +29,8 @@ func NewRoute(path string, handler http.Handler) Route {
 
 func NewRouter(routes ...Route) *Router {
 	app, _ := newrelic.NewApplication(
-		newrelic.ConfigAppName(model.Config.NewRelicAppName),
-		newrelic.ConfigLicense(model.Config.NewRelicLicense),
+		newrelic.ConfigAppName(config.Config.NewRelicAppName),
+		newrelic.ConfigLicense(config.Config.NewRelicLicense),
 		newrelic.ConfigAppLogForwardingEnabled(true),
 		func(c *newrelic.Config) {
 			c.Logger = nrzap.Transform(log.Log())
@@ -49,7 +50,7 @@ func (r Router) Mux() *http.ServeMux {
 		path := route.path
 		handler := route.handler
 
-		if model.Env.IsProd() {
+		if env.Env.IsProd() {
 			path, handler = newrelic.WrapHandle(r.newrelic, route.path, route.handler)
 		}
 

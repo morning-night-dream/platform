@@ -6,19 +6,19 @@ import (
 	"net/textproto"
 	"strings"
 
-	"github.com/morning-night-dream/platform/internal/cache"
-	"github.com/morning-night-dream/platform/internal/firebase"
-	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/internal/domain/model"
+	"github.com/morning-night-dream/platform/internal/driver/firebase"
+	"github.com/morning-night-dream/platform/internal/driver/redis"
 )
 
 type Handle struct {
 	firebase *firebase.Client
-	cache    *cache.Client
+	cache    *redis.Client
 }
 
 func NewHandle(
 	firebase *firebase.Client,
-	cache *cache.Client,
+	cache *redis.Client,
 ) *Handle {
 	return &Handle{
 		firebase: firebase,

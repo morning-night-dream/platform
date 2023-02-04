@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/morning-night-dream/platform/internal/model"
+	"github.com/morning-night-dream/platform/internal/driver/env"
 )
 
 const (
@@ -44,7 +44,7 @@ func NewHTTPServer(
 }
 
 func (s *HTTPServer) Run() {
-	log.Printf("env is %s\n", model.Env.String())
+	log.Printf("env is %s\n", env.Env.String())
 	log.Printf("Server running on %s", s.Addr)
 
 	go func() {
