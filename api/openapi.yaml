@@ -47,7 +47,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListArticleResponse'
-                  
         500:
           description: サーバーエラー
   /v1/health:
