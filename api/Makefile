@@ -28,3 +28,8 @@ doc:
 		proto/article/**/*.proto \
 		proto/auth/**/*.proto \
 		proto/health/**/*.proto
+
+.PHONY: gen
+gen:
+	@make frontend
+	@make backend

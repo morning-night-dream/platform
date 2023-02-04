@@ -61,15 +61,15 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Tag
         run: |
-          git tag ${{ needs.container.outputs.image_tag }}
-          git push origin ${{ needs.container.outputs.image_tag }}
+          git tag ${{ needs.container.outputs.tag }}
+          git push origin ${{ needs.container.outputs.tag }}
   pr:
     needs: container
     runs-on: ubuntu-22.04
     env:
       MANIFEST_REPO_NAME: platform-infra
       DOCKER_REPO_NAME: morningnightdream
-      BRANCH_NAME: release/${{ needs.container.outputs.image_tag }}
+      BRANCH_NAME: release/${{ needs.container.outputs.tag }}
     steps:
       - name: Generate token
         id: generate_token

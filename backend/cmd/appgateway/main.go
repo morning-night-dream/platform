@@ -21,7 +21,7 @@ func main() {
 	router := chi.NewRouter()
 
 	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
@@ -31,7 +31,7 @@ func main() {
 
 	handler := openapi.HandlerWithOptions(ctr, openapi.ChiServerOptions{
 		BaseURL:     "/api",
-		BaseRouter:  chi.NewRouter(),
+		BaseRouter:  router,
 		Middlewares: []openapi.MiddlewareFunc{server.Middleware},
 	})
 
