@@ -16,7 +16,7 @@ import (
 func TestE2EHealthCheck(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("ヘルスチェックが成功する", func(t *testing.T) {
 		t.Parallel()

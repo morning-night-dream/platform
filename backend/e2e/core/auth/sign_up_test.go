@@ -10,19 +10,19 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/e2e/core/helper"
+	"github.com/morning-night-dream/platform/e2e/helper"
 	authv1 "github.com/morning-night-dream/platform/pkg/connect/proto/auth/v1"
 )
 
 func TestE2EAuthSighUp(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("サインアップできる", func(t *testing.T) {
 		t.Parallel()
 
-		client := helper.NewPlainClient(t, url)
+		client := helper.NewPlainConnectClient(t, url)
 
 		id := uuid.New().String()
 		email := fmt.Sprintf("%s@example.com", id)

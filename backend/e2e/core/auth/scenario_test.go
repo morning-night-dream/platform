@@ -19,7 +19,7 @@ import (
 func TestE2EAuthScenario(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("サインアップ~サインイン~パスワード変更~サインアウト~サインイン~ユーザー削除ができる", func(t *testing.T) {
 		t.Parallel()

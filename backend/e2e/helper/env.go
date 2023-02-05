@@ -27,17 +27,35 @@ func GetAPIKey(t *testing.T) string {
 
 var endpoint = ""
 
-func GetEndpoint(t *testing.T) string {
+func GetCoreEndpoint(t *testing.T) string {
 	t.Helper()
 
 	if endpoint != "" {
 		return endpoint
 	}
 
-	ep := os.Getenv("ENDPOINT")
+	ep := os.Getenv("CORE_ENDPOINT")
 
 	if ep == "" {
 		ep = "http://localhost:8081"
+	}
+
+	endpoint = ep
+
+	return endpoint
+}
+
+func GetGatewayEndpoint(t *testing.T) string {
+	t.Helper()
+
+	if endpoint != "" {
+		return endpoint
+	}
+
+	ep := os.Getenv("GATEWAY_ENDPOINT")
+
+	if ep == "" {
+		ep = "http://localhost:8082"
 	}
 
 	endpoint = ep

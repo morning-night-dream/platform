@@ -21,7 +21,7 @@ func TestE2EArticleRead(t *testing.T) {
 
 	helper.BulkInsert(t, int(size))
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("記事が既読できる", func(t *testing.T) {
 		t.Parallel()

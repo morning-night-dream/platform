@@ -18,7 +18,7 @@ import (
 func TestE2EArticleShare(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("記事が共有できる", func(t *testing.T) {
 		t.Parallel()

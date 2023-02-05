@@ -21,7 +21,7 @@ func TestE2EArticleList(t *testing.T) {
 
 	helper.BulkInsert(t, int(size))
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("記事が一覧できる", func(t *testing.T) {
 		t.Parallel()

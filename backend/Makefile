@@ -1,6 +1,7 @@
 export
 DATABASE_URL := postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable
-ENDPOINT := http://localhost:8081
+CORE_ENDPOINT := http://localhost:8081
+GATEWAT_ENDPOINT := http://localhost:8082
 ENV := local
 API_KEY := local
 

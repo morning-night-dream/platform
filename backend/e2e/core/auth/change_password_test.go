@@ -16,7 +16,7 @@ import (
 func TestE2EAuthChangePassword(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("パスワード変更ができる", func(t *testing.T) {
 		t.Parallel()
@@ -42,7 +42,7 @@ func TestE2EAuthChangePassword(t *testing.T) {
 		}
 
 		// 元のパスワードでサインインできない
-		client := helper.NewPlainClient(t, url)
+		client := helper.NewPlainConnectClient(t, url)
 
 		if _, err := client.Auth.SignIn(context.Background(), connect.NewRequest(&authv1.SignInRequest{
 			Email:    user.EMail,
@@ -108,7 +108,7 @@ func TestE2EAuthChangePassword(t *testing.T) {
 			user.Delete(t)
 		}()
 
-		user.Client = helper.NewPlainClient(t, url)
+		user.Client = helper.NewPlainConnectClient(t, url)
 
 		// パスワード変更
 		req := &authv1.ChangePasswordRequest{

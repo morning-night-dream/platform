@@ -41,7 +41,7 @@ func NewConnectClient(t *testing.T, client connect.HTTPClient, url string) *Conn
 	}
 }
 
-func NewPlainClient(t *testing.T, url string) *ConnectClient {
+func NewPlainConnectClient(t *testing.T, url string) *ConnectClient {
 	t.Helper()
 
 	return NewConnectClient(t, http.DefaultClient, url)

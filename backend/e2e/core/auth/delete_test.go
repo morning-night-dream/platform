@@ -17,7 +17,7 @@ import (
 func TestE2EAuthDelete(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("ユーザーを削除できる", func(t *testing.T) {
 		t.Parallel()
