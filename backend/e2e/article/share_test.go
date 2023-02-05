@@ -12,7 +12,7 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/morning-night-dream/platform/e2e/helper"
-	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
+	articlev1 "github.com/morning-night-dream/platform/pkg/connect/proto/article/v1"
 )
 
 func TestE2EArticleShare(t *testing.T) {

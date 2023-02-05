@@ -12,8 +12,8 @@ import (
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/internal/domain/model"
+	authv1 "github.com/morning-night-dream/platform/pkg/connect/proto/auth/v1"
 	"github.com/morning-night-dream/platform/pkg/log"
-	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
 )
 
 type Auth struct {

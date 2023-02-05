@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package auth.v1;
 
-option go_package = "github.com/morning-night-dream/platform/pkg/proto/auth/v1;authv1";
+option go_package = "github.com/morning-night-dream/platform/pkg/connect/proto/auth/v1;authv1";
 
 // 認証サービス
 service AuthService {
