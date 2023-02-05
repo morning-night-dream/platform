@@ -11,7 +11,7 @@ down:
 
 .PHONY: psql
 psql:
-	@docker exec -it ${APP_NAME}-db psql -U postgres
+	@docker exec -it ${APP_NAME}-postgres psql -U postgres
 
 .PHONY: rm
 rm:
