@@ -28,7 +28,7 @@ func TestE2EAuthSignOut(t *testing.T) {
 			user.Delete(t)
 		}()
 
-		hc := helper.NewClient(t, http.DefaultClient, url)
+		hc := helper.NewConnectClient(t, http.DefaultClient, url)
 
 		sreq := &authv1.SignInRequest{
 			Email:    user.EMail,
@@ -44,7 +44,7 @@ func TestE2EAuthSignOut(t *testing.T) {
 			Transport: helper.NewCookieTransport(t, sres.Header().Get("Set-Cookie")),
 		}
 
-		client := helper.NewClient(t, c, url)
+		client := helper.NewConnectClient(t, c, url)
 
 		req := &authv1.SignOutRequest{}
 

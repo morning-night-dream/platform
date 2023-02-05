@@ -27,7 +27,7 @@ func TestE2EArticleShare(t *testing.T) {
 			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
 
-		client := helper.NewClient(t, hc, url)
+		client := helper.NewConnectClient(t, hc, url)
 
 		req := &articlev1.ShareRequest{
 			Url:         "http://www.example.com",
@@ -60,7 +60,7 @@ func TestE2EArticleShare(t *testing.T) {
 
 		hc := &http.Client{}
 
-		client := helper.NewClient(t, hc, url)
+		client := helper.NewConnectClient(t, hc, url)
 
 		req := &articlev1.ShareRequest{
 			Url:         "http://www.example.com",

@@ -49,7 +49,7 @@ func TestE2EAuthSighUp(t *testing.T) {
 
 			cookie := res.Header().Get("Set-Cookie")
 
-			dclient := helper.NewClientWithCookie(t, cookie, url)
+			dclient := helper.NewConnectClientWithCookie(t, cookie, url)
 
 			req := &authv1.DeleteRequest{
 				Email:    email,

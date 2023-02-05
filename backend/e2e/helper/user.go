@@ -15,7 +15,7 @@ type User struct {
 	EMail    string
 	Password string
 	Cookie   string
-	Client   *Client
+	Client   *ConnectClient
 }
 
 func NewUser(
@@ -26,7 +26,7 @@ func NewUser(
 
 	ctx := context.Background()
 
-	client := NewClient(t, http.DefaultClient, url)
+	client := NewConnectClient(t, http.DefaultClient, url)
 
 	email := fmt.Sprintf("%s@example.com", uuid.NewString())
 
@@ -57,7 +57,7 @@ func NewUser(
 		EMail:    email,
 		Password: password,
 		Cookie:   cookie,
-		Client:   NewClientWithCookie(t, cookie, url),
+		Client:   NewConnectClientWithCookie(t, cookie, url),
 	}
 }
 

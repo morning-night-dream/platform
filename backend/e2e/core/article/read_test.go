@@ -32,7 +32,7 @@ func TestE2EArticleRead(t *testing.T) {
 			user.Delete(t)
 		}()
 
-		ac := helper.NewClient(t, http.DefaultClient, url)
+		ac := helper.NewConnectClient(t, http.DefaultClient, url)
 
 		sreq := &authv1.SignInRequest{
 			Email:    user.EMail,
@@ -45,7 +45,7 @@ func TestE2EArticleRead(t *testing.T) {
 			Transport: helper.NewCookieTransport(t, sres.Header().Get("Set-Cookie")),
 		}
 
-		client := helper.NewClient(t, hc, url)
+		client := helper.NewConnectClient(t, hc, url)
 
 		articles, err := client.Article.List(context.Background(), connect.NewRequest(&articlev1.ListRequest{
 			MaxPageSize: size,

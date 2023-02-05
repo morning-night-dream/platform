@@ -30,7 +30,7 @@ func TestE2EArticleList(t *testing.T) {
 			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
 
-		client := helper.NewClient(t, hc, url)
+		client := helper.NewConnectClient(t, hc, url)
 
 		req := &articlev1.ListRequest{
 			MaxPageSize: size,
