@@ -16,6 +16,8 @@ func TestGatewayE2EArticleList(t *testing.T) {
 
 	size := uint32(10)
 
+	helper.DeleteAll(t)
+
 	helper.BulkInsert(t, int(size))
 
 	url := helper.GetGatewayEndpoint(t)
