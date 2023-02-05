@@ -70,7 +70,7 @@ jobs:
         working-directory: ./backend
         env:
           PORT: 8082
-          APP_CORE_URL: http://app-core:8081
+          APP_CORE_URL: http://localhost:8081
         run: |
           go run cmd/appgateway/main.go &
           echo GATEWAY_PID=$! >> $GITHUB_ENV
