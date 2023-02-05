@@ -13,7 +13,7 @@ on:
       - backend/proto/**/*.proto
       - backend/pkg/ent/schema/*.go
 jobs:
-  openapi:
+  api:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -27,7 +27,7 @@ jobs:
       - name: Generate openapi document
         working-directory: ./api
         run: |
-          mkdir -p public/openapi
+          mkdir -p public/api
           npx widdershins --omitHeader --code true openapi.yaml public/api/api.md
       - name: Upload
         uses: actions/upload-artifact@v3
@@ -89,7 +89,7 @@ jobs:
           path: public
   publish:
     runs-on: ubuntu-22.04
-    needs: [proto, database]
+    needs: [api, proto, database]
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Download document api
