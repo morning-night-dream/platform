@@ -13,6 +13,27 @@ on:
       - backend/proto/**/*.proto
       - backend/pkg/ent/schema/*.go
 jobs:
+  openapi:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Set up widderchins
+        run: npm install -g widdershins
+      - name: Generate openapi document
+        working-directory: ./api
+        run: |
+          mkdir -p public/openapi
+          npx widdershins --omitHeader --code true openapi.yaml public/api/api.md
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: document-api
+          path: public
   proto:
     runs-on: ubuntu-22.04
     steps:
@@ -71,6 +92,10 @@ jobs:
     needs: [proto, database]
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Download document api
+        uses: actions/download-artifact@v3
+        with:
+          name: document-api
       - name: Download document proto
         uses: actions/download-artifact@v3
         with:
@@ -85,6 +110,7 @@ jobs:
       - name: Copy
         run: |
           mkdir public
+          cp -r api/ public/
           cp -r proto/ public/
           cp -r database/ public/
       - name: Publish

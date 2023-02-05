@@ -17,3 +17,9 @@ frontend:
 gen:
 	@make frontend
 	@make backend
+
+.PHONY: doc
+doc:
+	@rm -rf doc
+	@mkdir doc
+	@npx widdershins --omitHeader --code true openapi.yaml doc/api.md
