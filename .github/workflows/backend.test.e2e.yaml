@@ -56,6 +56,7 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+          PORT: 8081
           API_KEY: e2e
           FIREBASE_SECRET: '{"type": "service_account","project_id": "emulator"}'
           FIREBASE_API_ENDPOINT: http://localhost:9099/identitytoolkit.googleapis.com
@@ -63,17 +64,28 @@ jobs:
           FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
         run: |
           go run cmd/appcore/main.go &
-          echo PID=$! >> $GITHUB_ENV
+          echo CORE_PID=$! >> $GITHUB_ENV
+          sleep 30
+      - name: Go run gateway
+        working-directory: ./backend
+        env:
+          PORT: 8082
+          APP_CORE_URL: http://app-core:8081
+        run: |
+          go run cmd/appgateway/main.go &
+          echo GATEWAY_PID=$! >> $GITHUB_ENV
           sleep 30
       - name: Go test e2e
         working-directory: ./backend
         env:
-          ENDPOINT: http://localhost:8080
+          CORE_ENDPOINT: http://localhost:8081
+          GATEWAY_ENDPOINT: http://localhost:8082
           API_KEY: e2e
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
         run: go test ./e2e/... -tags e2e
       - name: Shutdown
         if: always()
         run: |
-          kill ${{ env.PID }}
+          kill ${{ env.CORE_PID }}
+          kill ${{ env.GATEWAY_PID }}
           kill ${{ env.FIREBASE_PID }}
