@@ -10,7 +10,7 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/morning-night-dream/platform/e2e/helper"
-	healthv1 "github.com/morning-night-dream/platform/pkg/proto/health/v1"
+	healthv1 "github.com/morning-night-dream/platform/pkg/connect/proto/health/v1"
 )
 
 func TestE2EHealthCheck(t *testing.T) {

@@ -14,7 +14,13 @@ tool:
 
 .PHONY: doc
 doc:
-	@rm -rf doc && tbls doc ${DATABASE_URL} doc/databases
+	@rm -rf doc
+	@tbls doc ${DATABASE_URL} doc/database
+	@mkdir -p doc/proto
+	@protoc --doc_out=./doc/proto --doc_opt=markdown,README.md \
+		proto/article/**/*.proto \
+		proto/auth/**/*.proto \
+		proto/health/**/*.proto
 
 .PHONY: lint
 lint:
@@ -44,6 +50,14 @@ e2e:
 gen:
 	@go generate ./... && go mod tidy
 
-.PHONY: migrate
-migrate:
-	@go run cmd/migrate/main.go
+.PHONY: connect
+connect:
+	@buf generate --template ./proto/buf.gen.yaml
+
+.PHONY: bufmt
+bufmt:
+	@buf format -w
+
+.PHONY: buflint
+buflint:
+	@(cd proto && buf lint)

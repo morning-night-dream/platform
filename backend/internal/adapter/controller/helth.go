@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
-	healthv1 "github.com/morning-night-dream/platform/pkg/proto/health/v1"
+	healthv1 "github.com/morning-night-dream/platform/pkg/connect/proto/health/v1"
 )
 
 func (c *Controller) V1Health(w http.ResponseWriter, r *http.Request) {

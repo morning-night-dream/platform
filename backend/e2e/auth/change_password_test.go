@@ -10,7 +10,7 @@ import (
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
 	"github.com/morning-night-dream/platform/e2e/helper"
-	authv1 "github.com/morning-night-dream/platform/pkg/proto/auth/v1"
+	authv1 "github.com/morning-night-dream/platform/pkg/connect/proto/auth/v1"
 )
 
 func TestE2EAuthChangePassword(t *testing.T) {

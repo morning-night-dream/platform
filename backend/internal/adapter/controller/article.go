@@ -7,8 +7,8 @@ import (
 	"github.com/bufbuild/connect-go"
 	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/google/uuid"
+	articlev1 "github.com/morning-night-dream/platform/pkg/connect/proto/article/v1"
 	"github.com/morning-night-dream/platform/pkg/openapi"
-	articlev1 "github.com/morning-night-dream/platform/pkg/proto/article/v1"
 )
 
 func (c Controller) V1ListArticles(w http.ResponseWriter, r *http.Request, params openapi.V1ListArticlesParams) {
