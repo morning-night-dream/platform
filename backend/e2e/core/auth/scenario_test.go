@@ -12,7 +12,7 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/morning-night-dream/platform/e2e/core/helper"
+	"github.com/morning-night-dream/platform/e2e/helper"
 	authv1 "github.com/morning-night-dream/platform/pkg/connect/proto/auth/v1"
 )
 
