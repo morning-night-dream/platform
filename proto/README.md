@@ -3,13 +3,13 @@
 
 ## Table of Contents
 
-- [api/proto/health/v1/health.proto](#api_proto_health_v1_health-proto)
+- [backend/proto/health/v1/health.proto](#backend_proto_health_v1_health-proto)
     - [CheckRequest](#health-v1-CheckRequest)
     - [CheckResponse](#health-v1-CheckResponse)
   
     - [HealthService](#health-v1-HealthService)
   
-- [api/proto/auth/v1/auth.proto](#api_proto_auth_v1_auth-proto)
+- [backend/proto/auth/v1/auth.proto](#backend_proto_auth_v1_auth-proto)
     - [ChangePasswordRequest](#auth-v1-ChangePasswordRequest)
     - [ChangePasswordResponse](#auth-v1-ChangePasswordResponse)
     - [DeleteRequest](#auth-v1-DeleteRequest)
@@ -23,7 +23,7 @@
   
     - [AuthService](#auth-v1-AuthService)
   
-- [api/proto/article/v1/article.proto](#api_proto_article_v1_article-proto)
+- [backend/proto/article/v1/article.proto](#backend_proto_article_v1_article-proto)
     - [AddTagRequest](#article-v1-AddTagRequest)
     - [AddTagResponse](#article-v1-AddTagResponse)
     - [Article](#article-v1-Article)
@@ -44,10 +44,10 @@
 
 
 
-<a name="api_proto_health_v1_health-proto"></a>
+<a name="backend_proto_health_v1_health-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## api/proto/health/v1/health.proto
+## backend/proto/health/v1/health.proto
 
 
 
@@ -90,10 +90,10 @@
 
 
 
-<a name="api_proto_auth_v1_auth-proto"></a>
+<a name="backend_proto_auth_v1_auth-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## api/proto/auth/v1/auth.proto
+## backend/proto/auth/v1/auth.proto
 
 
 
@@ -245,10 +245,10 @@
 
 
 
-<a name="api_proto_article_v1_article-proto"></a>
+<a name="backend_proto_article_v1_article-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## api/proto/article/v1/article.proto
+## backend/proto/article/v1/article.proto
 
 
 
