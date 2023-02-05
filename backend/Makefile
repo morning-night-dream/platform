@@ -48,7 +48,9 @@ e2e:
 
 .PHONY: gen
 gen:
-	@go generate ./... && go mod tidy
+	@go generate ./...
+	@sqlboiler psql
+	@go mod tidy
 
 .PHONY: connect
 connect:

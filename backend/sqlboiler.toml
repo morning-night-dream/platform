@@ -1,0 +1,14 @@
+output   = "pkg/sqlboiler"
+wipe     = true
+no-tests = true
+add-enum-types = true
+
+[psql]
+  dbname = "postgres"
+  host   = "localhost"
+  port   = 54321
+  user   = "postgres"
+  pass   = "postgres"
+  schema = "public"
+  sslmode= "disable"
+  blacklist = ["migrations", "other"]
