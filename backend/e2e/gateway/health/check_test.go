@@ -27,8 +27,8 @@ func TestGatewayE2EHealthCheck(t *testing.T) {
 			t.Fatalf("failed to health check: %s", err)
 		}
 
-		if !reflect.DeepEqual(res.Status, http.StatusOK) {
-			t.Errorf("Articles actual = %v, want %v", res.Status, http.StatusOK)
+		if !reflect.DeepEqual(res.StatusCode, http.StatusOK) {
+			t.Errorf("Articles actual = %v, want %v", res.StatusCode, http.StatusOK)
 		}
 	})
 }
