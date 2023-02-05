@@ -23,15 +23,12 @@ jobs:
         uses: aquaproj/aqua-installer@v1.1.2
         with:
           aqua_version: v1.25.0
-      - name: Set up api go tool
-        working-directory: ./api
-        run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
       - name: Set up backend go tool
         working-directory: ./backend
         run: ${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua i
       - name: Generate connect code
-        working-directory: ./api
-        run: buf generate --template buf.backend.gen.yaml
+        working-directory: ./backend
+        run: buf generate --template ./proto/buf.gen.yaml
       - name: Generate go code
         working-directory: ./backend
         run: go generate ./...

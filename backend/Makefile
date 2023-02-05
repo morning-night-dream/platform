@@ -61,10 +61,3 @@ bufmt:
 .PHONY: buflint
 buflint:
 	@(cd proto && buf lint)
-
-.PHONY: connectdoc
-connectdoc:
-	@rm -rf doc/api && mkdir -p doc/api && protoc --doc_out=./doc/api --doc_opt=markdown,README.md \
-		proto/article/**/*.proto \
-		proto/auth/**/*.proto \
-		proto/health/**/*.proto
