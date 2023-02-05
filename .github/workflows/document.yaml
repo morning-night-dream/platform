@@ -5,11 +5,13 @@ on:
       - main
     paths:
       - .github/workflows/document.yaml
+      - api/openapi.yaml
       - backend/proto/**/*.proto
       - backend/pkg/ent/schema/*.go
   pull_request:
     paths:
       - .github/workflows/document.yaml
+      - api/openapi.yaml
       - backend/proto/**/*.proto
       - backend/pkg/ent/schema/*.go
 jobs:
@@ -25,10 +27,9 @@ jobs:
       - name: Set up widderchins
         run: npm install -g widdershins
       - name: Generate openapi document
-        working-directory: ./api
         run: |
           mkdir -p public/api
-          npx widdershins --omitHeader --code true openapi.yaml public/api/api.md
+          npx widdershins --omitHeader --code true api/openapi.yaml public/api/api.md
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
