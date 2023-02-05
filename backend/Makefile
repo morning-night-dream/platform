@@ -15,9 +15,9 @@ tool:
 .PHONY: doc
 doc:
 	@rm -rf doc
-	@tbls doc ${DATABASE_URL} doc/databases
-	@mkdir -p doc/api
-	@protoc --doc_out=./doc/api --doc_opt=markdown,README.md \
+	@tbls doc ${DATABASE_URL} doc/database
+	@mkdir -p doc/proto
+	@protoc --doc_out=./doc/proto --doc_opt=markdown,README.md \
 		proto/article/**/*.proto \
 		proto/auth/**/*.proto \
 		proto/health/**/*.proto
