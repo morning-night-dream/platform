@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/bufbuild/connect-go"
-	"github.com/morning-night-dream/platform/e2e/helper"
+	"github.com/morning-night-dream/platform/e2e/core/helper"
 	articlev1 "github.com/morning-night-dream/platform/pkg/connect/proto/article/v1"
 )
 
