@@ -79,26 +79,3 @@ func BulkDelete(t *testing.T, count int) {
 		t.Error(err)
 	}
 }
-
-func DeleteAll(t *testing.T) {
-	t.Helper()
-
-	dsn := os.Getenv("DATABASE_URL")
-
-	client := database.NewClient(dsn)
-
-	defer client.Close()
-
-	tx, err := client.Tx(context.Background())
-	if err != nil {
-		t.Error(err)
-
-		return
-	}
-
-	tx.Article.Delete().Exec(context.Background())
-
-	if err := tx.Commit(); err != nil {
-		t.Error(err)
-	}
-}
