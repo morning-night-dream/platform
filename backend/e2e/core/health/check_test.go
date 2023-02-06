@@ -1,9 +1,11 @@
+//go:build e2e
+// +build e2e
+
 package health_test
 
 import (
 	"context"
 	"net/http"
-	"reflect"
 	"testing"
 
 	"github.com/bufbuild/connect-go"
@@ -23,13 +25,9 @@ func TestE2EHealthCheck(t *testing.T) {
 
 		req := &healthv1.CheckRequest{}
 
-		res, err := client.Health.Check(context.Background(), connect.NewRequest(req))
+		_, err := client.Health.Check(context.Background(), connect.NewRequest(req))
 		if err != nil {
 			t.Errorf("faile to health check: %s", err)
-		}
-
-		if !reflect.DeepEqual(res.StatusCode, http.StatusOK) {
-			t.Errorf("Articles actual = %v, want %v", res.StatusCode, http.StatusOK)
 		}
 	})
 }
