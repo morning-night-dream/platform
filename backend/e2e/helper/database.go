@@ -79,3 +79,30 @@ func BulkDelete(t *testing.T, count int) {
 		t.Error(err)
 	}
 }
+
+func DeleteOne(t *testing.T, id string) {
+	t.Helper()
+
+	dsn := os.Getenv("DATABASE_URL")
+
+	client := database.NewClient(dsn)
+
+	defer client.Close()
+
+	tx, err := client.Tx(context.Background())
+	if err != nil {
+		t.Error(err)
+
+		return
+	}
+
+	if err := tx.Article.DeleteOneID(uuid.MustParse(id)).Exec(context.Background()); err != nil {
+		t.Error(err)
+
+		_ = tx.Rollback()
+	}
+
+	if err := tx.Commit(); err != nil {
+		t.Error(err)
+	}
+}

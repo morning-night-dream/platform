@@ -1,6 +1,3 @@
-//go:build e2e
-// +build e2e
-
 package article_test
 
 import (
@@ -53,6 +50,8 @@ func TestE2EArticleShare(t *testing.T) {
 		if !reflect.DeepEqual(res.Msg.Article.Thumbnail, req.Thumbnail) {
 			t.Errorf("Thumbnail = %v, want %v", res.Msg.Article.Thumbnail, req.Thumbnail)
 		}
+
+		helper.DeleteOne(t, res.Msg.Article.Id)
 	})
 
 	t.Run("Api-Keyがなくて記事が共有できない", func(t *testing.T) {
