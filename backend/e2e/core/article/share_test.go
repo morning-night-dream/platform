@@ -54,7 +54,7 @@ func TestE2EArticleShare(t *testing.T) {
 			t.Errorf("Thumbnail = %v, want %v", res.Msg.Article.Thumbnail, req.Thumbnail)
 		}
 
-		helper.DeleteOne(t, res.Msg.Article.Id)
+		helper.BulkDelete(t, []string{res.Msg.Article.Id})
 	})
 
 	t.Run("Api-Keyがなくて記事が共有できない", func(t *testing.T) {

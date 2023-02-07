@@ -12,7 +12,7 @@ import (
 	"github.com/morning-night-dream/platform/pkg/ent"
 )
 
-func BulkInsert(t *testing.T, count int) {
+func BulkInsert(t *testing.T, count int) []string {
 	t.Helper()
 
 	dsn := os.Getenv("DATABASE_URL")
@@ -43,9 +43,11 @@ func BulkInsert(t *testing.T, count int) {
 	if err := client.Article.CreateBulk(bulk...).OnConflict().UpdateNewValues().DoNothing().Exec(context.Background()); err != nil {
 		t.Fatal(err)
 	}
+
+	return ids
 }
 
-func BulkDelete(t *testing.T, count int) {
+func BulkDelete(t *testing.T, ids []string) {
 	t.Helper()
 
 	dsn := os.Getenv("DATABASE_URL")
@@ -53,12 +55,6 @@ func BulkDelete(t *testing.T, count int) {
 	client := database.NewClient(dsn)
 
 	defer client.Close()
-
-	ids := make([]string, count)
-
-	for i := 0; i < count; i++ {
-		ids[i] = fmt.Sprintf("00000000-0000-0000-0000-000000000%03d", i)
-	}
 
 	tx, err := client.Tx(context.Background())
 	if err != nil {
@@ -73,33 +69,6 @@ func BulkDelete(t *testing.T, count int) {
 
 			_ = tx.Rollback()
 		}
-	}
-
-	if err := tx.Commit(); err != nil {
-		t.Error(err)
-	}
-}
-
-func DeleteOne(t *testing.T, id string) {
-	t.Helper()
-
-	dsn := os.Getenv("DATABASE_URL")
-
-	client := database.NewClient(dsn)
-
-	defer client.Close()
-
-	tx, err := client.Tx(context.Background())
-	if err != nil {
-		t.Error(err)
-
-		return
-	}
-
-	if err := tx.Article.DeleteOneID(uuid.MustParse(id)).Exec(context.Background()); err != nil {
-		t.Error(err)
-
-		_ = tx.Rollback()
 	}
 
 	if err := tx.Commit(); err != nil {
