@@ -23,6 +23,8 @@ func TestE2EArticleShare(t *testing.T) {
 	t.Run("記事が共有できる", func(t *testing.T) {
 		t.Parallel()
 
+		defer helper.BulkDelete(t, []string{res.Msg.Article.Id})
+
 		hc := &http.Client{
 			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
@@ -53,8 +55,6 @@ func TestE2EArticleShare(t *testing.T) {
 		if !reflect.DeepEqual(res.Msg.Article.Thumbnail, req.Thumbnail) {
 			t.Errorf("Thumbnail = %v, want %v", res.Msg.Article.Thumbnail, req.Thumbnail)
 		}
-
-		helper.BulkDelete(t, []string{res.Msg.Article.Id})
 	})
 
 	t.Run("Api-Keyがなくて記事が共有できない", func(t *testing.T) {
