@@ -19,12 +19,16 @@ func TestGatewayE2EArticleList(t *testing.T) {
 
 	size := uint32(10)
 
-	helper.BulkInsert(t, int(size))
-
 	url := helper.GetGatewayEndpoint(t)
 
 	t.Run("記事が一覧できる", func(t *testing.T) {
 		t.Parallel()
+
+		art := helper.NewArticleDB(t, helper.GetDSN(t))
+
+		ids := helper.GenerateIDs(t, int(size))
+
+		art.BulkInsert(ids)
 
 		client := helper.NewOpenAPIClient(t, url)
 

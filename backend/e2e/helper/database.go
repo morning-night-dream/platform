@@ -2,8 +2,6 @@ package helper
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"testing"
 	"time"
 
@@ -12,25 +10,34 @@ import (
 	"github.com/morning-night-dream/platform/pkg/ent"
 )
 
-func BulkInsert(t *testing.T, count int) []string {
+type ArticleDB struct {
+	T      *testing.T
+	client *ent.Client
+}
+
+func NewArticleDB(
+	t *testing.T,
+	dsn string,
+) *ArticleDB {
 	t.Helper()
 
-	dsn := os.Getenv("DATABASE_URL")
-
-	client := database.NewClient(dsn)
-
-	defer client.Close()
-
-	ids := make([]string, count)
-
-	for i := 0; i < count; i++ {
-		ids[i] = fmt.Sprintf("00000000-0000-0000-0000-000000000%03d", i)
+	return &ArticleDB{
+		T:      t,
+		client: database.NewClient(dsn),
 	}
+}
 
-	bulk := make([]*ent.ArticleCreate, count)
+func (adb *ArticleDB) Close() error {
+	return adb.client.Close()
+}
+
+func (adb *ArticleDB) BulkInsert(ids []string) {
+	adb.T.Helper()
+
+	bulk := make([]*ent.ArticleCreate, len(ids))
 
 	for i, id := range ids {
-		bulk[i] = client.Article.Create().
+		bulk[i] = adb.client.Article.Create().
 			SetID(uuid.MustParse(id)).
 			SetTitle("title-" + id).
 			SetURL("https://example.com/" + id).
@@ -40,38 +47,30 @@ func BulkInsert(t *testing.T, count int) []string {
 			SetUpdatedAt(time.Now())
 	}
 
-	if err := client.Article.CreateBulk(bulk...).OnConflict().UpdateNewValues().DoNothing().Exec(context.Background()); err != nil {
-		t.Fatal(err)
+	if err := adb.client.Article.CreateBulk(bulk...).OnConflict().UpdateNewValues().DoNothing().Exec(context.Background()); err != nil {
+		adb.T.Fatal(err)
 	}
-
-	return ids
 }
 
-func BulkDelete(t *testing.T, ids []string) {
-	t.Helper()
+func (adb ArticleDB) BulkDelete(ids []string) {
+	adb.T.Helper()
 
-	dsn := os.Getenv("DATABASE_URL")
-
-	client := database.NewClient(dsn)
-
-	defer client.Close()
-
-	tx, err := client.Tx(context.Background())
+	tx, err := adb.client.Tx(context.Background())
 	if err != nil {
-		t.Error(err)
+		adb.T.Error(err)
 
 		return
 	}
 
 	for _, id := range ids {
 		if err := tx.Article.DeleteOneID(uuid.MustParse(id)).Exec(context.Background()); err != nil {
-			t.Error(err)
+			adb.T.Error(err)
 
 			_ = tx.Rollback()
 		}
 	}
 
 	if err := tx.Commit(); err != nil {
-		t.Error(err)
+		adb.T.Error(err)
 	}
 }

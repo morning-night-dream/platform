@@ -23,6 +23,9 @@ func TestE2EArticleShare(t *testing.T) {
 	t.Run("記事が共有できる", func(t *testing.T) {
 		t.Parallel()
 
+		adb := helper.NewArticleDB(t, helper.GetDSN(t))
+		defer adb.Close()
+
 		hc := &http.Client{
 			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
@@ -40,7 +43,7 @@ func TestE2EArticleShare(t *testing.T) {
 		if err != nil {
 			t.Fatalf("faile to article share: %s", err)
 		}
-		defer helper.BulkDelete(t, []string{res.Msg.Article.Id})
+		defer adb.BulkDelete([]string{res.Msg.Article.Id})
 
 		if !reflect.DeepEqual(res.Msg.Article.Url, req.Url) {
 			t.Errorf("Url = %v, want %v", res.Msg.Article.Url, req.Url)

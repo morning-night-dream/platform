@@ -19,12 +19,16 @@ func TestE2EArticleList(t *testing.T) {
 
 	size := uint32(10)
 
-	helper.BulkInsert(t, int(size))
-
-	url := helper.GetCoreEndpoint(t)
-
 	t.Run("記事が一覧できる", func(t *testing.T) {
 		t.Parallel()
+
+		adb := helper.NewArticleDB(t, helper.GetDSN(t))
+
+		ids := helper.GenerateIDs(t, 10)
+
+		adb.BulkInsert(ids)
+
+		url := helper.GetCoreEndpoint(t)
 
 		hc := &http.Client{
 			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),

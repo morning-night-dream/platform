@@ -19,12 +19,19 @@ func TestE2EArticleRead(t *testing.T) {
 
 	size := uint32(10)
 
-	helper.BulkInsert(t, int(size))
-
 	url := helper.GetCoreEndpoint(t)
 
 	t.Run("記事が既読できる", func(t *testing.T) {
 		t.Parallel()
+
+		dsn := helper.GetDSN(t)
+
+		adb := helper.NewArticleDB(t, dsn)
+		defer adb.Close()
+
+		ids := helper.GenerateIDs(t, 10)
+
+		adb.BulkInsert(ids)
 
 		user := helper.NewUser(t, url)
 
