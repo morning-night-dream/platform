@@ -73,7 +73,7 @@ jobs:
         with:
           app_id: ${{ secrets.MY_GITHUB_APP_ID }}
           private_key: ${{ secrets.MY_GITHUB_APP_PRIVATE_KEY }}
-      - name: Repository dispatch
+      - name: Dispatch
         run: |
           curl -X POST \
             -H "Accespt: application/vnd.github.v3+json" \
