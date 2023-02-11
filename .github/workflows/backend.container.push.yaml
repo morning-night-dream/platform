@@ -66,10 +66,6 @@ jobs:
   dispatch:
     needs: container
     runs-on: ubuntu-22.04
-    env:
-      MANIFEST_REPO_NAME: platform-infra
-      DOCKER_REPO_NAME: morningnightdream
-      BRANCH_NAME: release/${{ needs.container.outputs.tag }}
     steps:
       - name: Generate token
         id: generate_token
