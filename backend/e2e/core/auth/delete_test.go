@@ -17,12 +17,12 @@ import (
 func TestE2EAuthDelete(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("ユーザーを削除できる", func(t *testing.T) {
 		t.Parallel()
 
-		client := helper.NewPlainClient(t, url)
+		client := helper.NewPlainConnectClient(t, url)
 
 		id := uuid.New().String()
 		email := fmt.Sprintf("%s@example.com", id)
@@ -48,7 +48,7 @@ func TestE2EAuthDelete(t *testing.T) {
 
 		cookie := res.Header().Get("Set-Cookie")
 
-		dclient := helper.NewClientWithCookie(t, cookie, url)
+		dclient := helper.NewConnectClientWithCookie(t, cookie, url)
 
 		req := &authv1.DeleteRequest{
 			Email:    email,

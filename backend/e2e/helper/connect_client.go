@@ -10,13 +10,13 @@ import (
 	"github.com/morning-night-dream/platform/pkg/connect/proto/health/v1/healthv1connect"
 )
 
-type Client struct {
+type ConnectClient struct {
 	Article articlev1connect.ArticleServiceClient
 	Health  healthv1connect.HealthServiceClient
 	Auth    authv1connect.AuthServiceClient
 }
 
-func NewClient(t *testing.T, client connect.HTTPClient, url string) *Client {
+func NewConnectClient(t *testing.T, client connect.HTTPClient, url string) *ConnectClient {
 	t.Helper()
 
 	ac := articlev1connect.NewArticleServiceClient(
@@ -34,37 +34,37 @@ func NewClient(t *testing.T, client connect.HTTPClient, url string) *Client {
 		url,
 	)
 
-	return &Client{
+	return &ConnectClient{
 		Article: ac,
 		Health:  hc,
 		Auth:    auc,
 	}
 }
 
-func NewPlainClient(t *testing.T, url string) *Client {
+func NewPlainConnectClient(t *testing.T, url string) *ConnectClient {
 	t.Helper()
 
-	return NewClient(t, http.DefaultClient, url)
+	return NewConnectClient(t, http.DefaultClient, url)
 }
 
-func NewClientWithAPIKey(t *testing.T, key string, url string) *Client {
+func NewConnectClientWithAPIKey(t *testing.T, key string, url string) *ConnectClient {
 	t.Helper()
 
 	client := &http.Client{
 		Transport: NewAPIKeyTransport(t, key),
 	}
 
-	return NewClient(t, client, url)
+	return NewConnectClient(t, client, url)
 }
 
-func NewClientWithCookie(t *testing.T, cookie string, url string) *Client {
+func NewConnectClientWithCookie(t *testing.T, cookie string, url string) *ConnectClient {
 	t.Helper()
 
 	client := &http.Client{
 		Transport: NewCookieTransport(t, cookie),
 	}
 
-	return NewClient(t, client, url)
+	return NewConnectClient(t, client, url)
 }
 
 type APIKeyTransport struct {

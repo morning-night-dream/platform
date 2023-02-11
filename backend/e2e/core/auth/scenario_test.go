@@ -19,14 +19,14 @@ import (
 func TestE2EAuthScenario(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("サインアップ~サインイン~パスワード変更~サインアウト~サインイン~ユーザー削除ができる", func(t *testing.T) {
 		t.Parallel()
 
 		// サインアップ
 
-		client := helper.NewClient(t, http.DefaultClient, url)
+		client := helper.NewConnectClient(t, http.DefaultClient, url)
 
 		email := fmt.Sprintf("%s@example.com", uuid.NewString())
 
@@ -57,7 +57,7 @@ func TestE2EAuthScenario(t *testing.T) {
 			t.Errorf("cookie is empty")
 		}
 
-		client = helper.NewClientWithCookie(t, sires.Header().Get("Set-Cookie"), url)
+		client = helper.NewConnectClientWithCookie(t, sires.Header().Get("Set-Cookie"), url)
 
 		// パスワード変更
 
@@ -88,7 +88,7 @@ func TestE2EAuthScenario(t *testing.T) {
 
 		// 再ログイン
 
-		client = helper.NewClient(t, http.DefaultClient, url)
+		client = helper.NewConnectClient(t, http.DefaultClient, url)
 
 		sireq = &authv1.SignInRequest{
 			Email:    email,
@@ -106,7 +106,7 @@ func TestE2EAuthScenario(t *testing.T) {
 
 		// ユーザー削除
 
-		client = helper.NewClientWithCookie(t, sires.Header().Get("Set-Cookie"), url)
+		client = helper.NewConnectClientWithCookie(t, sires.Header().Get("Set-Cookie"), url)
 
 		dreq := &authv1.DeleteRequest{
 			Email:    email,

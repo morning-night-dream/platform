@@ -17,7 +17,7 @@ import (
 func TestE2EAuthSignIn(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("サインインできる", func(t *testing.T) {
 		t.Parallel()
@@ -28,7 +28,7 @@ func TestE2EAuthSignIn(t *testing.T) {
 			user.Delete(t)
 		}()
 
-		client := helper.NewClient(t, http.DefaultClient, url)
+		client := helper.NewConnectClient(t, http.DefaultClient, url)
 
 		req := &authv1.SignInRequest{
 			Email:    user.EMail,

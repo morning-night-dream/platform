@@ -18,16 +18,19 @@ import (
 func TestE2EArticleShare(t *testing.T) {
 	t.Parallel()
 
-	url := helper.GetEndpoint(t)
+	url := helper.GetCoreEndpoint(t)
 
 	t.Run("記事が共有できる", func(t *testing.T) {
 		t.Parallel()
+
+		adb := helper.NewArticleDB(t, helper.GetDSN(t))
+		defer adb.Close()
 
 		hc := &http.Client{
 			Transport: helper.NewAPIKeyTransport(t, helper.GetAPIKey(t)),
 		}
 
-		client := helper.NewClient(t, hc, url)
+		client := helper.NewConnectClient(t, hc, url)
 
 		req := &articlev1.ShareRequest{
 			Url:         "http://www.example.com",
@@ -40,6 +43,7 @@ func TestE2EArticleShare(t *testing.T) {
 		if err != nil {
 			t.Fatalf("faile to article share: %s", err)
 		}
+		defer adb.BulkDelete([]string{res.Msg.Article.Id})
 
 		if !reflect.DeepEqual(res.Msg.Article.Url, req.Url) {
 			t.Errorf("Url = %v, want %v", res.Msg.Article.Url, req.Url)
@@ -60,7 +64,7 @@ func TestE2EArticleShare(t *testing.T) {
 
 		hc := &http.Client{}
 
-		client := helper.NewClient(t, hc, url)
+		client := helper.NewConnectClient(t, hc, url)
 
 		req := &articlev1.ShareRequest{
 			Url:         "http://www.example.com",
