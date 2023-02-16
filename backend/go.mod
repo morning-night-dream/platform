@@ -3,7 +3,7 @@ module github.com/morning-night-dream/platform
 go 1.19
 
 require (
-	entgo.io/ent v0.11.5
+	entgo.io/ent v0.11.8
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.10.0
 	github.com/bufbuild/connect-go v1.4.1
@@ -25,7 +25,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.9.0 // indirect
+	ariga.io/atlas v0.9.1-0.20230119145809-92243f7c55cb // indirect
 	cloud.google.com/go v0.105.0 // indirect
 	cloud.google.com/go/compute v1.14.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
