@@ -20,7 +20,7 @@ jobs:
           cache: true
           cache-dependency-path: backend/go.sum
       - name: Set up aqua
-        uses: aquaproj/aqua-installer@v1.1.2
+        uses: aquaproj/aqua-installer@v1.2.0
         with:
           aqua_version: v1.25.0
       - name: Set up backend go tool
