@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.11.5
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.10.0
-	github.com/bufbuild/connect-go v1.4.1
+	github.com/bufbuild/connect-go v1.5.2
 	github.com/deepmap/oapi-codegen v1.12.4
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-chi/cors v1.2.1
