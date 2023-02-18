@@ -4,9 +4,9 @@ on:
     paths:
       - .github/workflows/backend.container.push.yaml
   workflow_dispatch:
-  schedule:
+  # schedule:
     # 金曜24時(JST)
-    - cron: '0 15 * * 5'
+    # - cron: '0 15 * * 5'
 jobs:
   container:
     runs-on: ubuntu-22.04
