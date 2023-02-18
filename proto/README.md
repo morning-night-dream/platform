@@ -3,26 +3,6 @@
 
 ## Table of Contents
 
-- [backend/proto/health/v1/health.proto](#backend_proto_health_v1_health-proto)
-    - [CheckRequest](#health-v1-CheckRequest)
-    - [CheckResponse](#health-v1-CheckResponse)
-  
-    - [HealthService](#health-v1-HealthService)
-  
-- [backend/proto/auth/v1/auth.proto](#backend_proto_auth_v1_auth-proto)
-    - [ChangePasswordRequest](#auth-v1-ChangePasswordRequest)
-    - [ChangePasswordResponse](#auth-v1-ChangePasswordResponse)
-    - [DeleteRequest](#auth-v1-DeleteRequest)
-    - [DeleteResponse](#auth-v1-DeleteResponse)
-    - [SignInRequest](#auth-v1-SignInRequest)
-    - [SignInResponse](#auth-v1-SignInResponse)
-    - [SignOutRequest](#auth-v1-SignOutRequest)
-    - [SignOutResponse](#auth-v1-SignOutResponse)
-    - [SignUpRequest](#auth-v1-SignUpRequest)
-    - [SignUpResponse](#auth-v1-SignUpResponse)
-  
-    - [AuthService](#auth-v1-AuthService)
-  
 - [backend/proto/article/v1/article.proto](#backend_proto_article_v1_article-proto)
     - [AddTagRequest](#article-v1-AddTagRequest)
     - [AddTagResponse](#article-v1-AddTagResponse)
@@ -40,208 +20,27 @@
   
     - [ArticleService](#article-v1-ArticleService)
   
+- [backend/proto/auth/v1/auth.proto](#backend_proto_auth_v1_auth-proto)
+    - [ChangePasswordRequest](#auth-v1-ChangePasswordRequest)
+    - [ChangePasswordResponse](#auth-v1-ChangePasswordResponse)
+    - [DeleteRequest](#auth-v1-DeleteRequest)
+    - [DeleteResponse](#auth-v1-DeleteResponse)
+    - [SignInRequest](#auth-v1-SignInRequest)
+    - [SignInResponse](#auth-v1-SignInResponse)
+    - [SignOutRequest](#auth-v1-SignOutRequest)
+    - [SignOutResponse](#auth-v1-SignOutResponse)
+    - [SignUpRequest](#auth-v1-SignUpRequest)
+    - [SignUpResponse](#auth-v1-SignUpResponse)
+  
+    - [AuthService](#auth-v1-AuthService)
+  
+- [backend/proto/health/v1/health.proto](#backend_proto_health_v1_health-proto)
+    - [CheckRequest](#health-v1-CheckRequest)
+    - [CheckResponse](#health-v1-CheckResponse)
+  
+    - [HealthService](#health-v1-HealthService)
+  
 - [Scalar Value Types](#scalar-value-types)
-
-
-
-<a name="backend_proto_health_v1_health-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## backend/proto/health/v1/health.proto
-
-
-
-<a name="health-v1-CheckRequest"></a>
-
-### CheckRequest
-チェックリクエスト
-
-
-
-
-
-
-<a name="health-v1-CheckResponse"></a>
-
-### CheckResponse
-チェックレスポンス
-
-
-
-
-
- 
-
- 
-
- 
-
-
-<a name="health-v1-HealthService"></a>
-
-### HealthService
-ヘルスサービス
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| Check | [CheckRequest](#health-v1-CheckRequest) | [CheckResponse](#health-v1-CheckResponse) | チェック |
-
- 
-
-
-
-<a name="backend_proto_auth_v1_auth-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## backend/proto/auth/v1/auth.proto
-
-
-
-<a name="auth-v1-ChangePasswordRequest"></a>
-
-### ChangePasswordRequest
-パスワード変更リクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| email | [string](#string) |  |  |
-| old_password | [string](#string) |  |  |
-| new_password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-ChangePasswordResponse"></a>
-
-### ChangePasswordResponse
-パスワード変更レスポンス
-
-
-
-
-
-
-<a name="auth-v1-DeleteRequest"></a>
-
-### DeleteRequest
-削除リクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| email | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-DeleteResponse"></a>
-
-### DeleteResponse
-削除レスポンス
-
-
-
-
-
-
-<a name="auth-v1-SignInRequest"></a>
-
-### SignInRequest
-サインインリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| email | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignInResponse"></a>
-
-### SignInResponse
-サインインレスポンス
-
-
-
-
-
-
-<a name="auth-v1-SignOutRequest"></a>
-
-### SignOutRequest
-サインアウトリクエスト
-
-
-
-
-
-
-<a name="auth-v1-SignOutResponse"></a>
-
-### SignOutResponse
-サインアウトレスポンス
-
-
-
-
-
-
-<a name="auth-v1-SignUpRequest"></a>
-
-### SignUpRequest
-サインアップリクエスト
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| email | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="auth-v1-SignUpResponse"></a>
-
-### SignUpResponse
-サインアップレスポンス
-
-
-
-
-
- 
-
- 
-
- 
-
-
-<a name="auth-v1-AuthService"></a>
-
-### AuthService
-認証サービス
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
-| SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
-| SignOut | [SignOutRequest](#auth-v1-SignOutRequest) | [SignOutResponse](#auth-v1-SignOutResponse) | サインアウト |
-| ChangePassword | [ChangePasswordRequest](#auth-v1-ChangePasswordRequest) | [ChangePasswordResponse](#auth-v1-ChangePasswordResponse) | パスワード変更 |
-| Delete | [DeleteRequest](#auth-v1-DeleteRequest) | [DeleteResponse](#auth-v1-DeleteResponse) | 削除 |
-
- 
 
 
 
@@ -457,6 +256,207 @@
 | Read | [ReadRequest](#article-v1-ReadRequest) | [ReadResponse](#article-v1-ReadResponse) | 既読 Need Authorization Header |
 | AddTag | [AddTagRequest](#article-v1-AddTagRequest) | [AddTagResponse](#article-v1-AddTagResponse) | タグ追加 |
 | ListTag | [ListTagRequest](#article-v1-ListTagRequest) | [ListTagResponse](#article-v1-ListTagResponse) | タグ一覧 |
+
+ 
+
+
+
+<a name="backend_proto_auth_v1_auth-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## backend/proto/auth/v1/auth.proto
+
+
+
+<a name="auth-v1-ChangePasswordRequest"></a>
+
+### ChangePasswordRequest
+パスワード変更リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| old_password | [string](#string) |  |  |
+| new_password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-ChangePasswordResponse"></a>
+
+### ChangePasswordResponse
+パスワード変更レスポンス
+
+
+
+
+
+
+<a name="auth-v1-DeleteRequest"></a>
+
+### DeleteRequest
+削除リクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-DeleteResponse"></a>
+
+### DeleteResponse
+削除レスポンス
+
+
+
+
+
+
+<a name="auth-v1-SignInRequest"></a>
+
+### SignInRequest
+サインインリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignInResponse"></a>
+
+### SignInResponse
+サインインレスポンス
+
+
+
+
+
+
+<a name="auth-v1-SignOutRequest"></a>
+
+### SignOutRequest
+サインアウトリクエスト
+
+
+
+
+
+
+<a name="auth-v1-SignOutResponse"></a>
+
+### SignOutResponse
+サインアウトレスポンス
+
+
+
+
+
+
+<a name="auth-v1-SignUpRequest"></a>
+
+### SignUpRequest
+サインアップリクエスト
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="auth-v1-SignUpResponse"></a>
+
+### SignUpResponse
+サインアップレスポンス
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="auth-v1-AuthService"></a>
+
+### AuthService
+認証サービス
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| SignUp | [SignUpRequest](#auth-v1-SignUpRequest) | [SignUpResponse](#auth-v1-SignUpResponse) | サインアップ |
+| SignIn | [SignInRequest](#auth-v1-SignInRequest) | [SignInResponse](#auth-v1-SignInResponse) | サインイン |
+| SignOut | [SignOutRequest](#auth-v1-SignOutRequest) | [SignOutResponse](#auth-v1-SignOutResponse) | サインアウト |
+| ChangePassword | [ChangePasswordRequest](#auth-v1-ChangePasswordRequest) | [ChangePasswordResponse](#auth-v1-ChangePasswordResponse) | パスワード変更 |
+| Delete | [DeleteRequest](#auth-v1-DeleteRequest) | [DeleteResponse](#auth-v1-DeleteResponse) | 削除 |
+
+ 
+
+
+
+<a name="backend_proto_health_v1_health-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## backend/proto/health/v1/health.proto
+
+
+
+<a name="health-v1-CheckRequest"></a>
+
+### CheckRequest
+チェックリクエスト
+
+
+
+
+
+
+<a name="health-v1-CheckResponse"></a>
+
+### CheckResponse
+チェックレスポンス
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="health-v1-HealthService"></a>
+
+### HealthService
+ヘルスサービス
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| Check | [CheckRequest](#health-v1-CheckRequest) | [CheckResponse](#health-v1-CheckResponse) | チェック |
 
  
 
